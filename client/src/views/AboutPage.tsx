@@ -133,12 +133,12 @@ function AboutPage() {
           <Typography variant="h5">
             This page have been financed by a single individual if you want to help out with keeping the page running and getting improvements click the link below!
           </Typography>
-          <Button variant="contained" component={RouterLink} to="#"
+          <Button variant="contained" component={RouterLink} to="https://www.paypal.com/donate/?hosted_button_id=WEP34HR7G6XPJ"
             sx={{
               margin: "2rem"
             }}
           >
-            Donate Today (this button is fake)
+            Donate Today
           </Button>
         </Box>
 
@@ -148,7 +148,7 @@ function AboutPage() {
             Calendar Team
           </Typography>
           <Typography >
-          Questions, comments and feedback can be sent to the maintenance of the calendar at <a href="mailto:jacob@larpcal.com">Jacob@larpacal.com</a>
+          Questions, comments and feedback can be sent to the maintenance of the calendar at <a href="mailto:jacob@larpcal.com">Jacob@larpcal.com</a>
 
           </Typography>
 
