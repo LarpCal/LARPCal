@@ -19,6 +19,7 @@ import AboutPage from "./views/AboutPage";
 import LoginPage from "./views/LoginPage";
 import RegisterPage from "./views/RegisterPage";
 import ChangePasswordForm from "./components/Forms/ChangePasswordForm";
+import MyProfilePage from './views/MyProfilePage';
 
 
 
@@ -48,6 +49,7 @@ function RoutesList() {
             <Route path='/orgs/:id/edit' element={<EditOrgPage />} />
             <Route path='/orgs/:id/image' element={<EditOrgImagePage />} />
             <Route path='/auth/logout' element={<LogOutPage logOut={logout} />} />
+            <Route path='/my-profile' element={<MyProfilePage />} />
         </>
     );
 
