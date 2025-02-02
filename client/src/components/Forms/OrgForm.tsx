@@ -32,10 +32,10 @@ function OrgForm(){
                         />
                         <FastField
                             component={FormikMuiTextField}
-                            placeholder="Website"
+                            placeholder="https://example.com"
                             name="orgUrl"
                             id="orgUrl"
-                            label="https://example.com"
+                            label="Website"
                             fullWidth
                         />
                         <FastField
