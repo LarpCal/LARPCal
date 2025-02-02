@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import { UserLoginData, UserForCreate } from "../types";
+import { UserLoginData, UserForCreate, UserForUpdate } from "../types";
 import { NullableUser, ANON_USER, userContext } from "../context/userContext";
 import LarpAPI from "../util/api";
 
@@ -78,6 +78,29 @@ export default function UserProvider({children}:UserProviderProps){
     setToken(token);
   }
 
+  async function update(userInfo: UserForUpdate) {
+    console.log("calling update");
+    try {
+      if (!token) {
+        throw new Error("No token found");
+      }
+      setLoading(true);
+      const username = LarpAPI.getUsernameFromToken(token);
+      const userData = await LarpAPI.updateUser({
+        password: userInfo.password,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
+      }, username);
+      setUser(userData);
+    } catch (err) {
+      console.error(err);
+      setError([`Error updating user: ${err}`]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <userContext.Provider value={{
       user,
@@ -87,6 +110,7 @@ export default function UserProvider({children}:UserProviderProps){
       login,
       logout,
       register,
+      update,
       loading,
       error,
     }}>

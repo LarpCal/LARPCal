@@ -1,5 +1,5 @@
 import React from "react";
-import { Organization } from "../types";
+import { Organization, UserForUpdate } from "../types";
 import { UserLoginData, UserForCreate } from "../types";
 
 const ANON_USER: NullableUser = {
@@ -28,6 +28,7 @@ type UserContextType = {
   login:(credentials: UserLoginData) => Promise<void>;
   logout: () => void;
   register: (userInfo: UserForCreate) => Promise<void>;
+  update: (userInfo: UserForUpdate) => Promise<void>;
   loading: boolean;
   error: string[] | null;
 }
@@ -49,6 +50,9 @@ const userContext = React.createContext<UserContextType>({
   },
   register: async () => {
     throw new Error("register function not provided");
+  },
+  update: async () => {
+    throw new Error("update function not provided");
   },
   error:null,
   loading:false,

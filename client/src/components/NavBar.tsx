@@ -83,6 +83,13 @@ function NavBar() {
                     >
                         Log Out
                     </MenuItem>
+                    <MenuItem
+                        component={RouterLink}
+                        to={'/my-profile'}
+                        onClick={() => setShowAccountMenu(false)}
+                    >
+                        My Profile
+                    </MenuItem>
                     {!organization &&
                         <>
                             <Divider />

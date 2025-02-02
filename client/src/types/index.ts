@@ -100,17 +100,14 @@ export type User = UserForCreate & {
   organization:Organization | null;
 };
 
-
 export type PublicUser = Omit<User,'password'>
 
-export type UserForUpdate = (
-  PartialWithRequired<
+export type UserForUpdate = Partial<
     Omit<
-      User,
-      'organization'
-    >,
-    'id' | 'username'
-  >)
+      UserForCreate,
+      'username'
+    >
+  >;
 
 /*************************** ORGANIZATIONS */
 
