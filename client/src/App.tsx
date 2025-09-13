@@ -9,15 +9,13 @@ import theme from './styles/theme.tsx';
 import AppContent from './AppContent.tsx';
 import UserProvider from './hooks/UserProvider.tsx';
 
-
 function App() {
-
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <UserProvider>
-              <AppContent/>
-            </UserProvider>
+        <UserProvider>
+          <AppContent />
+        </UserProvider>
       </LocalizationProvider>
     </ThemeProvider>
   );

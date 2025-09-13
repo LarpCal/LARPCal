@@ -1,10 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
-import LoginForm from "../components/Forms/LoginForm";
-import { UserLoginData } from "../types";
-
+import { Box, Stack, Typography } from '@mui/material';
+import LoginForm from '../components/Forms/LoginForm';
+import { UserLoginData } from '../types';
 
 type LoginPageProps = {
-  login: (credentials: UserLoginData) => Promise<void>,
+  login: (credentials: UserLoginData) => Promise<void>;
 };
 
 function LoginPage({ login }: LoginPageProps) {

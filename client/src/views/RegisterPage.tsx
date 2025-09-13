@@ -1,10 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
-import { UserForCreate } from "../types";
-import UserRegistrationForm from "../components/Forms/RegisterForm";
-
+import { Box, Stack, Typography } from '@mui/material';
+import { UserForCreate } from '../types';
+import UserRegistrationForm from '../components/Forms/RegisterForm';
 
 type RegisterPageProps = {
-    register: (userInfo: UserForCreate) => Promise<void>;
+  register: (userInfo: UserForCreate) => Promise<void>;
 };
 
 function RegisterPage({ register }: RegisterPageProps) {
@@ -25,7 +24,7 @@ function RegisterPage({ register }: RegisterPageProps) {
           marginTop: '2rem',
         }}
       >
-        <UserRegistrationForm register={register}/>
+        <UserRegistrationForm register={register} />
       </Box>
     </Stack>
   );

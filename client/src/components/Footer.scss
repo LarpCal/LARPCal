@@ -1,20 +1,20 @@
-@import "../styles/colors";
+@import '../styles/colors';
 
 .Footer {
-    width: 100%;
-    min-height: 3rem;
-    background-color: $dark;
+  width: 100%;
+  min-height: 3rem;
+  background-color: $dark;
+  color: $pale-blue;
+
+  .copyright {
     color: $pale-blue;
+    display: box;
+    text-align: center;
+    padding: 1rem;
 
-    .copyright {
-        color: $pale-blue;
-        display: box;
-        text-align: center;
-        padding:1rem;
-
-        a {
-            color:$pale-blue;
-            text-decoration: underline;
-        }
+    a {
+      color: $pale-blue;
+      text-decoration: underline;
     }
+  }
 }

@@ -1,107 +1,105 @@
-@import "../styles/colors";
+@import '../styles/colors';
 
 .NavBar {
-    width: 100%;
-    padding:1rem;
-    background-color: #f5f2ef;
+  width: 100%;
+  padding: 1rem;
+  background-color: #f5f2ef;
 
-    .icon {
-        color: #6e6b69;
-    }
+  .icon {
+    color: #6e6b69;
+  }
 
-    .NavBar-linkContainer {
-        font-size: .75rem;
-    }
+  .NavBar-linkContainer {
+    font-size: 0.75rem;
+  }
 
-    .NavBar-button, .NavBar-link > * {
-        color: #6e6b69;
-        * {
-            padding-right: 0.5rem;
-            font-weight: 500;
-            font-size:.75rem;
-        }
+  .NavBar-button,
+  .NavBar-link > * {
+    color: #6e6b69;
+    * {
+      padding-right: 0.5rem;
+      font-weight: 500;
+      font-size: 0.75rem;
     }
+  }
 
-    hr {
-        border-color: #6e6b69
-    }
+  hr {
+    border-color: #6e6b69;
+  }
 }
 
 .SearchBar {
-    margin:0 1rem;
-    width:1fr;
-    border-radius: 50px;
-    background-color: white;
-    border: solid 1px #d4cfcb;
+  margin: 0 1rem;
+  width: 1fr;
+  border-radius: 50px;
+  background-color: white;
+  border: solid 1px #d4cfcb;
 
-    .SearchBar-textField {
-        padding: 0;
-        height: 100%;
-        font-size: 1rem;
-        color: black;
+  .SearchBar-textField {
+    padding: 0;
+    height: 100%;
+    font-size: 1rem;
+    color: black;
+  }
+
+  .NavBar-search {
+    height: 2.25rem;
+
+    .MuiFormControl-root {
+      height: 100%;
+      width: 100%;
     }
 
-    .NavBar-search {
-        height: 2.25rem;
+    .MuiInputBase-root {
+      height: 100%;
 
-        .MuiFormControl-root {
-            height: 100%;
-            width:100%;
-        }
+      .MuiInputBase-input {
+        margin: 0;
+      }
 
-        .MuiInputBase-root {
-            height: 100%;
-
-            .MuiInputBase-input {
-                margin: 0;
-            }
-
-            & .MuiOutlinedInput-root {
-                border: none;
-            }
-        }
-
-        & svg {
-            margin-right:1rem;
-        }
-
-        & * {
-            border-radius: 1rem;
-            border: none;
-            outline: none;
-            box-shadow: none;
-        }
-
-        input {
-            color: $dark;
-        }
+      & .MuiOutlinedInput-root {
+        border: none;
+      }
     }
+
+    & svg {
+      margin-right: 1rem;
+    }
+
+    & * {
+      border-radius: 1rem;
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+
+    input {
+      color: $dark;
+    }
+  }
 }
 
-
 #homeIcon {
-    padding:0;
-    color: #524d4b;
-    font-size: 1.5rem;
-    min-width: 225px;
+  padding: 0;
+  color: #524d4b;
+  font-size: 1.5rem;
+  min-width: 225px;
 }
 
 .NavBar-menu {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    // background-color: #222;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  // background-color: #222;
 
+  .menuItem {
+    // background-color: $dark;
+    color: $secondary;
+  }
 
-
-    .menuItem {
-        // background-color: $dark;
-        color: $secondary;
-    }
-
-    .menuItem:hover,
-    .menuItem:focus {
-        background-color: $secondary;
-        color: $dark;
-    }
+  .menuItem:hover,
+  .menuItem:focus {
+    background-color: $secondary;
+    color: $dark;
+  }
 }

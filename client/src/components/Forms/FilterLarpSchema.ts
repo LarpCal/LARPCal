@@ -6,7 +6,7 @@ const FilterLarpSchema = yup.object({
   title: yup.string(),
   ticketStatus: yup
     .mixed<TicketStatus>()
-    .oneOf(["AVAILABLE", "LIMITED", "SOLD_OUT"]),
+    .oneOf(['AVAILABLE', 'LIMITED', 'SOLD_OUT']),
   tags: yup.string(),
   startBefore: yup
     .date()

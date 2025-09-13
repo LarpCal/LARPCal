@@ -13,12 +13,7 @@
     },
     "ticketStatus": {
       "type": "string",
-      "enum": [
-        "AVAILABLE",
-        "LIMITED",
-        "SOLD_OUT",
-        "SOON"
-      ]
+      "enum": ["AVAILABLE", "LIMITED", "SOLD_OUT", "SOON"]
     },
     "tags": {
       "type": "array",
@@ -65,8 +60,8 @@
         }
       }
     },
-    "imgSetId":{
-      "type":"integer"
+    "imgSetId": {
+      "type": "integer"
     },
     "city": {
       "type": "string",

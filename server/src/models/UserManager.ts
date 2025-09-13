@@ -2,7 +2,7 @@ import { prisma } from '../prismaSingleton';
 import { BCRYPT_WORK_FACTOR } from '../config';
 import { UserForCreate, User, UserForUpdate, PublicUser } from '../types';
 
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 import {
   NotFoundError,
@@ -14,23 +14,21 @@ const USER_INCLUDE_OBJ = {
   organization: {
     include: {
       imgUrl: true,
-    }
-  }
+    },
+  },
 };
 class UserManager {
-
   /**Authenticate a user with username/password
- * Returns User
- * Throws UnauthorizedError is user not found or wrong password.
-*/
+   * Returns User
+   * Throws UnauthorizedError is user not found or wrong password.
+   */
   static async authenticate(
     username: string,
     password: string,
   ): Promise<PublicUser> {
-
     const fullUserData = await prisma.user.findUnique({
       where: { username: username },
-      include: USER_INCLUDE_OBJ
+      include: USER_INCLUDE_OBJ,
     });
 
     if (fullUserData) {
@@ -41,44 +39,47 @@ class UserManager {
         return user;
       }
     }
-    throw new UnauthorizedError("Invalid username/password");
+    throw new UnauthorizedError('Invalid username/password');
   }
 
-
-
   /** Register a user with userdata
-    * Returns User
-    * Throws BadRequestError on duplicates
-    */
+   * Returns User
+   * Throws BadRequestError on duplicates
+   */
   static async register(userData: UserForCreate): Promise<PublicUser> {
     //duplicate check
     const user = await prisma.user.findUnique({
-      where: { username: userData.username }
+      where: { username: userData.username },
     });
 
-    if (user) throw new BadRequestError(`Username ${user.username} already exists`);
+    if (user)
+      throw new BadRequestError(`Username ${user.username} already exists`);
     const email = await prisma.user.findUnique({
-      where: { email: userData.email }
+      where: { email: userData.email },
     });
-    if (email) throw new BadRequestError("An account with that email address already exists");
+    if (email)
+      throw new BadRequestError(
+        'An account with that email address already exists',
+      );
 
-    const hashedPassword = await bcrypt.hash(userData.password, BCRYPT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(
+      userData.password,
+      BCRYPT_WORK_FACTOR,
+    );
     userData.password = hashedPassword;
-
 
     const savedUser = await prisma.user.create({
       data: userData,
-      include: USER_INCLUDE_OBJ
+      include: USER_INCLUDE_OBJ,
     });
     const { password, ...publicUser } = savedUser;
     return publicUser;
   }
 
-
   /** Returns a list of userData without passwords */
   static async findAll(): Promise<PublicUser[]> {
     let users = await prisma.user.findMany({
-      include: { organization: true }
+      include: { organization: true },
     });
     const response = users.map((user: User) => {
       const { password, ...publicUser } = user;
@@ -87,7 +88,6 @@ class UserManager {
 
     return response;
   }
-
 
   /** Fetches a User by username.
    * Returns {username, firstName, lastName, email, isAdmin}
@@ -102,10 +102,9 @@ class UserManager {
       const { password, ...publicUser } = user;
       return publicUser;
     } catch (err) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError('User not found');
     }
   }
-
 
   /** Update user data with `data`.
    *
@@ -124,14 +123,18 @@ class UserManager {
    * or a serious security risks are opened.
    */
   static async updateUser(
-    username: string, userData: UserForUpdate
+    username: string,
+    userData: UserForUpdate,
   ): Promise<PublicUser> {
     if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, BCRYPT_WORK_FACTOR);
+      userData.password = await bcrypt.hash(
+        userData.password,
+        BCRYPT_WORK_FACTOR,
+      );
     }
 
     if (!userData || !Object.keys(userData).length) {
-      throw new BadRequestError("No data provided");
+      throw new BadRequestError('No data provided');
     }
 
     try {
@@ -150,20 +153,19 @@ class UserManager {
     }
   }
 
-
   /** Delete given user from database; returns undefined. */
   static async deleteUser(username: string) {
     try {
       const deleted = await prisma.user.delete({
-        where: { username }
+        where: { username },
       });
       return deleted.username;
     } catch (err) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError('User not found');
     }
   }
 
   // end class
-};
+}
 
 export default UserManager;

@@ -1,36 +1,42 @@
-import axios, {AxiosError} from "axios";
-import { jwtDecode } from "jwt-decode";
-import { UserLoginData, UserForCreate, User, Larp, LarpForCreate, LarpAsJSON, LarpForUpdate, OrganizationForCreate, Organization, OrganizationForUpdate, PublicUser, UserForUpdate } from "../types";
-import { JsonToLarp } from "./typeConverters";
+import axios, { AxiosError } from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import {
+  UserLoginData,
+  UserForCreate,
+  User,
+  Larp,
+  LarpForCreate,
+  LarpAsJSON,
+  LarpForUpdate,
+  OrganizationForCreate,
+  Organization,
+  OrganizationForUpdate,
+  PublicUser,
+  UserForUpdate,
+} from '../types';
+import { JsonToLarp } from './typeConverters';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3001/";
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3001/';
 
 type APIError = {
   message: string | string[];
-}
+};
 
 class LarpAPI {
-
   //This token will be changed dynamically on login
-  static token = "";
+  static token = '';
 
-  static async request(
-    endpoint: string,
-    data = {},
-    method = "get",
-  ) {
-    console.debug("API Call:", endpoint, data, method);
+  static async request(endpoint: string, data = {}, method = 'get') {
+    console.debug('API Call:', endpoint, data, method);
 
     const url = `${BASE_URL}${endpoint}`;
     const headers = { Authorization: `Bearer ${LarpAPI.token}` };
-    const params = (method === "get")
-      ? data
-      : {};
+    const params = method === 'get' ? data : {};
 
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      const error = err as AxiosError<{error:APIError}>;
+      const error = err as AxiosError<{ error: APIError }>;
       const message = error.response!.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -39,22 +45,19 @@ class LarpAPI {
   static async multipartRequest(
     endpoint: string,
     data: FormData,
-    method = "put",
+    method = 'put',
   ) {
-
     const url = `${BASE_URL}${endpoint}`;
     const headers = {
-      "Content-Type": "multipart/form-data",
-      "Authorization": `Bearer ${LarpAPI.token}`
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${LarpAPI.token}`,
     };
-    const params = (method === "get")
-      ? data
-      : {};
+    const params = method === 'get' ? data : {};
 
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      const error = err as AxiosError<{error:APIError}>;
+      const error = err as AxiosError<{ error: APIError }>;
       const message = error.response!.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -72,7 +75,7 @@ class LarpAPI {
   }
 
   /** Refresh a user token (when permissions change mid session) */
-  static async refreshToken(){
+  static async refreshToken() {
     const response = await this.request('auth/token/refresh', {}, 'post');
     LarpAPI.token = response.token;
     return response.token;
@@ -87,17 +90,17 @@ class LarpAPI {
 
   /** Log out current user*/
   static async userLogout() {
-    LarpAPI.token = "";
+    LarpAPI.token = '';
   }
 
   /** Get the username from decoded token. Sets token and returns username.
    * token is a jwt with a username key.
-  */
+   */
   static getUsernameFromToken(token: string) {
     const { username } = jwtDecode<{
-      username:string,
-      isAdmin:boolean,
-      isOrganizer:boolean
+      username: string;
+      isAdmin: boolean;
+      isOrganizer: boolean;
     }>(token);
     LarpAPI.token = token;
     return username;
@@ -106,18 +109,22 @@ class LarpAPI {
   /** Sends a request to create a new PasswordResetRequest record and start the
    * password recovery email flow.
    */
-  static async createPasswordResetRequest(data:{username:string}){
-    const response = await this.request('auth/password-reset/request', data, 'post')
+  static async createPasswordResetRequest(data: { username: string }) {
+    const response = await this.request(
+      'auth/password-reset/request',
+      data,
+      'post',
+    );
     return response;
   }
 
   /** Updates a users password using token from a PasswordResetRequest record */
-  static async updatePassword(data:{token:string, password:string}){
+  static async updatePassword(data: { token: string; password: string }) {
     const response = await this.request(
       `auth/password-reset/confirm?token=${data.token}`,
-      {password:data.password},
-      'patch'
-    )
+      { password: data.password },
+      'patch',
+    );
     return response;
   }
 
@@ -130,8 +137,8 @@ class LarpAPI {
   }
 
   //get all users
-  static async getAllUsers():Promise<PublicUser[]>{
-    const response = await this.request('users/')
+  static async getAllUsers(): Promise<PublicUser[]> {
+    const response = await this.request('users/');
     return response.users;
   }
 
@@ -148,29 +155,26 @@ class LarpAPI {
     return responseData.user;
   }
 
-
-   /**  DELETE  */
-   static async DeleteUser(username: string): Promise<User> {
+  /**  DELETE  */
+  static async DeleteUser(username: string): Promise<User> {
     const response = await this.request(
       `users/${username}`,
       undefined,
-      'delete'
+      'delete',
     );
     return response.deleted;
   }
-
 
   /************************ LARPS ********************************/
   /**  CREATE  */
 
   static async createLarp(larp: LarpForCreate): Promise<Larp> {
-
     const response = await this.request('events', larp, 'post');
     return JsonToLarp(response.larp);
   }
 
   static async publishLarp(id: number): Promise<Larp> {
-    const response = await this.request(`events/${id}/publish`,{},'post');
+    const response = await this.request(`events/${id}/publish`, {}, 'post');
     return JsonToLarp(response.larp);
   }
 
@@ -180,13 +184,11 @@ class LarpAPI {
     return JsonToLarp(response.larp);
   }
 
-
   static async getAllLarps(query: string | null): Promise<Larp[]> {
-
     const response = query
       ? await this.request(`events?q=${query}`)
       : await this.request(`events`);
-    return response.larps.map((larp:LarpAsJSON)=>JsonToLarp(larp));
+    return response.larps.map((larp: LarpAsJSON) => JsonToLarp(larp));
   }
 
   /**  UPDATE  */
@@ -194,7 +196,7 @@ class LarpAPI {
     const response = await this.request(
       `events/${formData.id}`,
       formData,
-      'put'
+      'put',
     );
     return JsonToLarp(response.larp);
   }
@@ -206,26 +208,21 @@ class LarpAPI {
     const response = await this.multipartRequest(
       `events/${larpId}/image`,
       formData,
-      'put'
+      'put',
     );
     return response.imageUrl;
   }
 
   /**  DELETE  */
   static async DeleteLarp(id: number): Promise<Larp> {
-    const response = await this.request(
-      `events/${id}`,
-      undefined,
-      'delete'
-    );
+    const response = await this.request(`events/${id}`, undefined, 'delete');
     return response.larp;
   }
 
   /************************ ORGANIZATION ********************************/
 
-
   /**  CREATE  */
-  static async CreateOrganization(orgData:OrganizationForCreate){
+  static async CreateOrganization(orgData: OrganizationForCreate) {
     const response = await this.request('orgs', orgData, 'post');
     return response.org;
   }
@@ -242,11 +239,13 @@ class LarpAPI {
   }
 
   /**  UPDATE  */
-  static async UpdateOrg(formData: OrganizationForUpdate): Promise<Organization> {
+  static async UpdateOrg(
+    formData: OrganizationForUpdate,
+  ): Promise<Organization> {
     const response = await this.request(
       `orgs/${formData.id}`,
       formData,
-      'patch'
+      'patch',
     );
     return response.org;
   }
@@ -258,31 +257,28 @@ class LarpAPI {
     const response = await this.multipartRequest(
       `orgs/${orgId}/image`,
       formData,
-      'put'
+      'put',
     );
     return response.imageUrl;
   }
 
-  static async UpdateOrgApproval(id:number, isApproved:boolean):Promise<Organization> {
+  static async UpdateOrgApproval(
+    id: number,
+    isApproved: boolean,
+  ): Promise<Organization> {
     const response = await this.request(
       `orgs/${id}/approval`,
-      {id, isApproved},
-      'patch'
-    )
+      { id, isApproved },
+      'patch',
+    );
     return response.org;
   }
 
-   /**  DELETE  */
-   static async DeleteOrg(id: number): Promise<Organization> {
-    const response = await this.request(
-      `orgs/${id}`,
-      undefined,
-      'delete'
-    );
+  /**  DELETE  */
+  static async DeleteOrg(id: number): Promise<Organization> {
+    const response = await this.request(`orgs/${id}`, undefined, 'delete');
     return response.deleted;
   }
-
-
 
   /************************ FAVORITES ********************************/
   //NOTE: These methods are not yet converted from a different project
@@ -293,7 +289,6 @@ class LarpAPI {
   //   );
   //   return response.cookbook;
   // }
-
 
   // static async addToCookbook(larpId: number, username: string) {
   //   const response = await this.request(
@@ -325,8 +320,6 @@ class LarpAPI {
   //   );
   //   return response.bugReport;
   // }
-
-
 }
 
 export default LarpAPI;

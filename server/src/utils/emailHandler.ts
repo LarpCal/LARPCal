@@ -6,12 +6,12 @@ const EMAIL_PASS = process.env.EMAIL_PASS as string;
 
 let transporter = nodemailer.createTransport({
   host: EMAIL_HOST,
-  secure: true,
-  port: 465,
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
+  // secure: true,
+  port: 25,
+  // auth: {
+  // 	user: EMAIL_USER,
+  // 	pass: EMAIL_PASS,
+  // },
 });
 
 async function sendMail(to: string, subject: string, html: string) {
@@ -29,11 +29,10 @@ async function sendMail(to: string, subject: string, html: string) {
   });
 }
 
-
-function sendPasswordResetEmail(to:string, username:string, link:string) {
+function sendPasswordResetEmail(to: string, username: string, link: string) {
   sendMail(
     to,
-    "Password reset request for you Larp Calendar account",
+    'Password reset request for you Larp Calendar account',
     `
     <!DOCTYPE html>
 <html>
@@ -102,8 +101,8 @@ function sendPasswordResetEmail(to:string, username:string, link:string) {
   </div>
 </body>
 </html>
-`
+`,
   );
 }
 
-export {sendPasswordResetEmail}
+export { sendPasswordResetEmail };

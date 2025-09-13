@@ -10,17 +10,11 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "ts-node": {
     "esm": true
   },
-  "include": [
-    "src/**/*",
-    "node_modules/@prisma/client"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  "include": ["src/**/*", "node_modules/@prisma/client"],
+  "exclude": ["node_modules", "dist"]
 }

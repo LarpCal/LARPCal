@@ -1,19 +1,18 @@
 @import 'react-big-calendar/lib/sass/styles';
-@import "../../styles/colors";
-
+@import '../../styles/colors';
 
 .Calendar {
-    height: 100vh;
-    min-height: 500px;
-    color: $dark;
-    margin:1rem;
-    font-size: .5rem;
+  height: 100vh;
+  min-height: 500px;
+  color: $dark;
+  margin: 1rem;
+  font-size: 0.5rem;
 }
 
 .Calendar-modal {
-    width:75vw;
-    height: 75vh;
-    background-color: white;
-    overflow-y:scroll;
-    scrollbar-width: thin;
+  width: 75vw;
+  height: 75vh;
+  background-color: white;
+  overflow-y: scroll;
+  scrollbar-width: thin;
 }

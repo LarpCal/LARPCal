@@ -1,6 +1,10 @@
 /** Handles interactions with AmazonS3 */
 
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { mockDeep } from 'jest-mock-extended';
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -10,14 +14,12 @@ const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
 
 let s3: null | S3Client = null;
 
-
 /** Creates an S3Client instance for future requests
  * Returns either an s3 instance or a mock of an s3 instance for testing */
 function getS3(): S3Client {
   if (s3 === null) {
-
     if (process.env.NODE_ENV === 'test') {
-      console.log("Loading mock s3 for testing");
+      console.log('Loading mock s3 for testing');
       let mockS3 = mockDeep() as unknown as S3Client;
       s3 = mockS3;
     } else {
@@ -26,10 +28,9 @@ function getS3(): S3Client {
           accessKeyId: AWS_KEY as string,
           secretAccessKey: AWS_SECRET_KEY as string,
         },
-        region: BUCKET_REGION
+        region: BUCKET_REGION,
       });
     }
-
   }
   return s3;
 }
@@ -40,7 +41,6 @@ function getS3(): S3Client {
  * Returns the response from the s3 server.
  */
 async function uploadFile(imageBuffer: Buffer, path: string) {
-
   const params = {
     Bucket: BUCKET_NAME,
     Key: path,
@@ -60,16 +60,15 @@ async function uploadFile(imageBuffer: Buffer, path: string) {
  *
  * Returns the response from the s3 server.
  */
-async function uploadMultiple(images: { buffer: Buffer, path: string; }[]) {
+async function uploadMultiple(images: { buffer: Buffer; path: string }[]) {
   let uploadedPaths: string[] = [];
 
   try {
-    let uploadPromises = images.map((image) => (
-      uploadFile(image.buffer, image.path)
-        .then(() => (
-          uploadedPaths.push(image.path)
-        ))
-    ));
+    let uploadPromises = images.map((image) =>
+      uploadFile(image.buffer, image.path).then(() =>
+        uploadedPaths.push(image.path),
+      ),
+    );
     await Promise.all(uploadPromises);
   } catch (err) {
     await deleteMultiple(uploadedPaths);
@@ -82,8 +81,7 @@ async function uploadMultiple(images: { buffer: Buffer, path: string; }[]) {
  * Returns the response from the s3 server.
  */
 async function deleteFile(path: string) {
-
-  console.log(path)
+  console.log(path);
 
   const params = {
     Bucket: BUCKET_NAME,
@@ -100,15 +98,10 @@ async function deleteFile(path: string) {
  * Returns the responses from the s3 server.
  */
 async function deleteMultiple(paths: string[]) {
-
-  const deletePromises = paths.map((path) => (
-    deleteFile(path)
-  ));
+  const deletePromises = paths.map((path) => deleteFile(path));
   let deleteResponses = await Promise.all(deletePromises);
   console.log(deleteResponses);
   return deleteResponses;
 }
-
-
 
 export { uploadFile, deleteFile, uploadMultiple, deleteMultiple };

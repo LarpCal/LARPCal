@@ -1,10 +1,13 @@
 import { prisma } from '../prismaSingleton';
-import { OrganizationForCreate, Organization, OrganizationForUpdate } from '../types';
+import {
+  OrganizationForCreate,
+  Organization,
+  OrganizationForUpdate,
+} from '../types';
 import { BadRequestError, NotFoundError } from '../utils/expressError';
 import ImageHandler from '../utils/imageHandler';
 import { Larp } from '../types';
 import { deleteMultiple } from '../api/s3';
-
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -12,18 +15,16 @@ const ORG_INCLUDE_OBJ = {
     include: {
       tags: true,
       imgUrl: true,
-    }
-  }
+    },
+  },
 };
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const DEFAULT_IMG_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default`;
 class OrgManager {
-
   static async createOrg(
-    orgData: OrganizationForCreate
+    orgData: OrganizationForCreate,
   ): Promise<Organization> {
-
     const { username, ...data } = orgData;
 
     const org: Organization = await prisma.organization.create({
@@ -48,42 +49,39 @@ class OrgManager {
   }
 
   static async getAllOrgs(): Promise<Organization[]> {
-    return await prisma.organization.findMany(
-      {
-        orderBy: { id: 'asc' },
-        include: ORG_INCLUDE_OBJ,
-      }
-    );
+    return await prisma.organization.findMany({
+      orderBy: { id: 'asc' },
+      include: ORG_INCLUDE_OBJ,
+    });
   }
-
 
   static async getOrgById(id: number): Promise<Organization> {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
         where: {
-          id: id
+          id: id,
         },
-        include: ORG_INCLUDE_OBJ
+        include: ORG_INCLUDE_OBJ,
       });
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError("Record not found");
+      throw new NotFoundError('Record not found');
     }
-  };
+  }
 
   static async getOrgByOrgName(orgName: string): Promise<Organization> {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
         where: {
-          orgName: orgName
+          orgName: orgName,
         },
-        include: ORG_INCLUDE_OBJ
+        include: ORG_INCLUDE_OBJ,
       });
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError("Record not found");
+      throw new NotFoundError('Record not found');
     }
   }
 
@@ -91,23 +89,24 @@ class OrgManager {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
         where: {
-          username: username
+          username: username,
         },
-        include: ORG_INCLUDE_OBJ
+        include: ORG_INCLUDE_OBJ,
       });
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError("Record not found");
+      throw new NotFoundError('Record not found');
     }
   }
 
   static async updateOrg(newOrg: OrganizationForUpdate): Promise<Organization> {
     console.log(newOrg.username);
-    const currentOrg: Organization = await prisma.organization.findUniqueOrThrow({
-      where: { id: newOrg.id },
-      include: ORG_INCLUDE_OBJ,
-    });
+    const currentOrg: Organization =
+      await prisma.organization.findUniqueOrThrow({
+        where: { id: newOrg.id },
+        include: ORG_INCLUDE_OBJ,
+      });
 
     const org: Organization = await prisma.organization.update({
       where: { id: newOrg.id },
@@ -123,33 +122,36 @@ class OrgManager {
               md: newOrg.imgUrl?.md || currentOrg.imgUrl.md,
               lg: newOrg.imgUrl?.lg || currentOrg.imgUrl.lg,
             },
-            where: { id: newOrg.imgSetId }
-          }
+            where: { id: newOrg.imgSetId },
+          },
         },
       },
-      include: ORG_INCLUDE_OBJ
+      include: ORG_INCLUDE_OBJ,
     });
 
     return org;
   }
 
-  static async setApproved(id: number, isApproved: boolean): Promise<Organization> {
+  static async setApproved(
+    id: number,
+    isApproved: boolean,
+  ): Promise<Organization> {
     const org: Organization = await prisma.organization.update({
       where: { id },
       data: {
         isApproved,
-        larps: { //automatically publish/unpublish events for this user
+        larps: {
+          //automatically publish/unpublish events for this user
           updateMany: {
             where: {},
-            data: { isPublished: isApproved }
-          }
-        }
+            data: { isPublished: isApproved },
+          },
+        },
       },
       include: ORG_INCLUDE_OBJ,
     });
     return org;
   }
-
 
   static async deleteOrgById(id: number): Promise<Organization> {
     // try { await this.deleteRecipeImage(id); }
@@ -159,35 +161,33 @@ class OrgManager {
 
     try {
       const deletedLarps = await prisma.larp.deleteMany({
-        where: { orgId: id }
+        where: { orgId: id },
       });
 
       const org = await prisma.organization.delete({
         where: {
-          id: id
+          id: id,
         },
-        include: ORG_INCLUDE_OBJ
-      }
-      );
+        include: ORG_INCLUDE_OBJ,
+      });
       return org;
     } catch (err) {
       //use our custom error instead
       console.log(err);
-      throw new NotFoundError("Record not found");
+      throw new NotFoundError('Record not found');
     }
-  };
+  }
 
   /**************************** IMAGES ***************************************/
 
   /**Uploads a file to s3 and stores the resulting uri in the imageUrl property
-     *
-     * @param file: the file to upload
-     * @param id: the id for the record to update
-     *
-     * @returns the updated org
-     */
+   *
+   * @param file: the file to upload
+   * @param id: the id for the record to update
+   *
+   * @returns the updated org
+   */
   static async updateOrgImage(file: Express.Multer.File, id: number) {
-
     const org = await OrgManager.getOrgById(+id);
     const s3Path = `orgImage/org-${id}`;
     const basePath = `https://${BUCKET_NAME}.s3.amazonaws.com/${s3Path}`;
@@ -195,15 +195,20 @@ class OrgManager {
 
     try {
       await ImageHandler.uploadAllSizes(file.buffer, s3Path, uuid);
-      if (org.imgUrl.sm !== `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default-sm`) {
+      if (
+        org.imgUrl.sm !==
+        `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default-sm`
+      ) {
         await deleteMultiple([
-          org.imgUrl.sm.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
-          org.imgUrl.md.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
-          org.imgUrl.lg.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
+          org.imgUrl.sm.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
+          org.imgUrl.md.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
+          org.imgUrl.lg.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
         ]);
       }
     } catch (e) {
-      throw new BadRequestError(`There was a problem updating this image: ${e}`);
+      throw new BadRequestError(
+        `There was a problem updating this image: ${e}`,
+      );
     }
 
     org.imgUrl = {
@@ -212,9 +217,7 @@ class OrgManager {
       lg: `${basePath}-lg-${uuid}`,
     };
     return await OrgManager.updateOrg(org);
-
   }
-
 
   //end class
 }

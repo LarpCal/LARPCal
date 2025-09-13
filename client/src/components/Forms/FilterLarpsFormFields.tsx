@@ -1,30 +1,27 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { LarpQuery } from "../../types";
-import { useFormikContext, Form, Field, FastField } from "formik";
-import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
-import FormikSelectInput from "../FormComponents/FormikSelectInput";
-import FormikDateTimePicker from "../FormComponents/FormikDateTimePicker";
-import { DateTime } from "luxon";
-
-
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { LarpQuery } from '../../types';
+import { useFormikContext, Form, Field, FastField } from 'formik';
+import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
+import FormikSelectInput from '../FormComponents/FormikSelectInput';
+import FormikDateTimePicker from '../FormComponents/FormikDateTimePicker';
+import { DateTime } from 'luxon';
 
 function FilterLarpsFormFields() {
-
   const { isValid, values } = useFormikContext<LarpQuery>();
 
   const fieldsetStyle = {
-    border: "none",
-    borderRadius: "1rem",
+    border: 'none',
+    borderRadius: '1rem',
     margin: '.5rem',
     padding: '.5rem',
-    width: "100%",
+    width: '100%',
   };
 
   const inputStyle = {
-    boxSizing: "border-box",
-    backgroundColor: "white",
+    boxSizing: 'border-box',
+    backgroundColor: 'white',
     margin: '.5rem',
-    flex:"1 1 auto"
+    flex: '1 1 auto',
   };
 
   return (
@@ -37,10 +34,13 @@ function FilterLarpsFormFields() {
       }}
       className="filled-light"
     >
-      <Typography mx="2rem" variant="h3" align="center"> Advanced Search </Typography>
+      <Typography mx="2rem" variant="h3" align="center">
+        {' '}
+        Advanced Search{' '}
+      </Typography>
       <Stack
-        direction={"row"}
-        flexWrap={"wrap"}
+        direction={'row'}
+        flexWrap={'wrap'}
         component="fieldset"
         sx={fieldsetStyle}
       >
@@ -49,16 +49,16 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            marginRight: "0px",
-            minWidth: "15rem",
-            flex: "0 0 auto",
+            marginRight: '0px',
+            minWidth: '15rem',
+            flex: '0 0 auto',
           }}
           options={[
-            { label: "Available", value: "AVAILABLE" },
-            { label: "Limited", value: "LIMITED" },
-            { label: "Sold Out", value: "SOLD_OUT" },
+            { label: 'Available', value: 'AVAILABLE' },
+            { label: 'Limited', value: 'LIMITED' },
+            { label: 'Sold Out', value: 'SOLD_OUT' },
           ]}
-          placeholder='AVAILABLE'
+          placeholder="AVAILABLE"
           name="ticketStatus"
           id="filter-ticketStatus"
           label="Ticket Availability"
@@ -68,10 +68,10 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            boxSizing: "border-box",
-            flex: "1"
+            boxSizing: 'border-box',
+            flex: '1',
           }}
-          placeholder=''
+          placeholder=""
           name="term"
           id="filter-term"
           label="Search Term"
@@ -81,35 +81,33 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            flex: "1 1 100%"
+            flex: '1 1 100%',
           }}
-          placeholder=''
+          placeholder=""
           name="title"
           id="filter-title"
           label="Title"
-
         />
         <FastField
           component={FormikMuiTextField}
           size="small"
           sx={{
             ...inputStyle,
-            flex: "1 1 100%"
+            flex: '1 1 100%',
           }}
-          placeholder=''
+          placeholder=""
           name="tags"
           id="filter-tags"
           label="Tags"
         />
-
       </Stack>
 
-      <Box
-        component="fieldset"
-        sx={fieldsetStyle}
-      >
-        <Stack direction={{xs:"column", sm:"row"}} alignItems="center">
-        <Typography sx={{minWidth:"100px"}} align="right"> Start Date: </Typography>
+      <Box component="fieldset" sx={fieldsetStyle}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center">
+          <Typography sx={{ minWidth: '100px' }} align="right">
+            {' '}
+            Start Date:{' '}
+          </Typography>
           <FastField
             component={FormikDateTimePicker}
             size="small"
@@ -131,8 +129,11 @@ function FilterLarpsFormFields() {
             value={DateTime.fromISO(values.startBefore || '')}
           />
         </Stack>
-        <Stack direction={{xs:"column", sm:"row"}} alignItems="center">
-        <Typography sx={{minWidth:"100px"}} align="right"> End Date: </Typography>
+        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center">
+          <Typography sx={{ minWidth: '100px' }} align="right">
+            {' '}
+            End Date:{' '}
+          </Typography>
           <FastField
             component={FormikDateTimePicker}
             size="small"
@@ -157,8 +158,8 @@ function FilterLarpsFormFields() {
       </Box>
 
       <Stack
-        direction={"row"}
-        flexWrap={"wrap"}
+        direction={'row'}
+        flexWrap={'wrap'}
         component="fieldset"
         sx={fieldsetStyle}
       >
@@ -166,7 +167,7 @@ function FilterLarpsFormFields() {
           component={FormikMuiTextField}
           size="small"
           sx={inputStyle}
-          placeholder=''
+          placeholder=""
           name="city"
           id="filter-city"
           label="City"
@@ -176,7 +177,7 @@ function FilterLarpsFormFields() {
           component={FormikMuiTextField}
           size="small"
           sx={inputStyle}
-          placeholder=''
+          placeholder=""
           name="country"
           id="filter-country"
           label="Country"
@@ -186,7 +187,7 @@ function FilterLarpsFormFields() {
           component={FormikMuiTextField}
           size="small"
           sx={inputStyle}
-          placeholder=''
+          placeholder=""
           name="language"
           id="filter-language"
           label="Language"
@@ -196,27 +197,24 @@ function FilterLarpsFormFields() {
           component={FormikMuiTextField}
           size="small"
           sx={inputStyle}
-          placeholder=''
+          placeholder=""
           name="organizer"
           id="filter-organizer"
           label="Organizer"
         />
-
       </Stack>
 
       <Button
-        type='submit'
+        type="submit"
         variant="contained"
         color="primary"
         sx={{
           margin: 'auto',
-          display: 'block'
+          display: 'block',
         }}
         disabled={isValid ? false : true}
       >
-        <Typography variant="h3">
-          Search
-        </Typography>
+        <Typography variant="h3">Search</Typography>
       </Button>
     </Box>
   );

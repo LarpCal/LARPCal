@@ -10,10 +10,8 @@ import { PrismaClient } from '@prisma/client';
 
 beforeEach(jest.clearAllMocks);
 
-describe("Test post events/", function () {
-
-  test("Works", async function () {
-
+describe('Test post events/', function () {
+  test('Works', async function () {
     //set up mocks
     mockPrisma.larp.create.mockResolvedValueOnce({ ...testLarp });
     mockPrisma.larp.findUniqueOrThrow.mockResolvedValueOnce(testLarp);

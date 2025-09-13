@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Larp } from "../types";
-import LarpAPI from "../util/api";
+import { useEffect, useState } from 'react';
+import { Larp } from '../types';
+import LarpAPI from '../util/api';
 
 type FetchLarpsResult = {
-  larp:Larp | null,
-  setLarp: React.Dispatch<React.SetStateAction<Larp | null>>,
-  loading:boolean,
-  error:any,
-}
+  larp: Larp | null;
+  setLarp: React.Dispatch<React.SetStateAction<Larp | null>>;
+  loading: boolean;
+  error: any;
+};
 
 function useFetchLarp(id: number): FetchLarpsResult {
   const [larp, setLarp] = useState<Larp | null>(null);
@@ -20,7 +20,7 @@ function useFetchLarp(id: number): FetchLarpsResult {
         const response = await LarpAPI.getLarpById(id);
         setLarp(response);
         setLoading(false);
-      } catch (err:any) {
+      } catch (err: any) {
         setError(err);
         setLoading(false);
       }
@@ -29,9 +29,7 @@ function useFetchLarp(id: number): FetchLarpsResult {
     fetchLarp();
   }, [setLarp, id]);
 
-  return {larp, setLarp, loading, error};
+  return { larp, setLarp, loading, error };
 }
-
-
 
 export { useFetchLarp };

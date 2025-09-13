@@ -1,11 +1,10 @@
-import LarpAPI from "../util/api";
-import { useNavigate } from "react-router-dom";
+import LarpAPI from '../util/api';
+import { useNavigate } from 'react-router-dom';
 
-import TooltipButton from "../components/FormComponents/TooltipButton";
-import { faImage, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import TooltipButton from '../components/FormComponents/TooltipButton';
+import { faImage, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function useOrgControls(orgId: number) {
-
   const navigate = useNavigate();
 
   function deleteOrg(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -50,7 +49,6 @@ function useOrgControls(orgId: number) {
   );
 
   return { DeleteOrgButton, EditOrgButton, EditImageButton };
-
 }
 
 export default useOrgControls;

@@ -4,7 +4,7 @@ import {
   ensureLoggedIn,
   ensureOrganizer,
   ensureOwnerOrAdmin,
-  protectUnpublished
+  protectUnpublished,
 } from '../middleware/auth';
 import readMultipart from '../middleware/multer';
 const router = express.Router();
@@ -18,42 +18,42 @@ import larpForCreateSchema from '../schemas/larpForCreate.json';
 import larpForUpdateSchema from '../schemas/larpForUpdate.json';
 
 /** POST /
-  *  Creates and returns a new larp record
-  *
-  * @returns larps: [Larp,...]
-  * @auth organizer
-  */
+ *  Creates and returns a new larp record
+ *
+ * @returns larps: [Larp,...]
+ * @auth organizer
+ */
 router.post(
-  "/",
+  '/',
   ensureLoggedIn,
   ensureOrganizer,
   // readMultipart("image"),
 
   async function (req: Request, res: Response, next: NextFunction) {
-    const validator = jsonschema.validate(
-      req.body,
-      larpForCreateSchema,
-      { required: true }
-    );
+    const validator = jsonschema.validate(req.body, larpForCreateSchema, {
+      required: true,
+    });
     if (!validator.valid) {
-      const errs: (string | undefined)[] = validator.errors.map((e: Error) => e.stack);
-      console.error("failed validation", errs.join(", "))
-      throw new BadRequestError(errs.join(", "));
+      const errs: (string | undefined)[] = validator.errors.map(
+        (e: Error) => e.stack,
+      );
+      console.error('failed validation', errs.join(', '));
+      throw new BadRequestError(errs.join(', '));
     }
 
     const larp = await LarpManager.createLarp(req.body);
     return res.status(201).json({ larp });
-  }
+  },
 );
 
 /** POST /{id}/publish
-  *  Creates and returns a new larp record
-  *
-  * @returns larps: [Larp,...]
-  * @auth organizer
-  */
+ *  Creates and returns a new larp record
+ *
+ * @returns larps: [Larp,...]
+ * @auth organizer
+ */
 router.post(
-  "/:id/publish",
+  '/:id/publish',
   ensureLoggedIn,
   ensureOwnerOrAdmin,
   // readMultipart("image"),
@@ -61,36 +61,36 @@ router.post(
   async function (req: Request, res: Response, next: NextFunction) {
     const larp = await LarpManager.publishLarp(+req.params.id);
     return res.status(200).json({ larp });
-  }
+  },
 );
 
 /** GET /id
-  *  Returns a the larp with the given id
-  *
-  * @returns larps: [Larp,...]
-  * @auth none
-  */
+ *  Returns a the larp with the given id
+ *
+ * @returns larps: [Larp,...]
+ * @auth none
+ */
 router.get(
-  "/:id",
+  '/:id',
   protectUnpublished,
-  
+
   async function (req: Request, res: Response, next: NextFunction) {
     const larp = await LarpManager.getLarpById(+req.params.id);
     return res.json({ larp });
-  }
+  },
 );
 
 /** GET /
-  *  Returns a list of all larps without submodel data
-  * @query a LarpQuery object encoded in Base64
-  * @returns larps: [Larp,...]
-  */
+ *  Returns a list of all larps without submodel data
+ * @query a LarpQuery object encoded in Base64
+ * @returns larps: [Larp,...]
+ */
 
 router.get(
-  "/",
+  '/',
   async function (req: Request, res: Response, next: NextFunction) {
     if (req.query && req.query.q) {
-      const q:string = req.query.q as string
+      const q: string = req.query.q as string;
       const decodedQuery = atob(q);
       const query = JSON.parse(decodedQuery);
       const larps = await LarpManager.getAllLarps(query);
@@ -99,7 +99,7 @@ router.get(
       const larps = await LarpManager.getAllLarps();
       return res.json({ larps });
     }
-  }
+  },
 );
 
 /** DELETE /[id]
@@ -107,15 +107,15 @@ router.get(
  *
  * @returns {deleted: Larp}
  *
-*/
+ */
 
 router.delete(
-  "/:id",
+  '/:id',
   ensureOwnerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const deleted = await LarpManager.deleteLarpById(+req.params.id);
     return res.json({ deleted });
-  }
+  },
 );
 
 /** PUT /[id]
@@ -124,23 +124,22 @@ router.delete(
  * @returns {larp: Larp}
  */
 router.put(
-  "/:id",
+  '/:id',
   ensureOwnerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
-
-    const validator = jsonschema.validate(
-      req.body,
-      larpForUpdateSchema,
-      { required: true }
-    );
+    const validator = jsonschema.validate(req.body, larpForUpdateSchema, {
+      required: true,
+    });
     if (!validator.valid) {
-      const errs: (string | undefined)[] = validator.errors.map((e: Error) => e.stack);
-      console.error("validation error", errs.join(", "))
-      throw new BadRequestError(errs.join(", "));
+      const errs: (string | undefined)[] = validator.errors.map(
+        (e: Error) => e.stack,
+      );
+      console.error('validation error', errs.join(', '));
+      throw new BadRequestError(errs.join(', '));
     }
     const larp = await LarpManager.updateLarp(req.body);
     return res.json({ larp });
-  }
+  },
 );
 
 /** PUT /[id]/image
@@ -150,20 +149,19 @@ router.put(
  */
 
 router.put(
-  "/:id/image",
+  '/:id/image',
   ensureOwnerOrAdmin,
   readMultipart('image'),
   async function (req: Request, res: Response, next: NextFunction) {
     //TODO: test middleware
 
-    if (!req.file) { throw new BadRequestError('Please attach an image'); }
-    const larp = await LarpManager.updateLarpImage(
-      req.file,
-      +req.params.id
-    );
+    if (!req.file) {
+      throw new BadRequestError('Please attach an image');
+    }
+    const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
 
     return res.json(larp);
-  }
+  },
 );
 
 /** DELETE /[id]/image

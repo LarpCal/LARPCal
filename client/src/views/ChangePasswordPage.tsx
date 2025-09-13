@@ -1,10 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
-import { UserForCreate } from "../types";
-import UserRegistrationForm from "../components/Forms/RegisterForm";
-
+import { Box, Stack, Typography } from '@mui/material';
+import { UserForCreate } from '../types';
+import UserRegistrationForm from '../components/Forms/RegisterForm';
 
 type ChangePasswordPageProps = {
-    register: (userInfo: UserForCreate) => Promise<void>;
+  register: (userInfo: UserForCreate) => Promise<void>;
 };
 
 function ChangePasswordPage({ register }: ChangePasswordPageProps) {
@@ -25,7 +24,7 @@ function ChangePasswordPage({ register }: ChangePasswordPageProps) {
           marginTop: '2rem',
         }}
       >
-        <UserRegistrationForm register={register}/>
+        <UserRegistrationForm register={register} />
       </Box>
     </Stack>
   );
