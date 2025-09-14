@@ -106,7 +106,7 @@ function NavBar() {
             </MenuItem>
             <MenuItem
               component={RouterLink}
-              to={'/my-profile'}
+              to="/my-profile"
               onClick={() => setShowAccountMenu(false)}
             >
               My Profile
