@@ -1,4 +1,4 @@
-import { Stack, Typography, Link, Box } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import { Tag } from "../../types";
 import { Link as RouterLink } from "react-router-dom";
 import "./TagDisplay.scss";

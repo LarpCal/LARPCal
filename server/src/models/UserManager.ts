@@ -1,14 +1,15 @@
 import { prisma } from "../prismaSingleton";
 import { BCRYPT_WORK_FACTOR } from "../config";
-import { UserForCreate, User, UserForUpdate, PublicUser } from "../types";
+import { PublicUser, User, UserForCreate, UserForUpdate } from "../types";
 
 import bcrypt from "bcrypt";
 
 import {
-  NotFoundError,
   BadRequestError,
+  NotFoundError,
   UnauthorizedError,
 } from "../utils/expressError";
+import { omitKeys } from "../utils/helpers";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -34,8 +35,8 @@ class UserManager {
     if (fullUserData) {
       const isValid = await bcrypt.compare(password, fullUserData.password);
       if (isValid === true) {
-        const { password, ...publicUserData } = fullUserData;
-        let user: PublicUser = publicUserData;
+        const publicUserData = omitKeys(fullUserData, "password");
+        const user: PublicUser = publicUserData;
         return user;
       }
     }
@@ -72,17 +73,17 @@ class UserManager {
       data: userData,
       include: USER_INCLUDE_OBJ,
     });
-    const { password, ...publicUser } = savedUser;
+    const publicUser = omitKeys(savedUser, "password");
     return publicUser;
   }
 
   /** Returns a list of userData without passwords */
   static async findAll(): Promise<PublicUser[]> {
-    let users = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       include: { organization: true },
     });
     const response = users.map((user: User) => {
-      const { password, ...publicUser } = user;
+      const publicUser = omitKeys(user, "password");
       return publicUser;
     });
 
@@ -95,13 +96,13 @@ class UserManager {
    */
   static async getUser(username: string): Promise<PublicUser> {
     try {
-      let user: User = await prisma.user.findUniqueOrThrow({
+      const user: User = await prisma.user.findUniqueOrThrow({
         where: { username },
         include: USER_INCLUDE_OBJ,
       });
-      const { password, ...publicUser } = user;
+      const publicUser = omitKeys(user, "password");
       return publicUser;
-    } catch (err) {
+    } catch {
       throw new NotFoundError("User not found");
     }
   }
@@ -145,7 +146,7 @@ class UserManager {
         data: userData,
         include: USER_INCLUDE_OBJ,
       });
-      const { password, ...publicUser } = updatedUser;
+      const publicUser = omitKeys(updatedUser, "password");
       return publicUser;
     } catch (err) {
       console.log(err);
@@ -160,7 +161,7 @@ class UserManager {
         where: { username },
       });
       return deleted.username;
-    } catch (err) {
+    } catch {
       throw new NotFoundError("User not found");
     }
   }

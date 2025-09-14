@@ -1,6 +1,10 @@
 import React from "react";
-import { Organization, UserForUpdate } from "../types";
-import { UserLoginData, UserForCreate } from "../types";
+import {
+  Organization,
+  UserForCreate,
+  UserForUpdate,
+  UserLoginData,
+} from "../types";
 
 const ANON_USER: NullableUser = {
   username: null,

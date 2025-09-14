@@ -1,12 +1,11 @@
 import { prisma } from "../prismaSingleton";
 import {
-  OrganizationForCreate,
   Organization,
+  OrganizationForCreate,
   OrganizationForUpdate,
 } from "../types";
 import { BadRequestError, NotFoundError } from "../utils/expressError";
 import ImageHandler from "../utils/imageHandler";
-import { Larp } from "../types";
 import { deleteMultiple } from "../api/s3";
 
 const ORG_INCLUDE_OBJ = {
@@ -64,7 +63,7 @@ class OrgManager {
         include: ORG_INCLUDE_OBJ,
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
@@ -79,7 +78,7 @@ class OrgManager {
         include: ORG_INCLUDE_OBJ,
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
@@ -94,7 +93,7 @@ class OrgManager {
         include: ORG_INCLUDE_OBJ,
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
@@ -160,7 +159,7 @@ class OrgManager {
     // }
 
     try {
-      const deletedLarps = await prisma.larp.deleteMany({
+      await prisma.larp.deleteMany({
         where: { orgId: id },
       });
 

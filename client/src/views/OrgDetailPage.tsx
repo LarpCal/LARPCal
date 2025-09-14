@@ -1,4 +1,4 @@
-import { useParams, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useFetchOrg } from "../hooks/useFetchOrg";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import OrgDetails from "../components/Orgs/OrgDetails";

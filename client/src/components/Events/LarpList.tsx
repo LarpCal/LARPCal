@@ -1,8 +1,8 @@
-import { Grid, Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import LarpCard from "../../components/Events/LarpCard";
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
-import { useLocation, Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Larp } from "../../types";
 
 type LarpListProps = {

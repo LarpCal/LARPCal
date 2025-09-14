@@ -1,5 +1,5 @@
 import express from "express";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import {
   ensureLoggedIn,
   ensureOrganizer,
@@ -29,7 +29,7 @@ router.post(
   ensureOrganizer,
   // readMultipart("image"),
 
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, larpForCreateSchema, {
       required: true,
     });
@@ -58,7 +58,7 @@ router.post(
   ensureOwnerOrAdmin,
   // readMultipart("image"),
 
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const larp = await LarpManager.publishLarp(+req.params.id);
     return res.status(200).json({ larp });
   },
@@ -74,7 +74,7 @@ router.get(
   "/:id",
   protectUnpublished,
 
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const larp = await LarpManager.getLarpById(+req.params.id);
     return res.json({ larp });
   },
@@ -86,21 +86,18 @@ router.get(
  * @returns larps: [Larp,...]
  */
 
-router.get(
-  "/",
-  async function (req: Request, res: Response, next: NextFunction) {
-    if (req.query && req.query.q) {
-      const q: string = req.query.q as string;
-      const decodedQuery = atob(q);
-      const query = JSON.parse(decodedQuery);
-      const larps = await LarpManager.getAllLarps(query);
-      return res.json({ larps });
-    } else {
-      const larps = await LarpManager.getAllLarps();
-      return res.json({ larps });
-    }
-  },
-);
+router.get("/", async function (req: Request, res: Response) {
+  if (req.query && req.query.q) {
+    const q: string = req.query.q as string;
+    const decodedQuery = atob(q);
+    const query = JSON.parse(decodedQuery);
+    const larps = await LarpManager.getAllLarps(query);
+    return res.json({ larps });
+  } else {
+    const larps = await LarpManager.getAllLarps();
+    return res.json({ larps });
+  }
+});
 
 /** DELETE /[id]
  *  Deletes a larp and its submodel data
@@ -112,7 +109,7 @@ router.get(
 router.delete(
   "/:id",
   ensureOwnerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const deleted = await LarpManager.deleteLarpById(+req.params.id);
     return res.json({ deleted });
   },
@@ -126,7 +123,7 @@ router.delete(
 router.put(
   "/:id",
   ensureOwnerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, larpForUpdateSchema, {
       required: true,
     });
@@ -152,7 +149,7 @@ router.put(
   "/:id/image",
   ensureOwnerOrAdmin,
   readMultipart("image"),
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     //TODO: test middleware
 
     if (!req.file) {
@@ -171,7 +168,7 @@ router.put(
 // router.delete(
 //   "/:id/image",
 //   ensureOwnerOrAdmin,
-//   async function (req: Request, res: Response, next: NextFunction) {
+//   async function (req: Request, res: Response) {
 
 //     const larp = await LarpManager.deleteLarpImage(+req.params.id);
 //     return res.json({ larp });

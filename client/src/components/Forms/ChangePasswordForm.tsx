@@ -3,7 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 
 import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
-import { Formik, FastField, Form } from "formik";
+import { FastField, Form, Formik } from "formik";
 
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";

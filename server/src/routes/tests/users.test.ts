@@ -4,20 +4,19 @@ import app from "../../app";
 
 import UserManager from "../../models/UserManager";
 import {
+  adminToken,
+  testAdminUser,
   testUser,
   userToken,
-  testAdminUser,
-  adminToken,
-  testOrganizerUser,
-  organizerToken,
 } from "../../test/testUserData";
+import { omitKeys } from "../../utils/helpers";
 
 beforeEach(jest.clearAllMocks);
 
 /************************** GET ALL **********************/
 describe("GET users/", function () {
   test("OK", async function () {
-    const { password, ...publicTestUser } = testUser;
+    const publicTestUser = omitKeys(testUser, "password");
 
     const mockedGetAllUsers = jest.spyOn(UserManager, "findAll");
     mockedGetAllUsers.mockResolvedValueOnce([publicTestUser]);
@@ -37,7 +36,6 @@ describe("GET users/", function () {
     });
   });
 });
-``;
 
 /************************** GET BY ID **********************/
 describe("GET users/:username", function () {
@@ -63,7 +61,7 @@ describe("POST users/", function () {
     //mock create
     const mockedRegister = jest.spyOn(UserManager, "register");
     mockedRegister.mockResolvedValueOnce(testAdminUser);
-    const { id, organization, ...createData } = testAdminUser;
+    const createData = omitKeys(testAdminUser, "id", "organization");
 
     const resp = await request(app)
       .post(`/users/`)

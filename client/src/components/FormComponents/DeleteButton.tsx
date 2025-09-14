@@ -5,12 +5,12 @@ type DeleteButtonProps = {
 };
 
 import {
-  Stack,
-  Typography,
   Button,
-  Tooltip,
   Dialog,
   IconButton,
+  Stack,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";

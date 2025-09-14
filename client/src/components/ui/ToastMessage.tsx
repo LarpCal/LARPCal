@@ -1,6 +1,6 @@
 import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Alert, Typography, Slide } from "@mui/material";
+import { Alert, Slide, Typography } from "@mui/material";
 
 type ToastMessageProps = {
   messages: string[];

@@ -1,9 +1,4 @@
-import express, {
-  ErrorRequestHandler,
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import { NotFoundError } from "./utils/expressError";
 
@@ -30,15 +25,15 @@ app.use("/users", usersRoutes);
 app.use("/orgs", orgsRoutes);
 
 /** Handle 404 errors -- this matches everything */
-app.use(function (req: Request, res: Response, next: NextFunction) {
+app.use(() => {
   throw new NotFoundError();
 });
 
 /** Generic error handler; anything unhandled goes here. */
-const genericErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const genericErrorHandler: ErrorRequestHandler = (err, req, res) => {
   if (process.env.NODE_ENV !== "test") console.error(err.stack);
 
-  let status = err.status || 500;
+  const status = err.status || 500;
   const message = err.message;
 
   return res.status(status).json({

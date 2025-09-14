@@ -11,14 +11,11 @@ const upload = multer({
   limits: {
     fileSize: 25000000, //max size in bytes 25mb
   },
-  fileFilter: function (req: any, file: any, cb: any) {
+  fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true); // Accept the file
     } else {
-      cb(
-        new BadRequestError("Not an image! Please upload only images."),
-        false,
-      ); // Reject the file
+      cb(new BadRequestError("Not an image! Please upload only images.")); // Reject the file
     }
   },
 });

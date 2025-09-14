@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Stack, Drawer, IconButton, Box } from "@mui/material";
+import { Box, Drawer, IconButton, Stack } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronCircleRight,
   faChevronCircleLeft,
+  faChevronCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { Outlet } from "react-router-dom";
 import AdminNav from "./AdminNav";

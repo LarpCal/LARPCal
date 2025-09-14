@@ -4,7 +4,7 @@ export function isURL(string?: string) {
   try {
     new URL(string);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -13,16 +13,16 @@ export function isURL(string?: string) {
  * position indicated in the path
  */
 
-export function getNested(obj: any, path: string): any {
+export function getNested(obj: unknown, path: string): unknown {
   const keys = path.split(/[.[\]'"]/).filter((p) => p);
-  return keys.reduce((accumulator: any, currentKey: string) => {
+  return keys.reduce((accumulator: unknown, currentKey: string) => {
     // Using type assertion to indicate that accumulator is indexable
     if (
       accumulator &&
       typeof accumulator === "object" &&
-      currentKey in accumulator
+      currentKey in (accumulator as Record<string, unknown>)
     ) {
-      return accumulator[currentKey];
+      return (accumulator as Record<string, unknown>)[currentKey];
     } else {
       // Return undefined or throw an error if the path does not exist
       return undefined;

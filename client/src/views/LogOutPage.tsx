@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import { Typography, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 type props = {
   logOut: () => void;

@@ -1,6 +1,6 @@
-import { Typography, Stack, Box } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot, faComment } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 import "./LocationDisplay.scss";
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UserForCreate } from "../../types";
 
 import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
-import { Formik, FastField, Form } from "formik";
+import { FastField, Form, Formik } from "formik";
 
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -46,9 +46,11 @@ function UserRegistrationForm({ register }: props) {
       });
       setError(null);
       navigate("/welcome");
-    } catch (errs: any) {
-      console.log("errors: ", errs[0]);
-      setError(errs[0]);
+    } catch (errs: unknown) {
+      if (Array.isArray(errs)) {
+        setError(errs[0]);
+      }
+      console.log("errors:", errs);
     }
   }
 

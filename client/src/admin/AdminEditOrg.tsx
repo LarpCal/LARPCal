@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Modal, Box } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpAPI from "../util/api";
 import { OrganizationForUpdate } from "../types";
@@ -45,10 +45,12 @@ function AdminEditOrg() {
       setOrg(savedOrg);
       setSaving(false);
       navigate(`/admin/orgs/${org!.id}`);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setSaving(false);
       console.error(e);
-      setSaveErrs(() => [...e]);
+      if (Array.isArray(e)) {
+        setSaveErrs(e);
+      }
     }
   }
 

@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { OrganizationForCreate } from "../types";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { OrgFormProvider } from "../context/OrgFormProvider";
-import { Modal, Box, Typography } from "@mui/material";
+import { Box, Modal, Typography } from "@mui/material";
 import { userContext } from "../context/userContext";
 import OrgForm from "../components/Forms/OrgForm";
 import CreateOrgSchema from "../components/Forms/CreateOrgSchema";
@@ -43,8 +43,10 @@ function CreateOrgPage() {
       });
       await LarpAPI.refreshToken();
       navigate(`/orgs/${savedOrg.id}/image`);
-    } catch (e: any) {
-      setErrs(e);
+    } catch (e: unknown) {
+      if (Array.isArray(e)) {
+        setErrs(e);
+      }
       setSaving(false);
     }
   }

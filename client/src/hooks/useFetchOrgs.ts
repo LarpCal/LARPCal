@@ -6,7 +6,7 @@ type FetchOrgsResult = {
   orgs: Organization[];
   setOrgs: React.Dispatch<React.SetStateAction<Organization[]>>;
   loading: boolean;
-  error: any;
+  error: unknown;
 };
 
 function useFetchOrgs(): FetchOrgsResult {
@@ -21,8 +21,10 @@ function useFetchOrgs(): FetchOrgsResult {
         const response = await LarpAPI.getAllOrgs();
         setOrgs(response);
         setLoading(false);
-      } catch (err: any) {
-        setError(err);
+      } catch (err: unknown) {
+        if (Array.isArray(err)) {
+          setError(err);
+        }
         setLoading(false);
       }
     }

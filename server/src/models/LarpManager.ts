@@ -1,5 +1,5 @@
 import { prisma } from "../prismaSingleton";
-import { LarpForCreate, Larp, LarpForUpdate, LarpQuery } from "../types";
+import { Larp, LarpForCreate, LarpForUpdate, LarpQuery } from "../types";
 import { BadRequestError, NotFoundError } from "../utils/expressError";
 import { Tag } from "../types";
 import ImageHandler from "../utils/imageHandler";
@@ -57,7 +57,7 @@ class LarpManager {
 
   static async getAllLarps(query?: LarpQuery): Promise<Larp[]> {
     let larps: Larp[];
-    let isPublished =
+    const isPublished =
       query?.isPublished !== undefined ? query.isPublished : true;
 
     if (!query) {
@@ -69,7 +69,7 @@ class LarpManager {
     } else if (query && !query.term) {
       // Query contains filters but no search term
 
-      let prismaFilterObject: Prisma.LarpWhereInput = {
+      const prismaFilterObject: Prisma.LarpWhereInput = {
         AND: {
           title: {
             contains: query.title,
@@ -138,7 +138,7 @@ class LarpManager {
       });
     } else {
       // Query contains search term and filters
-      let prismaFilterObject: Prisma.LarpWhereInput = {
+      const prismaFilterObject: Prisma.LarpWhereInput = {
         AND: {
           OR: [
             { title: { search: query.term } },
@@ -235,7 +235,7 @@ class LarpManager {
         include: LARP_INCLUDE_OBJ,
       });
       return larp;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
@@ -309,7 +309,7 @@ class LarpManager {
         include: LARP_INCLUDE_OBJ,
       });
       return larp;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }

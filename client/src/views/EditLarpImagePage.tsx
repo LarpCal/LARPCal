@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { userContext } from "../context/userContext";
 import {
-  useParams,
-  useNavigate,
   Navigate,
   useLocation,
+  useNavigate,
+  useParams,
 } from "react-router-dom";
 import LarpAPI from "../util/api";
 import { Box, Modal, Stack, Typography } from "@mui/material";
@@ -41,8 +41,10 @@ function EditLarpImagePage() {
       setSaving(true);
       await LarpAPI.updateLarpImage(image, id);
       navigate(`/events/${id}`);
-    } catch (e: any) {
-      setErrs(e);
+    } catch (e: unknown) {
+      if (Array.isArray(e)) {
+        setErrs(e);
+      }
       setSaving(false);
     }
   }

@@ -4,13 +4,13 @@ import { Larp } from "../../types";
 import { Link as RouterLink } from "react-router-dom";
 
 import { useTheme } from "@mui/material/styles";
-import { Box, Stack, Typography, Link } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faLocationDot,
   faComment,
   faGlobe,
+  faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
 import TagCard from "./TagDisplay";

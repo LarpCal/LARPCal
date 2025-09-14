@@ -1,8 +1,8 @@
-import { Box, Popper, Card } from "@mui/material";
+import { Box, Card, Popper } from "@mui/material";
 import { Larp } from "../../types";
 import LarpCard from "../Events/LarpCard";
 import { EventProps } from "react-big-calendar";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 
 function CalendarEvent(props: EventProps<Larp>) {
   const { event } = props;

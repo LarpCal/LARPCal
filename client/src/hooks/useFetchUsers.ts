@@ -6,7 +6,7 @@ type FetchUsersResult = {
   users: PublicUser[];
   setUsers: React.Dispatch<React.SetStateAction<PublicUser[]>>;
   loading: boolean;
-  error: any;
+  error: unknown;
 };
 
 function useFetchUsers(): FetchUsersResult {
@@ -21,8 +21,10 @@ function useFetchUsers(): FetchUsersResult {
         const response = await LarpAPI.getAllUsers();
         setUsers(response);
         setLoading(false);
-      } catch (err: any) {
-        setError(err);
+      } catch (err: unknown) {
+        if (Array.isArray(err)) {
+          setError(err);
+        }
         setLoading(false);
       }
     }

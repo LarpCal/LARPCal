@@ -1,9 +1,9 @@
 /** Handles interactions with AmazonS3 */
 
 import {
-  S3Client,
-  PutObjectCommand,
   DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3";
 import { mockDeep } from "jest-mock-extended";
 
@@ -20,7 +20,7 @@ function getS3(): S3Client {
   if (s3 === null) {
     if (process.env.NODE_ENV === "test") {
       console.log("Loading mock s3 for testing");
-      let mockS3 = mockDeep() as unknown as S3Client;
+      const mockS3 = mockDeep() as unknown as S3Client;
       s3 = mockS3;
     } else {
       s3 = new S3Client({
@@ -61,10 +61,10 @@ async function uploadFile(imageBuffer: Buffer, path: string) {
  * Returns the response from the s3 server.
  */
 async function uploadMultiple(images: { buffer: Buffer; path: string }[]) {
-  let uploadedPaths: string[] = [];
+  const uploadedPaths: string[] = [];
 
   try {
-    let uploadPromises = images.map((image) =>
+    const uploadPromises = images.map((image) =>
       uploadFile(image.buffer, image.path).then(() =>
         uploadedPaths.push(image.path),
       ),
@@ -99,7 +99,7 @@ async function deleteFile(path: string) {
  */
 async function deleteMultiple(paths: string[]) {
   const deletePromises = paths.map((path) => deleteFile(path));
-  let deleteResponses = await Promise.all(deletePromises);
+  const deleteResponses = await Promise.all(deletePromises);
   console.log(deleteResponses);
   return deleteResponses;
 }

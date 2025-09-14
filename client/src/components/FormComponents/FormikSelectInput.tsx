@@ -1,4 +1,4 @@
-import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { FieldProps } from "formik";
 
 type SelectInputProps = FieldProps & {

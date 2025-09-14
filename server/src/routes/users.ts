@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 const router = express.Router();
 
 import jsonschema from "jsonschema";
@@ -7,11 +7,7 @@ import userUpdateSchema from "../schemas/userUpdate.json";
 
 import { BadRequestError } from "../utils/expressError";
 import { createToken } from "../utils/tokens";
-import {
-  ensureCorrectUserOrAdmin,
-  ensureAdmin,
-  ensureLoggedIn,
-} from "../middleware/auth";
+import { ensureAdmin, ensureCorrectUserOrAdmin } from "../middleware/auth";
 import UserManager from "../models/UserManager";
 
 /** POST / { user }  => { user, token }
@@ -26,24 +22,20 @@ import UserManager from "../models/UserManager";
  * Authorization required: admin
  **/
 
-router.post(
-  "/",
-  ensureAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
-    const validator = jsonschema.validate(req.body, userForCreateSchema, {
-      required: true,
-    });
-    if (!validator.valid) {
-      const errs = validator.errors.map((e: Error) => e.stack);
-      console.log("validation failed", errs.join(", "));
-      throw new BadRequestError(errs.join(", "));
-    }
+router.post("/", ensureAdmin, async function (req: Request, res: Response) {
+  const validator = jsonschema.validate(req.body, userForCreateSchema, {
+    required: true,
+  });
+  if (!validator.valid) {
+    const errs = validator.errors.map((e: Error) => e.stack);
+    console.log("validation failed", errs.join(", "));
+    throw new BadRequestError(errs.join(", "));
+  }
 
-    const user = await UserManager.register(req.body);
-    const token = createToken(user);
-    return res.status(201).json({ user, token });
-  },
-);
+  const user = await UserManager.register(req.body);
+  const token = createToken(user);
+  return res.status(201).json({ user, token });
+});
 
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
  *
@@ -52,14 +44,10 @@ router.post(
  * Authorization required: admin
  **/
 
-router.get(
-  "/",
-  ensureAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
-    const users = await UserManager.findAll();
-    return res.json({ users });
-  },
-);
+router.get("/", ensureAdmin, async function (req: Request, res: Response) {
+  const users = await UserManager.findAll();
+  return res.json({ users });
+});
 
 /** GET /[username] => { user }
  *
@@ -72,7 +60,7 @@ router.get(
 router.get(
   "/:username",
   // ensureCorrectUserOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const user = await UserManager.getUser(req.params.username);
     return res.json({ user });
   },
@@ -91,7 +79,7 @@ router.get(
 router.patch(
   "/:username",
   ensureCorrectUserOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, userUpdateSchema, {
       required: true,
     });
@@ -113,7 +101,7 @@ router.patch(
 router.delete(
   "/:username",
   ensureCorrectUserOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const deletedUser = await UserManager.deleteUser(req.params.username);
     return res.json({ deleted: deletedUser });
   },

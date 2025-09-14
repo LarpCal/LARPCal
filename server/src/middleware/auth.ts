@@ -1,7 +1,7 @@
 "use strict";
 
 export {};
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SECRET_KEY } from "../config";
 import jwt from "jsonwebtoken";
 import { NotFoundError, UnauthorizedError } from "../utils/expressError";
@@ -23,7 +23,7 @@ function authenticateJWT(req: Request, res: Response, next: NextFunction) {
 
     try {
       res.locals.user = jwt.verify(token, SECRET_KEY);
-    } catch (err) {
+    } catch {
       /* ignore invalid tokens (but don't store user!) */
     }
   }

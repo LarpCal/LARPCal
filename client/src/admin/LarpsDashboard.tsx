@@ -6,7 +6,7 @@ import AvailabilityIcon from "./AvailabilityIcon";
 import LarpAPI from "../util/api";
 import DeleteButton from "../components/FormComponents/DeleteButton";
 import EditButton from "../components/FormComponents/EditButton";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Link } from "@mui/material";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Typography, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import "./DateCard.scss";
 
 type DateCardProps = {

@@ -44,7 +44,7 @@ function PasswordResetRequestForm({ handleClose }: props) {
       //send request
       await LarpAPI.createPasswordResetRequest(formData);
       setSubmitted(true);
-    } catch (err) {
+    } catch {
       setError("Invalid username/password");
     }
   }

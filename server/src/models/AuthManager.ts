@@ -34,7 +34,7 @@ class AuthManager {
         },
       );
       return passwordResetRequest;
-    } catch (e) {
+    } catch {
       throw new NotFoundError("Record not found");
     }
   }

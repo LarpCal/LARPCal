@@ -8,7 +8,7 @@ type FetchLarpsResult = {
   larps: Larp[];
   setLarps: React.Dispatch<React.SetStateAction<Larp[]>>;
   loading: boolean;
-  error: any;
+  error: unknown;
 };
 
 /**
@@ -46,8 +46,10 @@ function useFetchLarps(
         const response = await LarpAPI.getAllLarps(queryString);
         setLarps(response);
         setLoading(false);
-      } catch (err: any) {
-        setError(err);
+      } catch (err: unknown) {
+        if (Array.isArray(err)) {
+          setError(err);
+        }
         setLoading(false);
       }
     }

@@ -9,7 +9,7 @@ import {
 type Props<T> = {
   children: React.ReactNode;
   org: T;
-  schema: any;
+  schema: unknown;
   onSubmitCallback: (formData: T) => Promise<void>;
 };
 
@@ -22,18 +22,10 @@ function OrgFormProvider<
     };
   }
 
-  function formValuesToLarp(values: any): T {
-    return {
-      ...values,
-    };
-  }
-
   return (
     <Formik
       initialValues={modelToFormValues(org)}
-      onSubmit={async (values) =>
-        await onSubmitCallback(formValuesToLarp(values as T))
-      }
+      onSubmit={async (values) => await onSubmitCallback(values)}
       validationSchema={schema}
     >
       {children}

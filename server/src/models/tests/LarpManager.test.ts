@@ -17,7 +17,6 @@ describe("Test post events/", function () {
     mockPrisma.larp.findUniqueOrThrow.mockResolvedValueOnce(testLarp);
 
     //run test
-    const { tags, ...testLarpForCreateProps } = testLarpForCreate;
     const larp = await LarpManager.createLarp(testLarpForCreate);
 
     expect(mockPrisma.larp.create).toHaveBeenCalledTimes(1);

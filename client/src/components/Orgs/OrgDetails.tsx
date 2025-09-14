@@ -1,5 +1,5 @@
 import { Organization } from "../../types";
-import { Typography, Stack, Box, Link } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import CategoryBar from "../Events/CategoryBar";
 import "./OrgDetails.scss";

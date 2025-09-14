@@ -1,4 +1,4 @@
-import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 import { userContext } from "../context/userContext";
 import { useFetchOrg } from "../hooks/useFetchOrg";
@@ -51,10 +51,12 @@ function EditOrgPage() {
         ...formData,
       });
       navigate(`/orgs/${savedOrg.id}`);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setSaving(false);
       console.error(e);
-      setSaveErrs(() => [...e]);
+      if (Array.isArray(e)) {
+        setSaveErrs(e);
+      }
     }
   }
 

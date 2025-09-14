@@ -55,8 +55,10 @@ function NewLarpPage({ initialLarp = emptyLarp }: NewLarpPageProps) {
         savedLarp.isPublished = true;
       }
       navigate(`/events/${savedLarp.id}/image?new=true`);
-    } catch (e: any) {
-      setErrs(e);
+    } catch (e: unknown) {
+      if (Array.isArray(e)) {
+        setErrs(e);
+      }
       setSaving(false);
     }
   }

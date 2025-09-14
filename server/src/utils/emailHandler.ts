@@ -1,17 +1,17 @@
 import nodemailer from "nodemailer";
 
-const EMAIL_HOST = process.env.EMAIL_HOST as string;
-const EMAIL_USER = process.env.EMAIL_USER as string;
-const EMAIL_PASS = process.env.EMAIL_PASS as string;
+const EMAIL_HOST = process.env.EMAIL_HOST;
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
-let transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   host: EMAIL_HOST,
-  // secure: true,
+  secure: true,
   port: 25,
-  // auth: {
-  // 	user: EMAIL_USER,
-  // 	pass: EMAIL_PASS,
-  // },
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
+  },
 });
 
 async function sendMail(to: string, subject: string, html: string) {
@@ -22,7 +22,7 @@ async function sendMail(to: string, subject: string, html: string) {
     html: html,
   };
 
-  await transporter.sendMail(mailOptions, function (err, info) {
+  await transporter.sendMail(mailOptions, function (err) {
     if (err) {
       console.log(err);
     }

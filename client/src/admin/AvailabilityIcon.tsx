@@ -1,10 +1,10 @@
 import { TicketStatus } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircleHalfStroke,
   faCircleCheck,
-  faCircleXmark,
   faCircleDot,
+  faCircleHalfStroke,
+  faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon, Tooltip } from "@mui/material";
 

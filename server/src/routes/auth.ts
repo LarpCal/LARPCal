@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import express from "express";
 const router = express.Router();
 
@@ -9,7 +9,6 @@ import userRegisterSchema from "../schemas/userRegister.json";
 
 import {
   BadRequestError,
-  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
 } from "../utils/expressError";
@@ -19,9 +18,9 @@ import UserManager from "../models/UserManager";
 import { PasswordResetRequest, UserForCreate } from "../types";
 import AuthManager from "../models/AuthManager";
 import * as jwt from "jsonwebtoken";
-import { SECRET_KEY, CORS_URL } from "../config";
+import { CORS_URL, SECRET_KEY } from "../config";
 import { sendPasswordResetEmail } from "../utils/emailHandler";
-import { ensureCorrectUserOrAdmin, ensureLoggedIn } from "../middleware/auth";
+import { ensureLoggedIn } from "../middleware/auth";
 
 router.post("/error", async () => {
   throw new BadRequestError("test error");
@@ -34,23 +33,20 @@ router.post("/error", async () => {
  * Authorization required: none
  */
 
-router.post(
-  "/token",
-  async function (req: Request, res: Response, next: NextFunction) {
-    const validator = jsonschema.validate(req.body, userAuthSchema, {
-      required: true,
-    });
-    if (!validator.valid) {
-      const errs = validator.errors.map((e: Error) => e.stack);
-      throw new BadRequestError(errs.join(", "));
-    }
+router.post("/token", async function (req: Request, res: Response) {
+  const validator = jsonschema.validate(req.body, userAuthSchema, {
+    required: true,
+  });
+  if (!validator.valid) {
+    const errs = validator.errors.map((e: Error) => e.stack);
+    throw new BadRequestError(errs.join(", "));
+  }
 
-    const { username, password } = req.body;
-    const user = await UserManager.authenticate(username, password);
-    const token = createToken(user);
-    return res.json({ token });
-  },
-);
+  const { username, password } = req.body;
+  const user = await UserManager.authenticate(username, password);
+  const token = createToken(user);
+  return res.json({ token });
+});
 
 /** POST /auth/token/refresh => { token }
  *
@@ -62,7 +58,7 @@ router.post(
 router.post(
   "/token/refresh",
   ensureLoggedIn,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const { username } = res.locals.user;
     const user = await UserManager.getUser(username);
     const token = createToken(user);
@@ -79,32 +75,29 @@ router.post(
  * Authorization required: none
  */
 
-router.post(
-  "/register",
-  async function (req: Request, res: Response, next: NextFunction) {
-    const validator = jsonschema.validate(req.body, userRegisterSchema, {
-      required: true,
-    });
-    if (!validator.valid) {
-      const errs = validator.errors.map((e: Error) => e.stack);
-      throw new BadRequestError(errs.join(", "));
-    }
+router.post("/register", async function (req: Request, res: Response) {
+  const validator = jsonschema.validate(req.body, userRegisterSchema, {
+    required: true,
+  });
+  if (!validator.valid) {
+    const errs = validator.errors.map((e: Error) => e.stack);
+    throw new BadRequestError(errs.join(", "));
+  }
 
-    const newUser = await UserManager.register({
-      ...(req.body as Omit<UserForCreate, "isAdmin">),
-      isAdmin: false,
-    });
-    const token = createToken(newUser);
-    return res.status(201).json({ token });
-  },
-);
+  const newUser = await UserManager.register({
+    ...(req.body as Omit<UserForCreate, "isAdmin">),
+    isAdmin: false,
+  });
+  const token = createToken(newUser);
+  return res.status(201).json({ token });
+});
 
 /** Generates a new PasswordResetRequest record and emails a link to the user
  * containing a tokenized link for setting a new password
  */
 router.post(
   "/password-reset/request",
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const { username } = req.body;
     if (!username) throw new BadRequestError("Invalid username");
 
@@ -141,7 +134,7 @@ router.post(
 
 router.patch(
   "/password-reset/confirm",
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     //authenticate token
     const { token } = req.query;
     if (!token) throw new UnauthorizedError("Unauthorized");
@@ -149,7 +142,7 @@ router.patch(
     try {
       jwt.verify(token as string, SECRET_KEY);
     } catch (err) {
-      if ((err.message = "jwt expired")) {
+      if (err.message === "jwt expired") {
         throw new BadRequestError("Sorry - this link has expired.");
       } else {
         throw err;
@@ -162,7 +155,7 @@ router.patch(
     ) as PasswordResetRequest;
     try {
       await AuthManager.getPasswordResetRequest(id);
-    } catch (e) {
+    } catch {
       throw new BadRequestError("This request is no longer valid");
     }
 

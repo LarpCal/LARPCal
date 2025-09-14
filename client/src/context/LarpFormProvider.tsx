@@ -5,6 +5,7 @@ import { JSDateToLuxon, LuxonToJSDate } from "../util/typeConverters";
 import LarpFormSchema from "../components/Forms/LarpFormSchema";
 import { Larp, LarpForCreate, LarpForUpdate } from "../types";
 import { Tag } from "../types";
+import { DateTime } from "luxon";
 
 type Props<T> = {
   children: React.ReactNode;
@@ -47,12 +48,18 @@ function LarpFormProvider<T extends Larp | LarpForCreate | LarpForUpdate>({
     return tags;
   }
 
-  function formValuesToLarp(values: any): T {
+  function formValuesToLarp(
+    values: T & {
+      tags?: string;
+      start?: DateTime<boolean>;
+      end?: DateTime<boolean>;
+    },
+  ) {
     return {
       ...values,
       start: values.start ? LuxonToJSDate(values.start) : undefined,
       end: values.end ? LuxonToJSDate(values.end) : undefined,
-      tags: splitTags(values.tags),
+      tags: splitTags(values.tags ?? ""),
     };
   }
 
@@ -60,7 +67,7 @@ function LarpFormProvider<T extends Larp | LarpForCreate | LarpForUpdate>({
     <Formik
       initialValues={modelToFormValues(larp)}
       onSubmit={async (values) =>
-        await onSubmitCallback(formValuesToLarp(values as T))
+        await onSubmitCallback(formValuesToLarp(values))
       }
       validationSchema={LarpFormSchema}
     >

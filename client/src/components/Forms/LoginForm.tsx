@@ -46,7 +46,7 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
     try {
       await login(formData);
       navigate(`/users/${formData.username}`);
-    } catch (err) {
+    } catch {
       setError("Invalid username/password");
     }
   }

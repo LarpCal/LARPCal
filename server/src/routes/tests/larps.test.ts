@@ -3,8 +3,9 @@ import request from "supertest";
 import app from "../../app";
 
 import LarpManager from "../../models/LarpManager";
-import { testLarp, testLarpForCreate, testTag } from "../../test/testLarpData";
+import { testLarp, testLarpForCreate } from "../../test/testLarpData";
 import { organizerToken } from "../../test/testUserData";
+import { omitKeys } from "../../utils/helpers";
 
 beforeEach(jest.clearAllMocks);
 
@@ -86,7 +87,7 @@ describe("PUT events/:id", function () {
     mockedGetLarpById.mockResolvedValueOnce(testLarp);
     //mock update
     const mockedUpdateLarp = jest.spyOn(LarpManager, "updateLarp");
-    const { organization, ...testLarpForUpdate } = testLarp;
+    const testLarpForUpdate = omitKeys(testLarp, "organization");
     const updateData = {
       ...testLarpForUpdate,
       title: "testLarp-updated",

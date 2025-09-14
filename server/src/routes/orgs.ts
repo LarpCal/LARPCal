@@ -1,11 +1,9 @@
 import express from "express";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import {
   ensureAdmin,
   ensureLoggedIn,
-  ensureOrganizer,
   ensureMatchingOrganizerOrAdmin,
-  ensureOwnerOrAdmin,
 } from "../middleware/auth";
 import readMultipart from "../middleware/multer";
 const router = express.Router();
@@ -29,7 +27,7 @@ router.post(
   ensureLoggedIn,
   // readMultipart("image"),
 
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, orgForCreateSchema, {
       required: true,
     });
@@ -51,13 +49,10 @@ router.post(
  * @returns org: Organization
  * @auth none
  */
-router.get(
-  "/:id",
-  async function (req: Request, res: Response, next: NextFunction) {
-    const org = await OrgManager.getOrgById(+req.params.id);
-    return res.json({ org });
-  },
-);
+router.get("/:id", async function (req: Request, res: Response) {
+  const org = await OrgManager.getOrgById(+req.params.id);
+  return res.json({ org });
+});
 
 /** GET /
  *  Returns a list of all orgs without submodel data
@@ -65,13 +60,10 @@ router.get(
  * @returns orgs: [Organization,...]
  */
 
-router.get(
-  "/",
-  async function (req: Request, res: Response, next: NextFunction) {
-    const orgs = await OrgManager.getAllOrgs();
-    return res.json({ orgs });
-  },
-);
+router.get("/", async function (req: Request, res: Response) {
+  const orgs = await OrgManager.getAllOrgs();
+  return res.json({ orgs });
+});
 
 /** DELETE /[id]
  *  Deletes an org
@@ -83,7 +75,7 @@ router.get(
 router.delete(
   "/:id",
   ensureMatchingOrganizerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const deleted = await OrgManager.deleteOrgById(+req.params.id);
     return res.json({ deleted });
   },
@@ -98,7 +90,7 @@ router.patch(
   "/:id",
   ensureLoggedIn,
   ensureMatchingOrganizerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, orgForUpdateSchema, {
       required: true,
     });
@@ -123,7 +115,7 @@ router.patch(
   "/:id/approval",
   ensureLoggedIn,
   ensureAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const validator = jsonschema.validate(req.body, orgApprovalSchema, {
       required: true,
     });
@@ -148,7 +140,7 @@ router.put(
   "/:id/image",
   ensureMatchingOrganizerOrAdmin,
   readMultipart("image"),
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     //TODO: test middleware
 
     if (!req.file) {

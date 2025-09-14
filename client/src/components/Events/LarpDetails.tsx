@@ -3,14 +3,14 @@ import TagCard from "./TagDisplay";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faLocationDot,
   faComment,
-  faUser,
-  faGlobe,
   faEnvelope,
+  faGlobe,
+  faLocationDot,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Typography, Stack, Box, Link } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import { JSDateToLuxon } from "../../util/typeConverters";
 
 import "./LarpDetails.scss";

@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
-import { Typography, Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
 type TwirldownProps = {
   children: ReactNode;

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { LarpQuery } from "../types";
-import { base64Encode, base64Decode } from "./utilities";
+import { base64Decode, base64Encode } from "./utilities";
 
 function filterToQuery(filter: LarpQuery): string {
   return base64Encode(JSON.stringify(filter));
