@@ -1,6 +1,6 @@
-import { DateTime } from 'luxon';
-import { Typography, Box } from '@mui/material';
-import './DateCard.scss';
+import { DateTime } from "luxon";
+import { Typography, Box } from "@mui/material";
+import "./DateCard.scss";
 
 type DateCardProps = {
   date: Date;

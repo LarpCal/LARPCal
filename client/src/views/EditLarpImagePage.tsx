@@ -1,17 +1,17 @@
-import { useContext, useState } from 'react';
-import { userContext } from '../context/userContext';
+import { useContext, useState } from "react";
+import { userContext } from "../context/userContext";
 import {
   useParams,
   useNavigate,
   Navigate,
   useLocation,
-} from 'react-router-dom';
-import LarpAPI from '../util/api';
-import { Box, Modal, Stack, Typography } from '@mui/material';
-import { useFetchLarp } from '../hooks/useFetchLarp';
-import ImageForm from '../components/Forms/EditImageForm';
-import ToastMessage from '../components/ui/ToastMessage';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+} from "react-router-dom";
+import LarpAPI from "../util/api";
+import { Box, Modal, Stack, Typography } from "@mui/material";
+import { useFetchLarp } from "../hooks/useFetchLarp";
+import ImageForm from "../components/Forms/EditImageForm";
+import ToastMessage from "../components/ui/ToastMessage";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 function EditLarpImagePage() {
   const { user } = useContext(userContext);
@@ -21,18 +21,18 @@ function EditLarpImagePage() {
 
   const { id } = useParams();
   if (!id) {
-    throw new Error('Id is required to edit a larp');
+    throw new Error("Id is required to edit a larp");
   }
 
   const location = useLocation();
-  const newLarp = new URLSearchParams(location.search).get('new');
+  const newLarp = new URLSearchParams(location.search).get("new");
 
   const { larp, loading, error: fetchError } = useFetchLarp(parseInt(id));
   const navigate = useNavigate();
 
   //TODO: move auth checks to custom hook
   if (!loading && username !== larp?.organization.username && !isAdmin) {
-    console.error('You are not authorized to edit this record');
+    console.error("You are not authorized to edit this record");
     return <Navigate to={`events/${id}`} />;
   }
 
@@ -64,16 +64,16 @@ function EditLarpImagePage() {
           </Box>
         </Modal>
       )}
-      <Stack direction={'column'} alignItems={'center'} spacing={3}>
+      <Stack direction={"column"} alignItems={"center"} spacing={3}>
         <Box
           sx={{
-            padding: '1rem',
-            paddingTop: '3rem',
-            textAlign: 'center',
+            padding: "1rem",
+            paddingTop: "3rem",
+            textAlign: "center",
           }}
         >
-          <Typography variant={'h1'} component={'h2'}>
-            {newLarp ? "You're almost done" : 'Add an event banner'}
+          <Typography variant={"h1"} component={"h2"}>
+            {newLarp ? "You're almost done" : "Add an event banner"}
           </Typography>
           <Typography>
             Upload an image for your event using the form below

@@ -1,10 +1,10 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React from "react";
+import { Formik } from "formik";
 import {
   Organization,
   OrganizationForCreate,
   OrganizationForUpdate,
-} from '../types';
+} from "../types";
 
 type Props<T> = {
   children: React.ReactNode;

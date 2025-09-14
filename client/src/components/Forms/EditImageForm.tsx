@@ -1,6 +1,6 @@
-import { Larp, Organization } from '../../types';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Larp, Organization } from "../../types";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 
 type ImageFormProps<T> = {
   submitCallback: (image: Blob, id: number) => Promise<void>;
@@ -12,7 +12,7 @@ function ImageForm<T extends Organization | Larp>({
   model,
 }: ImageFormProps<T>) {
   const [image, setImage] = useState<Blob | null>(null);
-  const [fileName, setFileName] = useState('No File Selected');
+  const [fileName, setFileName] = useState("No File Selected");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -25,7 +25,7 @@ function ImageForm<T extends Organization | Larp>({
     e.preventDefault();
     e.stopPropagation();
     if (!image) {
-      console.error('Please select a file to upload');
+      console.error("Please select a file to upload");
     } else {
       await submitCallback(image, model.id);
     }
@@ -37,15 +37,15 @@ function ImageForm<T extends Organization | Larp>({
         <Box
           className="banner"
           sx={{
-            width: '80%',
-            aspectRatio: '7/3',
+            width: "80%",
+            aspectRatio: "7/3",
             backgroundImage: image
               ? `url(${URL.createObjectURL(image)})`
               : `url(${model.imgUrl.lg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            display: 'relative',
-            borderRadius: '1rem',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            display: "relative",
+            borderRadius: "1rem",
           }}
         ></Box>
       )}

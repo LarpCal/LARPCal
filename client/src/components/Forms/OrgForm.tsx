@@ -1,9 +1,9 @@
-import { Organization } from '../../types';
-import { useFormikContext, Form } from 'formik';
-import { FastField } from 'formik';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
-import ErrorDisplay from '../FormComponents/ErrorDisplay';
+import { Organization } from "../../types";
+import { useFormikContext, Form } from "formik";
+import { FastField } from "formik";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
+import ErrorDisplay from "../FormComponents/ErrorDisplay";
 
 function OrgForm() {
   const { isValid, errors } = useFormikContext<Organization>();
@@ -11,9 +11,9 @@ function OrgForm() {
         Please check following fields to continue:
         ${Object.keys(errors)
           .map((key) => {
-            return key !== 'steps' ? key : null;
+            return key !== "steps" ? key : null;
           })
-          .join(', ')}
+          .join(", ")}
     `;
 
   return (
@@ -21,11 +21,11 @@ function OrgForm() {
       <Box
         className="RecipeForm"
         sx={{
-          width: '100%',
+          width: "100%",
         }}
       >
         <Form>
-          <Stack direction="column" spacing={2} sx={{ margin: '1rem' }}>
+          <Stack direction="column" spacing={2} sx={{ margin: "1rem" }}>
             <FastField
               component={FormikMuiTextField}
               placeholder="Name your event"

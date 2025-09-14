@@ -6,10 +6,10 @@ import {
   ListItem,
   Stack,
   Typography,
-} from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faCalendar } from '@fortawesome/free-solid-svg-icons';
-import { Link as RouterLink } from 'react-router-dom';
+} from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faCalendar } from "@fortawesome/free-solid-svg-icons";
+import { Link as RouterLink } from "react-router-dom";
 
 function AboutPage() {
   return (
@@ -18,16 +18,16 @@ function AboutPage() {
         <Box
           className="filled-light"
           sx={{
-            width: '100%',
-            textAlign: 'center',
-            padding: '3rem',
+            width: "100%",
+            textAlign: "center",
+            padding: "3rem",
           }}
         >
           <Typography component="h1" variant="h1" className="title">
             <Typography
               variant="h1"
               component="span"
-              sx={{ display: 'inline' }}
+              sx={{ display: "inline" }}
               color="primary"
             >
               <FontAwesomeIcon icon={faCalendar} /> &nbsp;
@@ -38,7 +38,7 @@ function AboutPage() {
             The event hub for Live Action Role Playing events in Europe and
             beyond!
           </Typography>
-          <Typography component="p" sx={{ marginTop: '1rem' }}>
+          <Typography component="p" sx={{ marginTop: "1rem" }}>
             This LARP Calendar is a passion project made to create a one stop
             place for people looking for international LARP's, there have been
             other attempts this calendar have been privately financed so
@@ -57,8 +57,8 @@ function AboutPage() {
           <Box
             className="filled-light"
             sx={{
-              width: '100%',
-              padding: '1rem 3rem',
+              width: "100%",
+              padding: "1rem 3rem",
             }}
           >
             <List dense>
@@ -78,8 +78,8 @@ function AboutPage() {
         <Box
           className="filled-light"
           sx={{
-            width: '100%',
-            padding: '1rem 3rem',
+            width: "100%",
+            padding: "1rem 3rem",
           }}
         >
           <Typography>
@@ -93,14 +93,14 @@ function AboutPage() {
           </Typography>
         </Box>
 
-        <Box component="section" sx={{ padding: '6rem', textAlign: 'center' }}>
+        <Box component="section" sx={{ padding: "6rem", textAlign: "center" }}>
           <Typography component="h2" variant="h2">
             Want to add a LARP?
           </Typography>
           <Typography>
             <Link component={RouterLink} to="/orgs/apply">
               Fill out our form
-            </Link>{' '}
+            </Link>{" "}
             and get a user when you have the user you will be able to add and
             edit your own LARPs!
           </Typography>
@@ -114,16 +114,16 @@ function AboutPage() {
         <Box
           className="filled-light"
           sx={{
-            width: '100%',
-            textAlign: 'center',
-            padding: '3rem',
+            width: "100%",
+            textAlign: "center",
+            padding: "3rem",
           }}
         >
           <Typography component="h1" variant="h1" className="title">
             <Typography
               variant="h3"
               component="span"
-              sx={{ display: 'inline' }}
+              sx={{ display: "inline" }}
               color="primary"
             ></Typography>
             Make a Donation
@@ -138,20 +138,20 @@ function AboutPage() {
             component={RouterLink}
             to="https://www.paypal.com/donate/?hosted_button_id=WEP34HR7G6XPJ"
             sx={{
-              margin: '2rem',
+              margin: "2rem",
             }}
           >
             Donate Today
           </Button>
         </Box>
 
-        <Box component="section" sx={{ padding: '6rem', textAlign: 'center' }}>
+        <Box component="section" sx={{ padding: "6rem", textAlign: "center" }}>
           <Typography component="h2" variant="h2">
             Calendar Team
           </Typography>
           <Typography>
             Questions, comments and feedback can be sent to the maintenance of
-            the calendar at{' '}
+            the calendar at{" "}
             <a href="mailto:jacob@larpcal.com">Jacob@larpcal.com</a>
           </Typography>
 

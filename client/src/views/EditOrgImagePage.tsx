@@ -1,17 +1,17 @@
-import { useContext, useState } from 'react';
-import { userContext } from '../context/userContext';
+import { useContext, useState } from "react";
+import { userContext } from "../context/userContext";
 import {
   useParams,
   useNavigate,
   Navigate,
   useLocation,
-} from 'react-router-dom';
-import LarpAPI from '../util/api';
-import { Box, Modal, Stack, Typography } from '@mui/material';
-import { useFetchOrg } from '../hooks/useFetchOrg';
-import ImageForm from '../components/Forms/EditImageForm';
-import ToastMessage from '../components/ui/ToastMessage';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+} from "react-router-dom";
+import LarpAPI from "../util/api";
+import { Box, Modal, Stack, Typography } from "@mui/material";
+import { useFetchOrg } from "../hooks/useFetchOrg";
+import ImageForm from "../components/Forms/EditImageForm";
+import ToastMessage from "../components/ui/ToastMessage";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 function EditOrgImagePage() {
   const { user } = useContext(userContext);
@@ -21,11 +21,11 @@ function EditOrgImagePage() {
 
   const { id } = useParams();
   if (!id) {
-    throw new Error('Id is required to edit an organization');
+    throw new Error("Id is required to edit an organization");
   }
 
   const location = useLocation();
-  const newOrg = new URLSearchParams(location.search).get('new');
+  const newOrg = new URLSearchParams(location.search).get("new");
 
   const { org, loading, error: fetchError } = useFetchOrg(parseInt(id));
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function EditOrgImagePage() {
   if (!loading && username !== org?.username && !isAdmin) {
     console.log(org);
     console.log(username, org?.username);
-    console.error('You are not authorized to edit this record');
+    console.error("You are not authorized to edit this record");
     return <Navigate to={`/orgs/${id}`} />;
   }
 
@@ -66,16 +66,16 @@ function EditOrgImagePage() {
           </Box>
         </Modal>
       )}
-      <Stack direction={'column'} alignItems={'center'} spacing={3}>
+      <Stack direction={"column"} alignItems={"center"} spacing={3}>
         <Box
           sx={{
-            padding: '1rem',
-            paddingTop: '3rem',
-            textAlign: 'center',
+            padding: "1rem",
+            paddingTop: "3rem",
+            textAlign: "center",
           }}
         >
-          <Typography variant={'h1'} component={'h2'}>
-            {newOrg ? "You're almost done" : 'Add an event banner'}
+          <Typography variant={"h1"} component={"h2"}>
+            {newOrg ? "You're almost done" : "Add an event banner"}
           </Typography>
           <Typography>
             Upload an image for your event using the form below

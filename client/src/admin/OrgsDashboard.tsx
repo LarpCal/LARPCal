@@ -1,17 +1,17 @@
-import { Box, IconButton, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { Box, IconButton, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
-import LarpAPI from '../util/api';
-import DeleteButton from '../components/FormComponents/DeleteButton';
-import EditButton from '../components/FormComponents/EditButton';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
-import { useFetchOrgs } from '../hooks/useFetchOrgs';
-import ApproveButton from '../components/FormComponents/ApproveButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import ToastMessage from '../components/ui/ToastMessage';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import LarpAPI from "../util/api";
+import DeleteButton from "../components/FormComponents/DeleteButton";
+import EditButton from "../components/FormComponents/EditButton";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Link } from "@mui/material";
+import { useFetchOrgs } from "../hooks/useFetchOrgs";
+import ApproveButton from "../components/FormComponents/ApproveButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ToastMessage from "../components/ui/ToastMessage";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 function OrgsDashboard() {
   const { orgs, setOrgs, loading, error } = useFetchOrgs();
@@ -30,10 +30,10 @@ function OrgsDashboard() {
   }
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Id', width: 50 },
+    { field: "id", headerName: "Id", width: 50 },
     {
-      field: 'orgName',
-      headerName: 'Name',
+      field: "orgName",
+      headerName: "Name",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -44,12 +44,12 @@ function OrgsDashboard() {
       },
     },
     {
-      field: 'username',
-      headerName: 'Account',
+      field: "username",
+      headerName: "Account",
     },
     {
-      field: 'email',
-      headerName: 'email',
+      field: "email",
+      headerName: "email",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -60,27 +60,27 @@ function OrgsDashboard() {
       },
     },
     {
-      field: 'isApproved',
-      headerName: 'Status',
-      align: 'center',
+      field: "isApproved",
+      headerName: "Status",
+      align: "center",
       renderCell: (params) => {
         return params.row.isApproved ? (
           <Typography variant="details1" color="success.main">
-            {' '}
-            Approved{' '}
+            {" "}
+            Approved{" "}
           </Typography>
         ) : (
           <Typography variant="details1" color="error.main">
-            {' '}
-            Not Approved{' '}
+            {" "}
+            Not Approved{" "}
           </Typography>
         );
       },
     },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      type: 'actions',
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
       width: 200,
       getActions: (params) => {
         if (params.row.id === 1) {
@@ -126,8 +126,8 @@ function OrgsDashboard() {
       />
       <Box
         sx={{
-          height: '85dvh',
-          width: '100%',
+          height: "85dvh",
+          width: "100%",
         }}
       >
         <DataGrid
@@ -137,8 +137,8 @@ function OrgsDashboard() {
             sorting: {
               sortModel: [
                 {
-                  field: 'isApproved',
-                  sort: 'asc',
+                  field: "isApproved",
+                  sort: "asc",
                 },
               ],
             },

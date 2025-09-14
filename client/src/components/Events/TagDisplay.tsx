@@ -1,8 +1,8 @@
-import { Stack, Typography, Link, Box } from '@mui/material';
-import { Tag } from '../../types';
-import { Link as RouterLink } from 'react-router-dom';
-import './TagDisplay.scss';
-import { base64Encode } from '../../util/utilities';
+import { Stack, Typography, Link, Box } from "@mui/material";
+import { Tag } from "../../types";
+import { Link as RouterLink } from "react-router-dom";
+import "./TagDisplay.scss";
+import { base64Encode } from "../../util/utilities";
 
 type TagDisplayProps = {
   tag: Tag;

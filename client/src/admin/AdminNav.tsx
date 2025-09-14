@@ -1,18 +1,18 @@
-import { Stack, Link, ListItem, List } from '@mui/material';
-import { Link as NavLink } from 'react-router-dom';
+import { Stack, Link, ListItem, List } from "@mui/material";
+import { Link as NavLink } from "react-router-dom";
 
 function AdminNav() {
   return (
     <Stack
       className="adminNav"
-      justifyContent={'center'}
+      justifyContent={"center"}
       alignItems="center"
       direction="column"
       sx={{
-        position: 'sticky',
+        position: "sticky",
         top: 0,
-        '& .MuiPaper-root': {
-          border: 'none',
+        "& .MuiPaper-root": {
+          border: "none",
         },
       }}
     >

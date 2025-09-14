@@ -11,10 +11,10 @@ import {
   Tooltip,
   Dialog,
   IconButton,
-} from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+} from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 function DeleteButton({ handleDelete }: DeleteButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -22,7 +22,7 @@ function DeleteButton({ handleDelete }: DeleteButtonProps) {
   return (
     <>
       <Dialog open={showConfirm}>
-        <Stack sx={{ padding: '1rem' }} spacing={2}>
+        <Stack sx={{ padding: "1rem" }} spacing={2}>
           <Typography>Are you sure you want to delete this record?</Typography>
           <Stack direction="row" spacing={1} alignSelf="center">
             <Button

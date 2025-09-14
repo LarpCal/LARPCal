@@ -1,5 +1,5 @@
-import { MenuItem, FormControl, InputLabel, Select } from '@mui/material';
-import { FieldProps } from 'formik';
+import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { FieldProps } from "formik";
 
 type SelectInputProps = FieldProps & {
   options: { label: string; value: string }[];
@@ -8,14 +8,14 @@ type SelectInputProps = FieldProps & {
 
 interface test
   extends FieldProps,
-    Omit<SelectInputProps, 'name' | 'value' | 'onChange' | 'onBlur'> {}
+    Omit<SelectInputProps, "name" | "value" | "onChange" | "onBlur"> {}
 
 function FormikSelectInput({ form, field, options, label, ...props }: test) {
   return (
     <FormControl {...props}>
       <InputLabel
         sx={{
-          minWidth: 'max-content',
+          minWidth: "max-content",
         }}
       >
         {label}

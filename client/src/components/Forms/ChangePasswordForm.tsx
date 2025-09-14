@@ -1,18 +1,18 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Link as RouterLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
 
-import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
-import { Formik, FastField, Form } from 'formik';
+import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
+import { Formik, FastField, Form } from "formik";
 
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
-import ChangePasswordSchema from './changePasswordSchema';
-import LarpAPI from '../../util/api';
-import { Alert, Box, Typography } from '@mui/material';
-import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ChangePasswordSchema from "./changePasswordSchema";
+import LarpAPI from "../../util/api";
+import { Alert, Box, Typography } from "@mui/material";
+import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type ChangePasswordData = {
   password: string;
@@ -20,8 +20,8 @@ type ChangePasswordData = {
 };
 
 const DEFAULT_FORM_DATA: ChangePasswordData = {
-  password: '',
-  confirmPassword: '',
+  password: "",
+  confirmPassword: "",
 };
 
 function ChangePasswordForm() {
@@ -34,10 +34,10 @@ function ChangePasswordForm() {
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const token = query.get('token');
+  const token = query.get("token");
 
   if (!token) {
-    navigate('/auth/password-reset/request');
+    navigate("/auth/password-reset/request");
   }
 
   async function changePassword(values: ChangePasswordData) {
@@ -49,21 +49,21 @@ function ChangePasswordForm() {
       setError(null);
       setAlert({
         success: true,
-        message: 'Your password has been updated!',
+        message: "Your password has been updated!",
       });
     } catch (err) {
       setAlert({
         success: false,
-        message: (err as string[]).join(' '),
+        message: (err as string[]).join(" "),
       });
     }
   }
 
   return (
     <Stack
-      justifyContent={'center'}
+      justifyContent={"center"}
       sx={{
-        padding: '3rem',
+        padding: "3rem",
       }}
       spacing={2}
     >
@@ -73,8 +73,8 @@ function ChangePasswordForm() {
       <Box
         sx={{
           // padding: '1rem',
-          width: '100%',
-          marginTop: '2rem',
+          width: "100%",
+          marginTop: "2rem",
         }}
       >
         <Formik
@@ -111,7 +111,7 @@ function ChangePasswordForm() {
                     isValid && (!alert || alert.success !== true) ? false : true
                   }
                 >
-                  {' '}
+                  {" "}
                   Update Password
                 </Button>
               </Stack>
@@ -127,11 +127,11 @@ function ChangePasswordForm() {
       {alert !== null && (
         <Alert
           sx={{
-            height: '100%',
-            width: '100%',
-            zIndex: '1000',
+            height: "100%",
+            width: "100%",
+            zIndex: "1000",
           }}
-          severity={alert.success === true ? 'success' : 'error'}
+          severity={alert.success === true ? "success" : "error"}
           icon={
             <FontAwesomeIcon icon={alert.success === true ? faCheck : faX} />
           }

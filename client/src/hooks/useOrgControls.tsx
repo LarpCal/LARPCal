@@ -1,8 +1,8 @@
-import LarpAPI from '../util/api';
-import { useNavigate } from 'react-router-dom';
+import LarpAPI from "../util/api";
+import { useNavigate } from "react-router-dom";
 
-import TooltipButton from '../components/FormComponents/TooltipButton';
-import { faImage, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
+import TooltipButton from "../components/FormComponents/TooltipButton";
+import { faImage, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function useOrgControls(orgId: number) {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function useOrgControls(orgId: number) {
     e.stopPropagation();
     e.preventDefault();
     LarpAPI.DeleteOrg(orgId);
-    navigate('/');
+    navigate("/");
   }
 
   function editOrg(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

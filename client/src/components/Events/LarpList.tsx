@@ -1,9 +1,9 @@
-import { Grid, Box, Typography } from '@mui/material';
-import LarpCard from '../../components/Events/LarpCard';
-import Pagination from '@mui/material/Pagination';
-import PaginationItem from '@mui/material/PaginationItem';
-import { useLocation, Link } from 'react-router-dom';
-import { Larp } from '../../types';
+import { Grid, Box, Typography } from "@mui/material";
+import LarpCard from "../../components/Events/LarpCard";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
+import { useLocation, Link } from "react-router-dom";
+import { Larp } from "../../types";
 
 type LarpListProps = {
   larps: Larp[];
@@ -13,9 +13,9 @@ type LarpListProps = {
 function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const q = query.get('q');
+  const q = query.get("q");
 
-  const page = parseInt(query.get('page') || '1', 10);
+  const page = parseInt(query.get("page") || "1", 10);
   const pageStart = (page - 1) * recordsPerPage;
   const pageEnd = page * recordsPerPage;
   const pageCount = Math.ceil(larps.length / recordsPerPage);
@@ -25,16 +25,16 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
       count={pageCount}
       page={page}
       sx={{
-        '& > .MuiPagination-ul': {
-          justifyContent: 'center',
+        "& > .MuiPagination-ul": {
+          justifyContent: "center",
         },
-        margin: '1rem',
+        margin: "1rem",
       }}
       renderItem={(item) => (
         <PaginationItem
           className="EventList-pagelink"
           component={Link}
-          to={`${location.pathname}${`?page=${item.page}`}${q ? `&q=${q}` : ''}`}
+          to={`${location.pathname}${`?page=${item.page}`}${q ? `&q=${q}` : ""}`}
           {...item}
         />
       )}
@@ -56,7 +56,7 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
       {pagination}
       <Grid
         container
-        flexWrap={'wrap'}
+        flexWrap={"wrap"}
         spacing={2}
         margin="auto"
         justifyContent="center"

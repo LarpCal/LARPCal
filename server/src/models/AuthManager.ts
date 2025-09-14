@@ -1,6 +1,6 @@
-import { prisma } from '../prismaSingleton';
-import { PasswordResetRequest } from '../types';
-import { NotFoundError } from '../utils/expressError';
+import { prisma } from "../prismaSingleton";
+import { PasswordResetRequest } from "../types";
+import { NotFoundError } from "../utils/expressError";
 
 class AuthManager {
   static async createPasswordResetRequest(
@@ -35,7 +35,7 @@ class AuthManager {
       );
       return passwordResetRequest;
     } catch (e) {
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 }

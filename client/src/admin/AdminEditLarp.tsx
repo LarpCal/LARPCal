@@ -1,21 +1,21 @@
-import { useState, useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Modal, Box } from '@mui/material';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EventForm from '../components/Forms/LarpForm';
-import LarpAPI from '../util/api';
-import { LarpForUpdate } from '../types';
+import { Modal, Box } from "@mui/material";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import EventForm from "../components/Forms/LarpForm";
+import LarpAPI from "../util/api";
+import { LarpForUpdate } from "../types";
 
-import { LarpFormProvider } from '../context/LarpFormProvider';
-import { userContext } from '../context/userContext';
-import { useFetchLarp } from '../hooks/useFetchLarp';
-import ToastMessage from '../components/ui/ToastMessage';
+import { LarpFormProvider } from "../context/LarpFormProvider";
+import { userContext } from "../context/userContext";
+import { useFetchLarp } from "../hooks/useFetchLarp";
+import ToastMessage from "../components/ui/ToastMessage";
 
 function AdminEditLarp() {
   const { id } = useParams();
   if (!id) {
-    throw new Error('Id is required to edit a larp');
+    throw new Error("Id is required to edit a larp");
   }
 
   const [saving, setSaving] = useState(false);

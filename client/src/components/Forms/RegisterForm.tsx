@@ -1,16 +1,16 @@
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { UserForCreate } from '../../types';
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { UserForCreate } from "../../types";
 
-import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
-import { Formik, FastField, Form } from 'formik';
+import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
+import { Formik, FastField, Form } from "formik";
 
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-import userRegistrationSchema from './userRegistrationSchema';
+import userRegistrationSchema from "./userRegistrationSchema";
 // import "./userRegistrationForm.scss";
 
 type UserRegistrationData = {
@@ -21,10 +21,10 @@ type UserRegistrationData = {
 };
 
 const DEFAULT_FORM_DATA: UserRegistrationData = {
-  email: '',
-  username: '',
-  password: '',
-  confirmPassword: '',
+  email: "",
+  username: "",
+  password: "",
+  confirmPassword: "",
 };
 
 type props = {
@@ -41,13 +41,13 @@ function UserRegistrationForm({ register }: props) {
         username: values.username,
         password: values.password,
         email: values.email,
-        firstName: '',
-        lastName: '',
+        firstName: "",
+        lastName: "",
       });
       setError(null);
-      navigate('/welcome');
+      navigate("/welcome");
     } catch (errs: any) {
-      console.log('errors: ', errs[0]);
+      console.log("errors: ", errs[0]);
       setError(errs[0]);
     }
   }
@@ -101,8 +101,8 @@ function UserRegistrationForm({ register }: props) {
               color="primary"
               disabled={isValid ? false : true}
             >
-              {' '}
-              Sign Up{' '}
+              {" "}
+              Sign Up{" "}
             </Button>
             <Typography component="p" variant="caption" align="center">
               Already Registered?<Link to="/LogIn"> Log In</Link>

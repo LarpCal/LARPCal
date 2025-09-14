@@ -1,33 +1,33 @@
-import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import EventForm from '../components/Forms/LarpForm';
-import LarpAPI from '../util/api';
-import { LarpForCreate } from '../types';
+import EventForm from "../components/Forms/LarpForm";
+import LarpAPI from "../util/api";
+import { LarpForCreate } from "../types";
 
-import { LarpFormProvider } from '../context/LarpFormProvider';
-import { userContext } from '../context/userContext';
-import ToastMessage from '../components/ui/ToastMessage';
-import { Box, Modal } from '@mui/material';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { LarpFormProvider } from "../context/LarpFormProvider";
+import { userContext } from "../context/userContext";
+import ToastMessage from "../components/ui/ToastMessage";
+import { Box, Modal } from "@mui/material";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 type NewLarpPageProps = {
   initialLarp?: LarpForCreate;
 };
 
 const emptyLarp: LarpForCreate = {
-  title: '',
-  ticketStatus: 'AVAILABLE',
+  title: "",
+  ticketStatus: "AVAILABLE",
   tags: [],
   start: new Date(),
   end: new Date(Date.now() + 60 * 60 * 1000),
   allDay: false,
-  city: '',
-  country: '',
-  language: '',
-  description: '',
+  city: "",
+  country: "",
+  language: "",
+  description: "",
   orgId: 0,
-  eventUrl: '',
+  eventUrl: "",
 };
 
 function NewLarpPage({ initialLarp = emptyLarp }: NewLarpPageProps) {

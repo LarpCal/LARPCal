@@ -1,10 +1,10 @@
-import { Stack, Box, Typography } from '@mui/material';
-import LarpCard from './LarpCard';
-import './CategoryBar.scss';
-import { useFetchLarps } from '../../hooks/useFetchLarps';
-import LoadingSpinner from '../ui/LoadingSpinner';
-import { LarpQuery } from '../../types';
-import { base64Encode } from '../../util/utilities';
+import { Stack, Box, Typography } from "@mui/material";
+import LarpCard from "./LarpCard";
+import "./CategoryBar.scss";
+import { useFetchLarps } from "../../hooks/useFetchLarps";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import { LarpQuery } from "../../types";
+import { base64Encode } from "../../util/utilities";
 
 type CategoryBarProps = {
   title: string;
@@ -17,11 +17,11 @@ function CategoryBar({ title, filterSet }: CategoryBarProps) {
   const { larps, loading, error } = useFetchLarps(query);
 
   if (error.length) {
-    console.warn('Error loading larps from', title);
+    console.warn("Error loading larps from", title);
   }
 
   //don't render empty lists
-  if (larps.length === 0) return '';
+  if (larps.length === 0) return "";
 
   return (
     <Box className="CategoryBar">

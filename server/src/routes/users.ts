@@ -1,18 +1,18 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from "express";
 const router = express.Router();
 
-import jsonschema from 'jsonschema';
-import userForCreateSchema from '../schemas/userForCreate.json';
-import userUpdateSchema from '../schemas/userUpdate.json';
+import jsonschema from "jsonschema";
+import userForCreateSchema from "../schemas/userForCreate.json";
+import userUpdateSchema from "../schemas/userUpdate.json";
 
-import { BadRequestError } from '../utils/expressError';
-import { createToken } from '../utils/tokens';
+import { BadRequestError } from "../utils/expressError";
+import { createToken } from "../utils/tokens";
 import {
   ensureCorrectUserOrAdmin,
   ensureAdmin,
   ensureLoggedIn,
-} from '../middleware/auth';
-import UserManager from '../models/UserManager';
+} from "../middleware/auth";
+import UserManager from "../models/UserManager";
 
 /** POST / { user }  => { user, token }
  *
@@ -27,7 +27,7 @@ import UserManager from '../models/UserManager';
  **/
 
 router.post(
-  '/',
+  "/",
   ensureAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const validator = jsonschema.validate(req.body, userForCreateSchema, {
@@ -35,8 +35,8 @@ router.post(
     });
     if (!validator.valid) {
       const errs = validator.errors.map((e: Error) => e.stack);
-      console.log('validation failed', errs.join(', '));
-      throw new BadRequestError(errs.join(', '));
+      console.log("validation failed", errs.join(", "));
+      throw new BadRequestError(errs.join(", "));
     }
 
     const user = await UserManager.register(req.body);
@@ -53,7 +53,7 @@ router.post(
  **/
 
 router.get(
-  '/',
+  "/",
   ensureAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const users = await UserManager.findAll();
@@ -70,7 +70,7 @@ router.get(
  **/
 
 router.get(
-  '/:username',
+  "/:username",
   // ensureCorrectUserOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const user = await UserManager.getUser(req.params.username);
@@ -89,7 +89,7 @@ router.get(
  **/
 
 router.patch(
-  '/:username',
+  "/:username",
   ensureCorrectUserOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const validator = jsonschema.validate(req.body, userUpdateSchema, {
@@ -97,7 +97,7 @@ router.patch(
     });
     if (!validator.valid) {
       const errs = validator.errors.map((e: Error) => e.stack);
-      throw new BadRequestError(errs.join(', '));
+      throw new BadRequestError(errs.join(", "));
     }
 
     const user = await UserManager.updateUser(req.params.username, req.body);
@@ -111,7 +111,7 @@ router.patch(
  **/
 
 router.delete(
-  '/:username',
+  "/:username",
   ensureCorrectUserOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const deletedUser = await UserManager.deleteUser(req.params.username);

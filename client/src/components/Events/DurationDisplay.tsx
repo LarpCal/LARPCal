@@ -1,17 +1,17 @@
-import { useTheme } from '@mui/material/styles';
-import { Stack, Typography } from '@mui/material';
-import DateCard from './DateCard';
+import { useTheme } from "@mui/material/styles";
+import { Stack, Typography } from "@mui/material";
+import DateCard from "./DateCard";
 
 type DurationDisplayProps = {
   start: Date;
   end: Date;
-  background?: 'light' | 'dark';
+  background?: "light" | "dark";
 };
 
 function DurationDisplay({
   start,
   end,
-  background = 'light',
+  background = "light",
 }: DurationDisplayProps) {
   const theme = useTheme();
 
@@ -26,7 +26,7 @@ function DurationDisplay({
       <Typography
         variant="h3"
         sx={{
-          color: background === 'dark' ? 'white' : theme.palette.dark.main,
+          color: background === "dark" ? "white" : theme.palette.dark.main,
         }}
       >
         -

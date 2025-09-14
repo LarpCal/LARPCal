@@ -1,12 +1,12 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import LarpsDashboard from './LarpsDashboard';
-import AdminHome from './AdminHome';
-import AdminEditLarp from './AdminEditLarp';
-import LarpDetailPage from '../views/LarpDetailPage';
-import OrgsDashboard from './OrgsDashboard';
-import UsersDashboard from './UsersDashboard';
-import AdminEditOrg from './AdminEditOrg';
-import OrgDetailPage from '../views/OrgDetailPage';
+import { Routes, Route, Navigate } from "react-router-dom";
+import LarpsDashboard from "./LarpsDashboard";
+import AdminHome from "./AdminHome";
+import AdminEditLarp from "./AdminEditLarp";
+import LarpDetailPage from "../views/LarpDetailPage";
+import OrgsDashboard from "./OrgsDashboard";
+import UsersDashboard from "./UsersDashboard";
+import AdminEditOrg from "./AdminEditOrg";
+import OrgDetailPage from "../views/OrgDetailPage";
 
 function AdminRoutes() {
   return (

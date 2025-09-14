@@ -1,6 +1,6 @@
-import React from 'react';
-import { useState, useEffect, useCallback, useContext, useMemo } from 'react';
-import { userContext } from '../context/userContext';
+import React from "react";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
+import { userContext } from "../context/userContext";
 import {
   Box,
   Stack,
@@ -13,18 +13,18 @@ import {
   useTheme,
   Divider,
   Link,
-} from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faCalendar,
   faShapes,
   faUserAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import './NavBar.scss';
-import { NavLink as RouterLink } from 'react-router-dom';
-import SearchBar from './ui/SearchBar';
-import FilterLarpsForm from './Forms/FilterLarpsForm';
+} from "@fortawesome/free-solid-svg-icons";
+import "./NavBar.scss";
+import { NavLink as RouterLink } from "react-router-dom";
+import SearchBar from "./ui/SearchBar";
+import FilterLarpsForm from "./Forms/FilterLarpsForm";
 
 function NavBar() {
   const { user } = useContext(userContext);
@@ -48,7 +48,7 @@ function NavBar() {
 
   //Close dropdown menus when the anchor element unmounts
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const handleResize = useCallback(() => {
     if (isSmallScreen && showAccountMenu) {
       setShowAccountMenu(false);
@@ -59,9 +59,9 @@ function NavBar() {
   }, [isSmallScreen, showAccountMenu, showMobileMenu]);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [handleResize]);
 
@@ -288,11 +288,11 @@ function NavBar() {
         <Stack
           direction="row"
           justifyContent="space-between"
-          alignItems={'end'}
+          alignItems={"end"}
           className="NavBar"
         >
           <Typography variant="h2" component={RouterLink} to="/" id="homeIcon">
-            {' '}
+            {" "}
             LARP Calendar
           </Typography>
 
@@ -301,9 +301,9 @@ function NavBar() {
               className="SearchBar"
               sx={{
                 flexBasis: {
-                  sm: '1fr',
-                  md: '350px',
-                  position: 'relative',
+                  sm: "1fr",
+                  md: "350px",
+                  position: "relative",
                 },
               }}
             >
@@ -313,10 +313,10 @@ function NavBar() {
                   component={Link}
                   variant="caption"
                   sx={{
-                    position: 'absolute',
-                    left: '50%',
-                    transform: 'translate(-50%, 0)',
-                    cursor: 'pointer',
+                    position: "absolute",
+                    left: "50%",
+                    transform: "translate(-50%, 0)",
+                    cursor: "pointer",
                   }}
                   onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
                 >
@@ -329,7 +329,7 @@ function NavBar() {
           <Stack
             direction="row"
             justifyContent="flex-end"
-            alignItems={'end'}
+            alignItems={"end"}
             className="NavBar-linkContainer"
             flexBasis="300px"
           >
@@ -382,10 +382,10 @@ function NavBar() {
                 component={Link}
                 variant="caption"
                 sx={{
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translate(-50%, 0)',
-                  cursor: 'pointer',
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translate(-50%, 0)",
+                  cursor: "pointer",
                 }}
                 onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
               >
@@ -401,10 +401,10 @@ function NavBar() {
             />
             <Box
               sx={{
-                minWidth: 'max-content',
-                width: '200px',
-                margin: 'auto',
-                textAlign: 'center',
+                minWidth: "max-content",
+                width: "200px",
+                margin: "auto",
+                textAlign: "center",
               }}
             >
               <Typography
@@ -412,7 +412,7 @@ function NavBar() {
                 variant="caption"
                 onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
                 sx={{
-                  cursor: 'pointer',
+                  cursor: "pointer",
                 }}
               >
                 hide search controls

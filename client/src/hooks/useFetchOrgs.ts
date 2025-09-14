@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Organization } from '../types';
-import LarpAPI from '../util/api';
+import { useEffect, useState } from "react";
+import { Organization } from "../types";
+import LarpAPI from "../util/api";
 
 type FetchOrgsResult = {
   orgs: Organization[];

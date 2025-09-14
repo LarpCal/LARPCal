@@ -1,10 +1,10 @@
-import Calendar from '../components/Calendar/Calendar';
-import CategoryBar from '../components/Events/CategoryBar';
-import { useFetchLarps } from '../hooks/useFetchLarps';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ToastMessage from '../components/ui/ToastMessage';
-import { DateTime } from 'luxon';
-import { publishedLarpQuery } from '../util/filterPresets';
+import Calendar from "../components/Calendar/Calendar";
+import CategoryBar from "../components/Events/CategoryBar";
+import { useFetchLarps } from "../hooks/useFetchLarps";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ToastMessage from "../components/ui/ToastMessage";
+import { DateTime } from "luxon";
+import { publishedLarpQuery } from "../util/filterPresets";
 // import Carousel from "../components/ui/Carousel";
 // import { Typography, Box, Stack } from "@mui/material";
 
@@ -100,7 +100,7 @@ function HomePage() {
             title="Events this Month"
             filterSet={{
               endAfter: DateTime.now().toISO(),
-              startBefore: DateTime.now().endOf('month').toISO(),
+              startBefore: DateTime.now().endOf("month").toISO(),
               isPublished: true,
             }}
           />
@@ -109,11 +109,11 @@ function HomePage() {
             filterSet={{
               startAfter: DateTime.now()
                 .plus({ month: 1 })
-                .startOf('month')
+                .startOf("month")
                 .toISO(),
               startBefore: DateTime.now()
                 .plus({ month: 1 })
-                .endOf('month')
+                .endOf("month")
                 .toISO(),
               isPublished: true,
             }}
@@ -122,7 +122,7 @@ function HomePage() {
             title="Family friendly events"
             filterSet={{
               endAfter: DateTime.now().toISO(),
-              tags: 'family friendly',
+              tags: "family friendly",
               isPublished: true,
             }}
           />

@@ -1,25 +1,25 @@
-import { Routes, Route } from 'react-router-dom';
-import { useContext } from 'react';
-import { userContext } from './context/userContext';
+import { Routes, Route } from "react-router-dom";
+import { useContext } from "react";
+import { userContext } from "./context/userContext";
 
-import HomePage from './views/HomePage';
-import NewLarpPage from './views/CreateLarpPage';
-import EditLarpPage from './views/EditLarpPage';
-import LarpDetailPage from './views/LarpDetailPage';
-import LarpListPage from './views/LarpListPage';
-import AdminRoutes from './admin/AdminRoutes';
-import OrgDetailPage from './views/OrgDetailPage';
-import CreateOrgPage from './views/CreateOrgPage';
-import EditOrgPage from './views/EditOrgPage';
-import EditLarpImagePage from './views/EditLarpImagePage';
-import LogOutPage from './views/LogOutPage';
-import EditOrgImagePage from './views/EditOrgImagePage';
+import HomePage from "./views/HomePage";
+import NewLarpPage from "./views/CreateLarpPage";
+import EditLarpPage from "./views/EditLarpPage";
+import LarpDetailPage from "./views/LarpDetailPage";
+import LarpListPage from "./views/LarpListPage";
+import AdminRoutes from "./admin/AdminRoutes";
+import OrgDetailPage from "./views/OrgDetailPage";
+import CreateOrgPage from "./views/CreateOrgPage";
+import EditOrgPage from "./views/EditOrgPage";
+import EditLarpImagePage from "./views/EditLarpImagePage";
+import LogOutPage from "./views/LogOutPage";
+import EditOrgImagePage from "./views/EditOrgImagePage";
 // import DemoHome from "./views/DemoHome";
-import AboutPage from './views/AboutPage';
-import LoginPage from './views/LoginPage';
-import RegisterPage from './views/RegisterPage';
-import ChangePasswordForm from './components/Forms/ChangePasswordForm';
-import MyProfilePage from './views/MyProfilePage';
+import AboutPage from "./views/AboutPage";
+import LoginPage from "./views/LoginPage";
+import RegisterPage from "./views/RegisterPage";
+import ChangePasswordForm from "./components/Forms/ChangePasswordForm";
+import MyProfilePage from "./views/MyProfilePage";
 
 function RoutesList() {
   const { user, login, register, logout } = useContext(userContext);
@@ -69,8 +69,8 @@ function RoutesList() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         {username ? loginRoutes : anonRoutes}
-        {organization ? organizerRoutes : ''}
-        {isAdmin ? adminRoutes : ''}
+        {organization ? organizerRoutes : ""}
+        {isAdmin ? adminRoutes : ""}
         {/* <Route path='/events/create' element={<NewEventPage />} /> */}
         <Route path="/orgs/:id" element={<OrgDetailPage />} />
         <Route path="/events" element={<LarpListPage />} />

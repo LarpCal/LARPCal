@@ -1,13 +1,13 @@
-import React from 'react';
-import { FieldProps } from 'formik';
+import React from "react";
+import { FieldProps } from "formik";
 
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 
-import { getNested } from '../../util/utilities';
+import { getNested } from "../../util/utilities";
 
 interface FormikMuiTextFieldProps
   extends FieldProps,
-    Omit<TextFieldProps, 'name' | 'value' | 'onChange' | 'onBlur'> {}
+    Omit<TextFieldProps, "name" | "value" | "onChange" | "onBlur"> {}
 
 const FormikMuiTextField: React.FC<FormikMuiTextFieldProps> = ({
   field,
@@ -17,7 +17,7 @@ const FormikMuiTextField: React.FC<FormikMuiTextFieldProps> = ({
   const { name } = field;
   const { touched, errors } = form;
   const fieldError =
-    getNested(touched, name) && getNested(errors, name) ? 'Error' : '';
+    getNested(touched, name) && getNested(errors, name) ? "Error" : "";
 
   return (
     <TextField

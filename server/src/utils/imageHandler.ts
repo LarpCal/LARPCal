@@ -1,5 +1,5 @@
-import sharp from 'sharp';
-import { uploadMultiple } from '../api/s3';
+import sharp from "sharp";
+import { uploadMultiple } from "../api/s3";
 
 type ResizedImages = {
   sm: Buffer;
@@ -23,7 +23,7 @@ class ImageHandler {
   ) {
     const resizedImages: ResizedImages = await this.getResized(image);
     const uploadParams = Object.keys(resizedImages).map(
-      (key: 'sm' | 'md' | 'lg') => ({
+      (key: "sm" | "md" | "lg") => ({
         buffer: resizedImages[key],
         path: `${basePath}-${key}-${timestamp}`,
       }),

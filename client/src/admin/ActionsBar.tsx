@@ -1,6 +1,6 @@
-import { Stack } from '@mui/material';
-import useLarpControls from '../hooks/useLarpControls';
-import { Larp } from '../types';
+import { Stack } from "@mui/material";
+import useLarpControls from "../hooks/useLarpControls";
+import { Larp } from "../types";
 
 type ActionsBarProps = {
   larp: Larp;

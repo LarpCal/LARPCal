@@ -1,12 +1,12 @@
-import { Organization } from '../../types';
-import { Typography, Stack, Box, Link } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import CategoryBar from '../Events/CategoryBar';
-import './OrgDetails.scss';
-import useOrgControls from '../../hooks/useOrgControls';
-import { useContext } from 'react';
-import { userContext } from '../../context/userContext';
-import { DateTime } from 'luxon';
+import { Organization } from "../../types";
+import { Typography, Stack, Box, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import CategoryBar from "../Events/CategoryBar";
+import "./OrgDetails.scss";
+import useOrgControls from "../../hooks/useOrgControls";
+import { useContext } from "react";
+import { userContext } from "../../context/userContext";
+import { DateTime } from "luxon";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -23,7 +23,7 @@ function OrgDetails({ org }: OrgDetailsProps) {
         className="banner"
         sx={{
           backgroundImage: `url(${org.imgUrl.lg})`,
-          backgroundSize: 'cover',
+          backgroundSize: "cover",
         }}
       >
         {org.username === username || isAdmin === true ? (

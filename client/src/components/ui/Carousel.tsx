@@ -5,22 +5,22 @@ import {
   IconButton,
   Link,
   Button,
-} from '@mui/material';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@mui/material";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLocationDot,
   faComment,
   faGlobe,
   faChevronRight,
   faChevronLeft,
-} from '@fortawesome/free-solid-svg-icons';
-import { useFetchLarps } from '../../hooks/useFetchLarps';
-import { LarpQuery } from '../../types';
-import { base64Encode } from '../../util/utilities';
-import './Carousel.scss';
-import { Link as RouterLink } from 'react-router-dom';
-import DurationDisplay from '../Events/DurationDisplay';
+} from "@fortawesome/free-solid-svg-icons";
+import { useFetchLarps } from "../../hooks/useFetchLarps";
+import { LarpQuery } from "../../types";
+import { base64Encode } from "../../util/utilities";
+import "./Carousel.scss";
+import { Link as RouterLink } from "react-router-dom";
+import DurationDisplay from "../Events/DurationDisplay";
 
 type CarouselProps = {
   filterSet: LarpQuery;
@@ -56,10 +56,10 @@ function EventCarousel({ filterSet }: CarouselProps) {
     const handleResize = () => {
       setWindowSize(() => window.innerWidth);
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -142,14 +142,14 @@ function EventCarousel({ filterSet }: CarouselProps) {
             key={larp.id}
             className={
               idx === displayIdx
-                ? 'Carousel-item Carousel-featured'
-                : 'Carousel-item'
+                ? "Carousel-item Carousel-featured"
+                : "Carousel-item"
             }
             sx={{
               backgroundImage: `url(${larp.imgUrl.md})`,
               flexBasis: () => {
                 if (larps.length === 1) {
-                  return '100%';
+                  return "100%";
                 } else {
                   return `${idx === displayIdx ? itemSizes.featuredWidth : itemSizes.itemWidth}px`;
                 }
@@ -171,21 +171,21 @@ function EventCarousel({ filterSet }: CarouselProps) {
                   direction="column"
                   spacing={1}
                 >
-                  <Stack direction="row" spacing={2} alignContent={'center'}>
+                  <Stack direction="row" spacing={2} alignContent={"center"}>
                     <Link
                       component={RouterLink}
                       to={`/events/${larp.id}`}
                       sx={{
-                        textDecoration: 'none',
-                        color: 'inherit',
+                        textDecoration: "none",
+                        color: "inherit",
                       }}
                     >
                       <Typography
                         variant="h3"
                         sx={{
-                          display: '-webkit-box',
-                          overflow: 'hidden',
-                          WebkitBoxOrient: 'vertical',
+                          display: "-webkit-box",
+                          overflow: "hidden",
+                          WebkitBoxOrient: "vertical",
                           WebkitLineClamp: 2,
                         }}
                       >
@@ -237,11 +237,11 @@ function EventCarousel({ filterSet }: CarouselProps) {
                   <Typography
                     variant="body1"
                     sx={{
-                      display: '-webkit-box',
-                      overflow: 'hidden',
-                      WebkitBoxOrient: 'vertical',
+                      display: "-webkit-box",
+                      overflow: "hidden",
+                      WebkitBoxOrient: "vertical",
                       WebkitLineClamp: { xs: 6, md: 4 },
-                      textOverflow: 'ellipsis',
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {larp.description}
@@ -267,20 +267,20 @@ function EventCarousel({ filterSet }: CarouselProps) {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          width: { xs: '100%', sm: '50%', md: '33%' },
+          width: { xs: "100%", sm: "50%", md: "33%" },
         }}
       >
         <Box className="Carousel-navControl previousButton">
           <IconButton component="button" onClick={handlePrevClick}>
-            <FontAwesomeIcon icon={faChevronLeft} color={'#070707'} />
+            <FontAwesomeIcon icon={faChevronLeft} color={"#070707"} />
           </IconButton>
         </Box>
         {larps.map((larp, idx) => (
           <Box
             className={
               idx === displayIdx
-                ? 'Carousel-navDot Carousel-navDot-selected'
-                : 'Carousel-navDot'
+                ? "Carousel-navDot Carousel-navDot-selected"
+                : "Carousel-navDot"
             }
             key={larp.id}
             onClick={() => {
@@ -290,7 +290,7 @@ function EventCarousel({ filterSet }: CarouselProps) {
         ))}
         <Box className="Carousel-navControl nextButton">
           <IconButton component="button" onClick={handleNextClick}>
-            <FontAwesomeIcon icon={faChevronRight} color={'#070707'} />
+            <FontAwesomeIcon icon={faChevronRight} color={"#070707"} />
           </IconButton>
         </Box>
       </Stack>

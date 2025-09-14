@@ -1,46 +1,46 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { LarpQuery } from '../../types';
-import { useFormikContext, Form, Field, FastField } from 'formik';
-import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
-import FormikSelectInput from '../FormComponents/FormikSelectInput';
-import FormikDateTimePicker from '../FormComponents/FormikDateTimePicker';
-import { DateTime } from 'luxon';
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { LarpQuery } from "../../types";
+import { useFormikContext, Form, Field, FastField } from "formik";
+import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
+import FormikSelectInput from "../FormComponents/FormikSelectInput";
+import FormikDateTimePicker from "../FormComponents/FormikDateTimePicker";
+import { DateTime } from "luxon";
 
 function FilterLarpsFormFields() {
   const { isValid, values } = useFormikContext<LarpQuery>();
 
   const fieldsetStyle = {
-    border: 'none',
-    borderRadius: '1rem',
-    margin: '.5rem',
-    padding: '.5rem',
-    width: '100%',
+    border: "none",
+    borderRadius: "1rem",
+    margin: ".5rem",
+    padding: ".5rem",
+    width: "100%",
   };
 
   const inputStyle = {
-    boxSizing: 'border-box',
-    backgroundColor: 'white',
-    margin: '.5rem',
-    flex: '1 1 auto',
+    boxSizing: "border-box",
+    backgroundColor: "white",
+    margin: ".5rem",
+    flex: "1 1 auto",
   };
 
   return (
     <Box
       component={Form}
       sx={{
-        padding: '1rem',
-        border: 'none',
-        width: '100%',
+        padding: "1rem",
+        border: "none",
+        width: "100%",
       }}
       className="filled-light"
     >
       <Typography mx="2rem" variant="h3" align="center">
-        {' '}
-        Advanced Search{' '}
+        {" "}
+        Advanced Search{" "}
       </Typography>
       <Stack
-        direction={'row'}
-        flexWrap={'wrap'}
+        direction={"row"}
+        flexWrap={"wrap"}
         component="fieldset"
         sx={fieldsetStyle}
       >
@@ -49,14 +49,14 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            marginRight: '0px',
-            minWidth: '15rem',
-            flex: '0 0 auto',
+            marginRight: "0px",
+            minWidth: "15rem",
+            flex: "0 0 auto",
           }}
           options={[
-            { label: 'Available', value: 'AVAILABLE' },
-            { label: 'Limited', value: 'LIMITED' },
-            { label: 'Sold Out', value: 'SOLD_OUT' },
+            { label: "Available", value: "AVAILABLE" },
+            { label: "Limited", value: "LIMITED" },
+            { label: "Sold Out", value: "SOLD_OUT" },
           ]}
           placeholder="AVAILABLE"
           name="ticketStatus"
@@ -68,8 +68,8 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            boxSizing: 'border-box',
-            flex: '1',
+            boxSizing: "border-box",
+            flex: "1",
           }}
           placeholder=""
           name="term"
@@ -81,7 +81,7 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            flex: '1 1 100%',
+            flex: "1 1 100%",
           }}
           placeholder=""
           name="title"
@@ -93,7 +93,7 @@ function FilterLarpsFormFields() {
           size="small"
           sx={{
             ...inputStyle,
-            flex: '1 1 100%',
+            flex: "1 1 100%",
           }}
           placeholder=""
           name="tags"
@@ -103,10 +103,10 @@ function FilterLarpsFormFields() {
       </Stack>
 
       <Box component="fieldset" sx={fieldsetStyle}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center">
-          <Typography sx={{ minWidth: '100px' }} align="right">
-            {' '}
-            Start Date:{' '}
+        <Stack direction={{ xs: "column", sm: "row" }} alignItems="center">
+          <Typography sx={{ minWidth: "100px" }} align="right">
+            {" "}
+            Start Date:{" "}
           </Typography>
           <FastField
             component={FormikDateTimePicker}
@@ -116,7 +116,7 @@ function FilterLarpsFormFields() {
             name="startAfter"
             id="larp-startAfter"
             label="Starts After"
-            value={DateTime.fromISO(values.startAfter || '')}
+            value={DateTime.fromISO(values.startAfter || "")}
           />
           <FastField
             component={FormikDateTimePicker}
@@ -126,13 +126,13 @@ function FilterLarpsFormFields() {
             name="startBefore"
             id="larp-startBefore"
             label="Starts Before"
-            value={DateTime.fromISO(values.startBefore || '')}
+            value={DateTime.fromISO(values.startBefore || "")}
           />
         </Stack>
-        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center">
-          <Typography sx={{ minWidth: '100px' }} align="right">
-            {' '}
-            End Date:{' '}
+        <Stack direction={{ xs: "column", sm: "row" }} alignItems="center">
+          <Typography sx={{ minWidth: "100px" }} align="right">
+            {" "}
+            End Date:{" "}
           </Typography>
           <FastField
             component={FormikDateTimePicker}
@@ -142,7 +142,7 @@ function FilterLarpsFormFields() {
             name="endAfter"
             id="larp-endAfter"
             label="Ends After"
-            value={DateTime.fromISO(values.endAfter || '')}
+            value={DateTime.fromISO(values.endAfter || "")}
           />
           <FastField
             component={FormikDateTimePicker}
@@ -152,14 +152,14 @@ function FilterLarpsFormFields() {
             name="endBefore"
             id="larp-endBefore"
             label="Ends Before"
-            value={DateTime.fromISO(values.endBefore || '')}
+            value={DateTime.fromISO(values.endBefore || "")}
           />
         </Stack>
       </Box>
 
       <Stack
-        direction={'row'}
-        flexWrap={'wrap'}
+        direction={"row"}
+        flexWrap={"wrap"}
         component="fieldset"
         sx={fieldsetStyle}
       >
@@ -209,8 +209,8 @@ function FilterLarpsFormFields() {
         variant="contained"
         color="primary"
         sx={{
-          margin: 'auto',
-          display: 'block',
+          margin: "auto",
+          display: "block",
         }}
         disabled={isValid ? false : true}
       >

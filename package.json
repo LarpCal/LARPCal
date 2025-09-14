@@ -29,5 +29,9 @@
   },
   "lint-staged": {
     "{server,client}/**/*": "npm run format"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": false
   }
 }

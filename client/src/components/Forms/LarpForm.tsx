@@ -1,14 +1,14 @@
-import { useFormikContext, Form } from 'formik';
-import { Larp } from '../../types';
+import { useFormikContext, Form } from "formik";
+import { Larp } from "../../types";
 
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from "@mui/material";
 
-import FormikMuiTextField from '../FormComponents/FormikMuiTextField';
-import FormikSelectInput from '../FormComponents/FormikSelectInput';
-import FormikDateTimePicker from '../FormComponents/FormikDateTimePicker';
-import ErrorDisplay from '../FormComponents/ErrorDisplay';
-import { FastField, Field } from 'formik';
-import { DateTime } from 'luxon';
+import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
+import FormikSelectInput from "../FormComponents/FormikSelectInput";
+import FormikDateTimePicker from "../FormComponents/FormikDateTimePicker";
+import ErrorDisplay from "../FormComponents/ErrorDisplay";
+import { FastField, Field } from "formik";
+import { DateTime } from "luxon";
 
 // type EventFormProps = {
 // };
@@ -19,9 +19,9 @@ function EventForm() {
         Please check following fields to continue:
         ${Object.keys(errors)
           .map((key) => {
-            return key !== 'steps' ? key : null;
+            return key !== "steps" ? key : null;
           })
-          .join(', ')}
+          .join(", ")}
     `;
 
   return (
@@ -29,11 +29,11 @@ function EventForm() {
       <Box
         className="RecipeForm"
         sx={{
-          width: '100%',
+          width: "100%",
         }}
       >
         <Form>
-          <Stack direction="column" spacing={2} sx={{ margin: '1rem' }}>
+          <Stack direction="column" spacing={2} sx={{ margin: "1rem" }}>
             {/* <label htmlFor="title"><Typography variant='body2'>Event Title</Typography></label> */}
             <FastField
               component={FormikMuiTextField}
@@ -46,12 +46,12 @@ function EventForm() {
             <Field
               component={FormikSelectInput}
               options={[
-                { label: 'Available', value: 'AVAILABLE' },
-                { label: 'Limited', value: 'LIMITED' },
-                { label: 'Sold Out', value: 'SOLD_OUT' },
-                { label: 'Coming Soon', value: 'SOON' },
+                { label: "Available", value: "AVAILABLE" },
+                { label: "Limited", value: "LIMITED" },
+                { label: "Sold Out", value: "SOLD_OUT" },
+                { label: "Coming Soon", value: "SOON" },
               ]}
-              placeholder={'AVAILABLE'}
+              placeholder={"AVAILABLE"}
               name="ticketStatus"
               id="larp-ticketStatus"
               label="Ticket Status"

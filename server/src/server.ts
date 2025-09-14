@@ -1,5 +1,5 @@
-import app from './app';
-import { PORT } from './config';
+import app from "./app";
+import { PORT } from "./config";
 
 // textToRecipe(TEST_RECIPE_TEXT);
 app.listen(PORT, function () {

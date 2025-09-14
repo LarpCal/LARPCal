@@ -1,17 +1,17 @@
-import { useFetchLarps } from '../hooks/useFetchLarps';
-import { Box } from '@mui/material';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { JSDateToLuxon } from '../util/typeConverters';
-import AvailabilityIcon from './AvailabilityIcon';
-import LarpAPI from '../util/api';
-import DeleteButton from '../components/FormComponents/DeleteButton';
-import EditButton from '../components/FormComponents/EditButton';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ToastMessage from '../components/ui/ToastMessage';
-import { Larp } from '../types';
-import ToggleFeaturedButton from '../components/FormComponents/ToggleFeaturedButton';
+import { useFetchLarps } from "../hooks/useFetchLarps";
+import { Box } from "@mui/material";
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { JSDateToLuxon } from "../util/typeConverters";
+import AvailabilityIcon from "./AvailabilityIcon";
+import LarpAPI from "../util/api";
+import DeleteButton from "../components/FormComponents/DeleteButton";
+import EditButton from "../components/FormComponents/EditButton";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Link } from "@mui/material";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ToastMessage from "../components/ui/ToastMessage";
+import { Larp } from "../types";
+import ToggleFeaturedButton from "../components/FormComponents/ToggleFeaturedButton";
 
 function LarpsDashboard() {
   const { larps, setLarps, loading, error } = useFetchLarps(null);
@@ -39,10 +39,10 @@ function LarpsDashboard() {
   }
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Id', width: 50 },
+    { field: "id", headerName: "Id", width: 50 },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -53,8 +53,8 @@ function LarpsDashboard() {
       },
     },
     {
-      field: 'organization',
-      headerName: 'Organization',
+      field: "organization",
+      headerName: "Organization",
       renderCell: (params) => {
         return (
           <Link component={RouterLink} to={`/admin/orgs/${params.value.id}`}>
@@ -64,37 +64,37 @@ function LarpsDashboard() {
       },
     },
     {
-      field: 'start',
-      headerName: 'Start',
-      type: 'date',
+      field: "start",
+      headerName: "Start",
+      type: "date",
       renderCell: (params) => {
         return JSDateToLuxon(params.value).toLocaleString({
-          month: 'short',
-          day: 'numeric',
+          month: "short",
+          day: "numeric",
         });
       },
     },
     {
-      field: 'end',
-      headerName: 'End',
-      type: 'date',
+      field: "end",
+      headerName: "End",
+      type: "date",
       renderCell: (params) => {
         return JSDateToLuxon(params.value).toLocaleString({
-          month: 'short',
-          day: 'numeric',
+          month: "short",
+          day: "numeric",
         });
       },
     },
     {
-      field: 'ticketStatus',
-      headerName: 'Ticket Status',
-      align: 'center',
+      field: "ticketStatus",
+      headerName: "Ticket Status",
+      align: "center",
       renderCell: (params) => <AvailabilityIcon status={params.value} />,
     },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      type: 'actions',
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
       width: 200,
       getActions: (params) => {
         return [
@@ -125,8 +125,8 @@ function LarpsDashboard() {
       />
       <Box
         sx={{
-          height: '85dvh',
-          width: '100%',
+          height: "85dvh",
+          width: "100%",
         }}
       >
         <DataGrid columns={columns} rows={rows} />

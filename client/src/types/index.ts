@@ -13,7 +13,7 @@ export type ImageSet = {
 };
 
 /*************************** LARPS */
-export type TicketStatus = 'AVAILABLE' | 'LIMITED' | 'SOLD_OUT' | 'SOON';
+export type TicketStatus = "AVAILABLE" | "LIMITED" | "SOLD_OUT" | "SOON";
 
 export type LarpForCreate = {
   title: string;
@@ -41,8 +41,8 @@ export type Larp = LarpForCreate & {
 };
 
 export type LarpForUpdate = Omit<
-  PartialWithRequired<Larp, 'id'>,
-  'organization'
+  PartialWithRequired<Larp, "id">,
+  "organization"
 >;
 
 export type LarpAsJSON = LarpForCreate & {
@@ -61,7 +61,7 @@ export type LarpAsJSON = LarpForCreate & {
 export type LarpQuery = {
   term?: string;
   title?: string;
-  ticketStatus?: TicketStatus | '';
+  ticketStatus?: TicketStatus | "";
   tags?: string;
   startBefore?: string;
   startAfter?: string;
@@ -98,11 +98,11 @@ export type User = UserForCreate & {
   organization: Organization | null;
 };
 
-export type PublicUser = Omit<User, 'password'>;
+export type PublicUser = Omit<User, "password">;
 
 export type UserForUpdate = PartialWithRequired<
-  Omit<User, 'organization'>,
-  'id' | 'username'
+  Omit<User, "organization">,
+  "id" | "username"
 >;
 
 /*************************** ORGANIZATIONS */
@@ -124,8 +124,8 @@ export type Organization = OrganizationForCreate & {
 };
 
 export type OrganizationForUpdate = Omit<
-  PartialWithRequired<Organization, 'id'>,
-  'larps'
+  PartialWithRequired<Organization, "id">,
+  "larps"
 >;
 
 /*************************** AUTH */

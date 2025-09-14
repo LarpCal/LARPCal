@@ -1,7 +1,7 @@
-import { ReactNode, useState } from 'react';
-import { Typography, Box, Stack } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { ReactNode, useState } from "react";
+import { Typography, Box, Stack } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 type TwirldownProps = {
   children: ReactNode;
@@ -25,7 +25,7 @@ function Twirldown({ title, children }: TwirldownProps) {
         direction="row"
         spacing={1}
         sx={{
-          cursor: 'pointer',
+          cursor: "pointer",
         }}
       >
         <FontAwesomeIcon icon={showChildren ? faCaretDown : faCaretRight} />
@@ -34,7 +34,7 @@ function Twirldown({ title, children }: TwirldownProps) {
           className="Twirldown-button"
           sx={{
             fontWeight: 900,
-            marginTop: '.5rem',
+            marginTop: ".5rem",
           }}
         >
           {showChildren ? `Hide ${title}` : `Show ${title}`}

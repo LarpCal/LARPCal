@@ -1,14 +1,14 @@
-import { useContext, useState } from 'react';
-import LarpAPI from '../util/api';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { OrganizationForCreate } from '../types';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { OrgFormProvider } from '../context/OrgFormProvider';
-import { Modal, Box, Typography } from '@mui/material';
-import { userContext } from '../context/userContext';
-import OrgForm from '../components/Forms/OrgForm';
-import CreateOrgSchema from '../components/Forms/CreateOrgSchema';
-import ToastMessage from '../components/ui/ToastMessage';
+import { useContext, useState } from "react";
+import LarpAPI from "../util/api";
+import { Navigate, useNavigate } from "react-router-dom";
+import { OrganizationForCreate } from "../types";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { OrgFormProvider } from "../context/OrgFormProvider";
+import { Modal, Box, Typography } from "@mui/material";
+import { userContext } from "../context/userContext";
+import OrgForm from "../components/Forms/OrgForm";
+import CreateOrgSchema from "../components/Forms/CreateOrgSchema";
+import ToastMessage from "../components/ui/ToastMessage";
 
 function CreateOrgPage() {
   const { user, setUser } = useContext(userContext);
@@ -24,10 +24,10 @@ function CreateOrgPage() {
   }
 
   const EMPTY_ORG: OrganizationForCreate = {
-    orgName: '',
-    orgUrl: '',
-    description: '',
-    email: '',
+    orgName: "",
+    orgUrl: "",
+    description: "",
+    email: "",
     username: user.username,
   };
 

@@ -1,22 +1,22 @@
-import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import express from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   ensureAdmin,
   ensureLoggedIn,
   ensureOrganizer,
   ensureMatchingOrganizerOrAdmin,
   ensureOwnerOrAdmin,
-} from '../middleware/auth';
-import readMultipart from '../middleware/multer';
+} from "../middleware/auth";
+import readMultipart from "../middleware/multer";
 const router = express.Router();
 
-import { BadRequestError } from '../utils/expressError';
+import { BadRequestError } from "../utils/expressError";
 
-import jsonschema from 'jsonschema';
-import orgForCreateSchema from '../schemas/orgForCreate.json';
-import orgForUpdateSchema from '../schemas/orgForUpdate.json';
-import orgApprovalSchema from '../schemas/orgApproval.json';
-import OrgManager from '../models/OrgManager';
+import jsonschema from "jsonschema";
+import orgForCreateSchema from "../schemas/orgForCreate.json";
+import orgForUpdateSchema from "../schemas/orgForUpdate.json";
+import orgApprovalSchema from "../schemas/orgApproval.json";
+import OrgManager from "../models/OrgManager";
 
 /** POST /
  *  Creates and returns a new org record
@@ -25,7 +25,7 @@ import OrgManager from '../models/OrgManager';
  * @auth admin
  */
 router.post(
-  '/',
+  "/",
   ensureLoggedIn,
   // readMultipart("image"),
 
@@ -37,7 +37,7 @@ router.post(
       const errs: (string | undefined)[] = validator.errors.map(
         (e: Error) => e.stack,
       );
-      throw new BadRequestError(errs.join(', '));
+      throw new BadRequestError(errs.join(", "));
     }
 
     const org = await OrgManager.createOrg(req.body);
@@ -52,7 +52,7 @@ router.post(
  * @auth none
  */
 router.get(
-  '/:id',
+  "/:id",
   async function (req: Request, res: Response, next: NextFunction) {
     const org = await OrgManager.getOrgById(+req.params.id);
     return res.json({ org });
@@ -66,7 +66,7 @@ router.get(
  */
 
 router.get(
-  '/',
+  "/",
   async function (req: Request, res: Response, next: NextFunction) {
     const orgs = await OrgManager.getAllOrgs();
     return res.json({ orgs });
@@ -81,7 +81,7 @@ router.get(
  */
 
 router.delete(
-  '/:id',
+  "/:id",
   ensureMatchingOrganizerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const deleted = await OrgManager.deleteOrgById(+req.params.id);
@@ -95,7 +95,7 @@ router.delete(
  * @returns {org: Organization}
  */
 router.patch(
-  '/:id',
+  "/:id",
   ensureLoggedIn,
   ensureMatchingOrganizerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
@@ -106,7 +106,7 @@ router.patch(
       const errs: (string | undefined)[] = validator.errors.map(
         (e: Error) => e.stack,
       );
-      throw new BadRequestError(errs.join(', '));
+      throw new BadRequestError(errs.join(", "));
     }
     const org = await OrgManager.updateOrg(req.body);
     return res.json({ org });
@@ -120,7 +120,7 @@ router.patch(
  * @returns {org: Organization}
  */
 router.patch(
-  '/:id/approval',
+  "/:id/approval",
   ensureLoggedIn,
   ensureAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
@@ -131,7 +131,7 @@ router.patch(
       const errs: (string | undefined)[] = validator.errors.map(
         (e: Error) => e.stack,
       );
-      throw new BadRequestError(errs.join(', '));
+      throw new BadRequestError(errs.join(", "));
     }
     const org = await OrgManager.setApproved(req.body.id, req.body.isApproved);
     return res.json({ org });
@@ -145,14 +145,14 @@ router.patch(
  */
 
 router.put(
-  '/:id/image',
+  "/:id/image",
   ensureMatchingOrganizerOrAdmin,
-  readMultipart('image'),
+  readMultipart("image"),
   async function (req: Request, res: Response, next: NextFunction) {
     //TODO: test middleware
 
     if (!req.file) {
-      throw new BadRequestError('Please attach an image');
+      throw new BadRequestError("Please attach an image");
     }
     const larp = await OrgManager.updateOrgImage(req.file, +req.params.id);
 

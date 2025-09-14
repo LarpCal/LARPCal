@@ -1,11 +1,11 @@
-import { useContext } from 'react';
-import { userContext } from './context/userContext';
-import { BrowserRouter } from 'react-router-dom';
-import ScrollToTop from './components/ui/ScrollToTop';
-import NavBar from './components/NavBar';
-import RoutesList from './RoutesList';
-import Footer from './components/Footer';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { useContext } from "react";
+import { userContext } from "./context/userContext";
+import { BrowserRouter } from "react-router-dom";
+import ScrollToTop from "./components/ui/ScrollToTop";
+import NavBar from "./components/NavBar";
+import RoutesList from "./RoutesList";
+import Footer from "./components/Footer";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 export default function AppContent() {
   const { loading, error } = useContext(userContext);

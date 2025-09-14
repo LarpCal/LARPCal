@@ -1,14 +1,14 @@
-import LarpAPI from '../util/api';
-import { useNavigate } from 'react-router-dom';
+import LarpAPI from "../util/api";
+import { useNavigate } from "react-router-dom";
 
-import TooltipButton from '../components/FormComponents/TooltipButton';
+import TooltipButton from "../components/FormComponents/TooltipButton";
 import {
   faImage,
   faPencil,
   faStar,
   faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import { Larp } from '../types';
+} from "@fortawesome/free-solid-svg-icons";
+import { Larp } from "../types";
 
 function useLarpControls(larp: Larp) {
   const larpId = larp.id;
@@ -19,7 +19,7 @@ function useLarpControls(larp: Larp) {
     e.stopPropagation();
     e.preventDefault();
     LarpAPI.DeleteLarp(larpId);
-    navigate('/events');
+    navigate("/events");
   }
 
   function editLarp(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

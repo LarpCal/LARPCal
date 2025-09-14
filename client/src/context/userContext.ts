@@ -1,6 +1,6 @@
-import React from 'react';
-import { Organization, UserForUpdate } from '../types';
-import { UserLoginData, UserForCreate } from '../types';
+import React from "react";
+import { Organization, UserForUpdate } from "../types";
+import { UserLoginData, UserForCreate } from "../types";
 
 const ANON_USER: NullableUser = {
   username: null,
@@ -36,23 +36,23 @@ type UserContextType = {
 const userContext = React.createContext<UserContextType>({
   user: ANON_USER,
   setUser: () => {
-    throw new Error('setUser function not provided');
+    throw new Error("setUser function not provided");
   },
   token: null,
   setToken: () => {
-    throw new Error('setToken function not provided');
+    throw new Error("setToken function not provided");
   },
   login: async () => {
-    throw new Error('login function not provided');
+    throw new Error("login function not provided");
   },
   logout: () => {
-    throw new Error('logout function not provided');
+    throw new Error("logout function not provided");
   },
   register: async () => {
-    throw new Error('register function not provided');
+    throw new Error("register function not provided");
   },
   update: async () => {
-    throw new Error('update function not provided');
+    throw new Error("update function not provided");
   },
   error: null,
   loading: false,

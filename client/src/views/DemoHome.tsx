@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { Box, Button, List, ListItem, Stack, Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useState } from "react";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { Box, Button, List, ListItem, Stack, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faCheck,
   faCheckCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import { Link as RouterLink } from 'react-router-dom';
-import { UserLoginData } from '../types';
+} from "@fortawesome/free-solid-svg-icons";
+import { Link as RouterLink } from "react-router-dom";
+import { UserLoginData } from "../types";
 
 type DemoHomeProps = {
   login: (credentials: UserLoginData) => Promise<void>;
@@ -19,8 +19,8 @@ function DemoHome({ login }: DemoHomeProps) {
 
   useEffect(() => {
     async function loginDemoUser() {
-      console.log('logging in');
-      login({ username: 'testUser', password: 'password' });
+      console.log("logging in");
+      login({ username: "testUser", password: "password" });
       setLoading(false);
     }
     loginDemoUser();
@@ -39,16 +39,16 @@ function DemoHome({ login }: DemoHomeProps) {
             <Box
               className="filled-light"
               sx={{
-                width: '100%',
-                textAlign: 'center',
-                padding: '3rem',
+                width: "100%",
+                textAlign: "center",
+                padding: "3rem",
               }}
             >
               <Typography component="h1" variant="h1" className="title">
                 <Typography
                   variant="h1"
                   component="span"
-                  sx={{ display: 'inline' }}
+                  sx={{ display: "inline" }}
                   color="primary"
                 >
                   <FontAwesomeIcon icon={faCheckCircle} /> &nbsp;

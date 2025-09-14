@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Larp, LarpQuery } from '../types';
-import LarpAPI from '../util/api';
-import { base64Decode, base64Encode } from '../util/utilities';
-import { DateTime } from 'luxon';
+import React, { useEffect, useState } from "react";
+import { Larp, LarpQuery } from "../types";
+import LarpAPI from "../util/api";
+import { base64Decode, base64Encode } from "../util/utilities";
+import { DateTime } from "luxon";
 
 type FetchLarpsResult = {
   larps: Larp[];

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { PublicUser } from '../types';
-import LarpAPI from '../util/api';
+import { useEffect, useState } from "react";
+import { PublicUser } from "../types";
+import LarpAPI from "../util/api";
 
 type FetchUsersResult = {
   users: PublicUser[];

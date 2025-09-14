@@ -1,13 +1,13 @@
-import { prisma } from '../prismaSingleton';
+import { prisma } from "../prismaSingleton";
 import {
   OrganizationForCreate,
   Organization,
   OrganizationForUpdate,
-} from '../types';
-import { BadRequestError, NotFoundError } from '../utils/expressError';
-import ImageHandler from '../utils/imageHandler';
-import { Larp } from '../types';
-import { deleteMultiple } from '../api/s3';
+} from "../types";
+import { BadRequestError, NotFoundError } from "../utils/expressError";
+import ImageHandler from "../utils/imageHandler";
+import { Larp } from "../types";
+import { deleteMultiple } from "../api/s3";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -50,7 +50,7 @@ class OrgManager {
 
   static async getAllOrgs(): Promise<Organization[]> {
     return await prisma.organization.findMany({
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
       include: ORG_INCLUDE_OBJ,
     });
   }
@@ -66,7 +66,7 @@ class OrgManager {
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -81,7 +81,7 @@ class OrgManager {
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -96,7 +96,7 @@ class OrgManager {
       return org;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -174,7 +174,7 @@ class OrgManager {
     } catch (err) {
       //use our custom error instead
       console.log(err);
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -200,9 +200,9 @@ class OrgManager {
         `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default-sm`
       ) {
         await deleteMultiple([
-          org.imgUrl.sm.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
-          org.imgUrl.md.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
-          org.imgUrl.lg.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ''),
+          org.imgUrl.sm.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
+          org.imgUrl.md.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
+          org.imgUrl.lg.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
         ]);
       }
     } catch (e) {

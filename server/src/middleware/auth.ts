@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 export {};
-import { Request, Response, NextFunction } from 'express';
-import { SECRET_KEY } from '../config';
-import jwt from 'jsonwebtoken';
-import { NotFoundError, UnauthorizedError } from '../utils/expressError';
-import LarpManager from '../models/LarpManager';
-import OrgManager from '../models/OrgManager';
+import { Request, Response, NextFunction } from "express";
+import { SECRET_KEY } from "../config";
+import jwt from "jsonwebtoken";
+import { NotFoundError, UnauthorizedError } from "../utils/expressError";
+import LarpManager from "../models/LarpManager";
+import OrgManager from "../models/OrgManager";
 
 /** Middleware: Authenticate user.
  *
@@ -19,7 +19,7 @@ import OrgManager from '../models/OrgManager';
 function authenticateJWT(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers?.authorization;
   if (authHeader) {
-    const token = authHeader.replace(/^[Bb]earer /, '').trim();
+    const token = authHeader.replace(/^[Bb]earer /, "").trim();
 
     try {
       res.locals.user = jwt.verify(token, SECRET_KEY);
@@ -51,7 +51,7 @@ function ensureOrganizer(req: Request, res: Response, next: NextFunction) {
   }
 
   throw new UnauthorizedError(
-    'This account is not an approved organizer.  If you have recently been approved, you may need to log out and log back in to access organizer functionality',
+    "This account is not an approved organizer.  If you have recently been approved, you may need to log out and log back in to access organizer functionality",
   );
 }
 
@@ -85,7 +85,7 @@ function ensureCorrectUserOrAdmin(
     return next();
   }
 
-  console.log('unauth');
+  console.log("unauth");
   throw new UnauthorizedError();
 }
 
@@ -109,7 +109,7 @@ async function ensureOwnerOrAdmin(
     return next();
   }
 
-  console.log('unauth');
+  console.log("unauth");
   throw new UnauthorizedError();
 }
 
@@ -134,7 +134,7 @@ async function protectUnpublished(
     return next();
   }
 
-  console.log('unauth');
+  console.log("unauth");
   throw new NotFoundError();
 }
 
@@ -155,7 +155,7 @@ async function ensureMatchingOrganizerOrAdmin(
     return next();
   }
 
-  console.log('unauth');
+  console.log("unauth");
   throw new UnauthorizedError();
 }
 

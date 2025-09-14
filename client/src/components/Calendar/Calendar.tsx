@@ -1,14 +1,14 @@
-import { Larp } from '../../types';
-import { Calendar as BigCalendar, luxonLocalizer } from 'react-big-calendar';
-import { DateTime } from 'luxon';
+import { Larp } from "../../types";
+import { Calendar as BigCalendar, luxonLocalizer } from "react-big-calendar";
+import { DateTime } from "luxon";
 
-import { Box, Modal } from '@mui/material';
-import { useState } from 'react';
-import EventDetails from '../Events/LarpDetails';
-import { EventProps } from 'react-big-calendar';
+import { Box, Modal } from "@mui/material";
+import { useState } from "react";
+import EventDetails from "../Events/LarpDetails";
+import { EventProps } from "react-big-calendar";
 
-import './Calendar.scss';
-import CalendarEvent from './CalendarEvent';
+import "./Calendar.scss";
+import CalendarEvent from "./CalendarEvent";
 
 // Setup the localizer by providing the moment (or globalize, or Luxon) Object
 // to the correct localizer.
@@ -25,14 +25,14 @@ function Calendar({ larps }: CalendarProps) {
   const [selected, setSelected] = useState<Larp | null>(null);
 
   return (
-    <Box className="Calendar" style={{ position: 'relative' }}>
+    <Box className="Calendar" style={{ position: "relative" }}>
       <Modal
         open={showDetails}
         onClose={() => setShowDetails(false)}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Box className="Calendar-modal">
@@ -43,7 +43,7 @@ function Calendar({ larps }: CalendarProps) {
       <BigCalendar
         localizer={localizer}
         events={larps}
-        views={['month', 'week']}
+        views={["month", "week"]}
         startAccessor="start"
         endAccessor="end"
         components={{

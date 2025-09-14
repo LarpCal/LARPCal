@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { Typography, Box } from '@mui/material';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { Typography, Box } from "@mui/material";
 
 type props = {
   logOut: () => void;
@@ -12,9 +12,9 @@ function LogOutPage({ logOut }: props) {
 
   useEffect(
     function NavigateOnMount() {
-      console.log('logging out');
+      console.log("logging out");
       logOut();
-      navigate('/');
+      navigate("/");
     },
     [logOut, navigate],
   );

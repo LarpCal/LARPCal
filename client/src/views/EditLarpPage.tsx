@@ -1,24 +1,24 @@
-import { useState, useContext } from 'react';
-import { useNavigate, useParams, Navigate } from 'react-router-dom';
-import { userContext } from '../context/userContext';
-import { Modal, Box } from '@mui/material';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EventForm from '../components/Forms/LarpForm';
-import LarpAPI from '../util/api';
-import { LarpForUpdate } from '../types';
-import { LarpFormProvider } from '../context/LarpFormProvider';
-import { useFetchLarp } from '../hooks/useFetchLarp';
-import ToastMessage from '../components/ui/ToastMessage';
+import { useState, useContext } from "react";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { userContext } from "../context/userContext";
+import { Modal, Box } from "@mui/material";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import EventForm from "../components/Forms/LarpForm";
+import LarpAPI from "../util/api";
+import { LarpForUpdate } from "../types";
+import { LarpFormProvider } from "../context/LarpFormProvider";
+import { useFetchLarp } from "../hooks/useFetchLarp";
+import ToastMessage from "../components/ui/ToastMessage";
 
 const DEFAULT_IMG_URL =
-  'https://sf-larpcal.s3.amazonaws.com/larpImage/default-sm';
+  "https://sf-larpcal.s3.amazonaws.com/larpImage/default-sm";
 
 function EditLarpPage() {
   const { user } = useContext(userContext);
   const { username, isAdmin, organization } = user;
   const { id } = useParams();
   if (!id) {
-    throw new Error('Id is required to edit a larp');
+    throw new Error("Id is required to edit a larp");
   }
 
   const [saving, setSaving] = useState(false);
@@ -29,7 +29,7 @@ function EditLarpPage() {
 
   /** Auth check --> Does the user have write permission for this record */
   if (larp && username !== larp?.organization.username && !isAdmin) {
-    console.error('You do not have permission to edit this event');
+    console.error("You do not have permission to edit this event");
     return <Navigate to={`/events/${id}`} />;
   }
 

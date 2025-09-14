@@ -4,8 +4,8 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-} from '@aws-sdk/client-s3';
-import { mockDeep } from 'jest-mock-extended';
+} from "@aws-sdk/client-s3";
+import { mockDeep } from "jest-mock-extended";
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const BUCKET_REGION = process.env.BUCKET_REGION;
@@ -18,8 +18,8 @@ let s3: null | S3Client = null;
  * Returns either an s3 instance or a mock of an s3 instance for testing */
 function getS3(): S3Client {
   if (s3 === null) {
-    if (process.env.NODE_ENV === 'test') {
-      console.log('Loading mock s3 for testing');
+    if (process.env.NODE_ENV === "test") {
+      console.log("Loading mock s3 for testing");
       let mockS3 = mockDeep() as unknown as S3Client;
       s3 = mockS3;
     } else {
@@ -45,7 +45,7 @@ async function uploadFile(imageBuffer: Buffer, path: string) {
     Bucket: BUCKET_NAME,
     Key: path,
     Body: imageBuffer,
-    ContentType: 'image/jpeg',
+    ContentType: "image/jpeg",
   };
 
   const command = new PutObjectCommand(params);

@@ -1,15 +1,15 @@
-import { Box, IconButton, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { Box, IconButton, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
-import LarpAPI from '../util/api';
-import DeleteButton from '../components/FormComponents/DeleteButton';
-import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
-import { useFetchUsers } from '../hooks/useFetchUsers';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
-import ToastMessage from '../components/ui/ToastMessage';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import LarpAPI from "../util/api";
+import DeleteButton from "../components/FormComponents/DeleteButton";
+import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@mui/material";
+import { useFetchUsers } from "../hooks/useFetchUsers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
+import ToastMessage from "../components/ui/ToastMessage";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 function UsersDashboard() {
   const { users, setUsers, loading, error } = useFetchUsers();
@@ -21,23 +21,23 @@ function UsersDashboard() {
 
   const columns: GridColDef[] = [
     {
-      field: 'username',
-      headerName: 'Username',
+      field: "username",
+      headerName: "Username",
       flex: 1,
     },
     {
-      field: 'firstName',
-      headerName: 'First',
+      field: "firstName",
+      headerName: "First",
       flex: 0.5,
     },
     {
-      field: 'lastName',
-      headerName: 'Last',
+      field: "lastName",
+      headerName: "Last",
       flex: 0.5,
     },
     {
-      field: 'email',
-      headerName: 'email',
+      field: "email",
+      headerName: "email",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -48,8 +48,8 @@ function UsersDashboard() {
       },
     },
     {
-      field: 'organization',
-      headerName: 'Organization',
+      field: "organization",
+      headerName: "Organization",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -63,26 +63,26 @@ function UsersDashboard() {
       },
     },
     {
-      field: 'isAdmin',
-      headerName: 'Admin?',
-      align: 'center',
+      field: "isAdmin",
+      headerName: "Admin?",
+      align: "center",
       renderCell: (params) => {
         return params.row.isAdmin ? (
           <Typography variant="details1" color="success.main">
             <FontAwesomeIcon icon={faCircleCheck} />
           </Typography>
         ) : (
-          ''
+          ""
         );
       },
     },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      type: 'actions',
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
       width: 200,
       getActions: (params) => {
-        if (params.row.username === 'testUser') {
+        if (params.row.username === "testUser") {
           return [
             <IconButton disabled>
               <FontAwesomeIcon icon={faTrash} />
@@ -113,8 +113,8 @@ function UsersDashboard() {
       />
       <Box
         sx={{
-          height: '85dvh',
-          width: '100%',
+          height: "85dvh",
+          width: "100%",
         }}
       >
         <DataGrid columns={columns} rows={rows} />

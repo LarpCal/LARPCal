@@ -1,25 +1,25 @@
-import { Larp } from '../../types';
-import TagCard from './TagDisplay';
+import { Larp } from "../../types";
+import TagCard from "./TagDisplay";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLocationDot,
   faComment,
   faUser,
   faGlobe,
   faEnvelope,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { Typography, Stack, Box, Link } from '@mui/material';
-import { JSDateToLuxon } from '../../util/typeConverters';
+import { Typography, Stack, Box, Link } from "@mui/material";
+import { JSDateToLuxon } from "../../util/typeConverters";
 
-import './LarpDetails.scss';
-import { useContext } from 'react';
-import { userContext } from '../../context/userContext';
-import useLarpControls from '../../hooks/useLarpControls';
+import "./LarpDetails.scss";
+import { useContext } from "react";
+import { userContext } from "../../context/userContext";
+import useLarpControls from "../../hooks/useLarpControls";
 
-import { Link as RouterLink } from 'react-router-dom';
-import ToastMessage from '../ui/ToastMessage';
+import { Link as RouterLink } from "react-router-dom";
+import ToastMessage from "../ui/ToastMessage";
 
 type LarpDetailsProps = {
   larp: Larp;
@@ -36,7 +36,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
       {!larp.isPublished && (
         <ToastMessage
           messages={[
-            'Your event has been saved, but your account is still pending approval.  Your event will be automatically published once your organizer account has been reviewed by an admin.',
+            "Your event has been saved, but your account is still pending approval.  Your event will be automatically published once your organizer account has been reviewed by an admin.",
           ]}
           title="Saved (but not published)"
           severity="success"
@@ -46,7 +46,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
         className="banner"
         sx={{
           backgroundImage: `url(${larp.imgUrl.lg})`,
-          backgroundSize: 'cover',
+          backgroundSize: "cover",
         }}
       >
         {larp.organization.username === username || isAdmin === true ? (
@@ -72,17 +72,17 @@ function LarpDetails({ larp }: LarpDetailsProps) {
       >
         <Typography variant="h4" className="filled-secondary">
           {JSDateToLuxon(larp.start).toLocaleString({
-            weekday: 'short',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })}{' '}
-          -{' '}
+            weekday: "short",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })}{" "}
+          -{" "}
           {JSDateToLuxon(larp.end).toLocaleString({
-            weekday: 'short',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
+            weekday: "short",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
           })}
         </Typography>
         <Typography component="h1" variant="h1" className="title">
@@ -99,14 +99,14 @@ function LarpDetails({ larp }: LarpDetailsProps) {
 
         <Box className="filled-light">
           <Typography>
-            Hosted By:{' '}
+            Hosted By:{" "}
             <Link component={RouterLink} to={`/orgs/${larp.organization.id}`}>
               {larp.organization.orgName}
             </Link>
           </Typography>
           <Typography
             // color={ticketColor}
-            variant={'details2'}
+            variant={"details2"}
           >
             Tickets: {larp.ticketStatus}
           </Typography>
@@ -153,28 +153,28 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           </Typography>
           <Typography>
             <Box component="span" sx={{ fontWeight: 900 }}>
-              Starts:{' '}
+              Starts:{" "}
             </Box>
             {JSDateToLuxon(larp.start).toLocaleString({
-              weekday: 'short',
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
+              weekday: "short",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
             })}
           </Typography>
           <Typography>
             <Box component="span" sx={{ fontWeight: 900 }}>
-              Ends:{' '}
+              Ends:{" "}
             </Box>
             {JSDateToLuxon(larp.end).toLocaleString({
-              weekday: 'short',
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
+              weekday: "short",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
             })}
           </Typography>
         </section>
@@ -186,8 +186,8 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           <Box
             className="filled-light"
             sx={{
-              padding: '1rem 2rem',
-              width: '100%',
+              padding: "1rem 2rem",
+              width: "100%",
             }}
           >
             <Stack
@@ -199,20 +199,20 @@ function LarpDetails({ larp }: LarpDetailsProps) {
               <Box
                 sx={{
                   backgroundImage: `url(${larp.organization.imgUrl.lg})`,
-                  backgroundPosition: 'center',
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                  borderRadius: '5px',
-                  overflow: 'auto',
-                  width: { xs: '100%', sm: '200px' },
-                  height: '200px',
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  borderRadius: "5px",
+                  overflow: "auto",
+                  width: { xs: "100%", sm: "200px" },
+                  height: "200px",
                 }}
               />
               <Box
                 sx={{
                   padding: {
-                    xs: '1rem 0',
-                    sm: '2rem',
+                    xs: "1rem 0",
+                    sm: "2rem",
                   },
                 }}
               >
@@ -220,7 +220,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
                   variant="h4"
                   component="h6"
                   sx={{
-                    marginBottom: '.5rem',
+                    marginBottom: ".5rem",
                   }}
                 >
                   {larp.organization.orgName}
@@ -259,7 +259,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
             </Stack>
             <Typography
               sx={{
-                paddingTop: '1rem',
+                paddingTop: "1rem",
               }}
             >
               {larp.organization.description}

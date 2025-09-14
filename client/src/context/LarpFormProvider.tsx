@@ -1,10 +1,10 @@
-import React from 'react';
-import { Formik } from 'formik';
-import { JSDateToLuxon, LuxonToJSDate } from '../util/typeConverters';
+import React from "react";
+import { Formik } from "formik";
+import { JSDateToLuxon, LuxonToJSDate } from "../util/typeConverters";
 
-import LarpFormSchema from '../components/Forms/LarpFormSchema';
-import { Larp, LarpForCreate, LarpForUpdate } from '../types';
-import { Tag } from '../types';
+import LarpFormSchema from "../components/Forms/LarpFormSchema";
+import { Larp, LarpForCreate, LarpForUpdate } from "../types";
+import { Tag } from "../types";
 
 type Props<T> = {
   children: React.ReactNode;
@@ -18,12 +18,12 @@ function LarpFormProvider<T extends Larp | LarpForCreate | LarpForUpdate>({
   children,
 }: Props<T>) {
   function joinTags(tags: Tag[] | undefined): string | undefined {
-    if (!tags || tags.length === 0) return '';
+    if (!tags || tags.length === 0) return "";
 
     const tagString = tags.reduce((accumulator, current) => {
-      if (accumulator === '') return current.name;
+      if (accumulator === "") return current.name;
       return `${accumulator}, ${current.name}`;
-    }, '');
+    }, "");
     return tagString;
   }
 
@@ -37,8 +37,8 @@ function LarpFormProvider<T extends Larp | LarpForCreate | LarpForUpdate>({
   }
 
   function splitTags(tagString: string): Partial<Tag>[] {
-    if (!tagString || tagString.trim() === '') return [];
-    const splitTags = tagString.split(',');
+    if (!tagString || tagString.trim() === "") return [];
+    const splitTags = tagString.split(",");
     const filteredTags = splitTags.filter((tag) => tag.trim().length > 0);
     const tags = filteredTags.map((tag) => {
       return { name: tag.trim().toLowerCase() };

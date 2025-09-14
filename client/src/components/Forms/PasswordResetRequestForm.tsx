@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-import { TextField } from '@mui/material';
-import LarpAPI from '../../util/api';
+import { TextField } from "@mui/material";
+import LarpAPI from "../../util/api";
 // import "./userRegistrationForm.scss";
 
 type PasswordResetRequestData = {
@@ -13,7 +13,7 @@ type PasswordResetRequestData = {
 };
 
 const DEFAULT_FORM_DATA: PasswordResetRequestData = {
-  username: '',
+  username: "",
 };
 
 type props = {
@@ -45,7 +45,7 @@ function PasswordResetRequestForm({ handleClose }: props) {
       await LarpAPI.createPasswordResetRequest(formData);
       setSubmitted(true);
     } catch (err) {
-      setError('Invalid username/password');
+      setError("Invalid username/password");
     }
   }
 
@@ -54,7 +54,7 @@ function PasswordResetRequestForm({ handleClose }: props) {
       <Typography>
         An email has been sent to the address associated with your account
       </Typography>
-      <Stack direction="row" justifyContent={'end'} spacing={3}>
+      <Stack direction="row" justifyContent={"end"} spacing={3}>
         <Button
           variant="outlined"
           type="submit"
@@ -71,7 +71,7 @@ function PasswordResetRequestForm({ handleClose }: props) {
     </Stack>
   ) : (
     <Stack spacing={2} component="form">
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
         <TextField
           sx={{ flexGrow: 1 }}
           variant="outlined"
@@ -88,7 +88,7 @@ function PasswordResetRequestForm({ handleClose }: props) {
         <></>
       )}
 
-      <Stack direction="row" justifyContent={'end'} spacing={3}>
+      <Stack direction="row" justifyContent={"end"} spacing={3}>
         <Button
           variant="outlined"
           onClick={() => {

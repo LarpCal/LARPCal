@@ -19,7 +19,7 @@ export function getNested(obj: any, path: string): any {
     // Using type assertion to indicate that accumulator is indexable
     if (
       accumulator &&
-      typeof accumulator === 'object' &&
+      typeof accumulator === "object" &&
       currentKey in accumulator
     ) {
       return accumulator[currentKey];
@@ -40,7 +40,7 @@ export function getNested(obj: any, path: string): any {
 
 export function shortenString(str: string, n: number) {
   if (str.length <= n) return str;
-  const shortStr = `${str.split(' ').reduce((acc, curr, i) => {
+  const shortStr = `${str.split(" ").reduce((acc, curr, i) => {
     return acc.length + i < n ? `${acc} ${curr}` : acc;
   })}`;
   return `${shortStr}...`;
@@ -50,7 +50,7 @@ export function shortenString(str: string, n: number) {
 export function base64Encode(input: string) {
   const encoder = new TextEncoder();
   const data = encoder.encode(input);
-  let binary = '';
+  let binary = "";
   data.forEach((byte) => {
     binary += String.fromCharCode(byte);
   });

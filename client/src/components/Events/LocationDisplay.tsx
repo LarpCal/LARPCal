@@ -1,8 +1,8 @@
-import { Typography, Stack, Box } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot, faComment } from '@fortawesome/free-solid-svg-icons';
+import { Typography, Stack, Box } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot, faComment } from "@fortawesome/free-solid-svg-icons";
 
-import './LocationDisplay.scss';
+import "./LocationDisplay.scss";
 
 type LocationDisplayProps = {
   city: string;

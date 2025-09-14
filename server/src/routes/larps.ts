@@ -1,21 +1,21 @@
-import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import express from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   ensureLoggedIn,
   ensureOrganizer,
   ensureOwnerOrAdmin,
   protectUnpublished,
-} from '../middleware/auth';
-import readMultipart from '../middleware/multer';
+} from "../middleware/auth";
+import readMultipart from "../middleware/multer";
 const router = express.Router();
 
-import { BadRequestError } from '../utils/expressError';
+import { BadRequestError } from "../utils/expressError";
 
-import LarpManager from '../models/LarpManager';
+import LarpManager from "../models/LarpManager";
 
-import jsonschema from 'jsonschema';
-import larpForCreateSchema from '../schemas/larpForCreate.json';
-import larpForUpdateSchema from '../schemas/larpForUpdate.json';
+import jsonschema from "jsonschema";
+import larpForCreateSchema from "../schemas/larpForCreate.json";
+import larpForUpdateSchema from "../schemas/larpForUpdate.json";
 
 /** POST /
  *  Creates and returns a new larp record
@@ -24,7 +24,7 @@ import larpForUpdateSchema from '../schemas/larpForUpdate.json';
  * @auth organizer
  */
 router.post(
-  '/',
+  "/",
   ensureLoggedIn,
   ensureOrganizer,
   // readMultipart("image"),
@@ -37,8 +37,8 @@ router.post(
       const errs: (string | undefined)[] = validator.errors.map(
         (e: Error) => e.stack,
       );
-      console.error('failed validation', errs.join(', '));
-      throw new BadRequestError(errs.join(', '));
+      console.error("failed validation", errs.join(", "));
+      throw new BadRequestError(errs.join(", "));
     }
 
     const larp = await LarpManager.createLarp(req.body);
@@ -53,7 +53,7 @@ router.post(
  * @auth organizer
  */
 router.post(
-  '/:id/publish',
+  "/:id/publish",
   ensureLoggedIn,
   ensureOwnerOrAdmin,
   // readMultipart("image"),
@@ -71,7 +71,7 @@ router.post(
  * @auth none
  */
 router.get(
-  '/:id',
+  "/:id",
   protectUnpublished,
 
   async function (req: Request, res: Response, next: NextFunction) {
@@ -87,7 +87,7 @@ router.get(
  */
 
 router.get(
-  '/',
+  "/",
   async function (req: Request, res: Response, next: NextFunction) {
     if (req.query && req.query.q) {
       const q: string = req.query.q as string;
@@ -110,7 +110,7 @@ router.get(
  */
 
 router.delete(
-  '/:id',
+  "/:id",
   ensureOwnerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const deleted = await LarpManager.deleteLarpById(+req.params.id);
@@ -124,7 +124,7 @@ router.delete(
  * @returns {larp: Larp}
  */
 router.put(
-  '/:id',
+  "/:id",
   ensureOwnerOrAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     const validator = jsonschema.validate(req.body, larpForUpdateSchema, {
@@ -134,8 +134,8 @@ router.put(
       const errs: (string | undefined)[] = validator.errors.map(
         (e: Error) => e.stack,
       );
-      console.error('validation error', errs.join(', '));
-      throw new BadRequestError(errs.join(', '));
+      console.error("validation error", errs.join(", "));
+      throw new BadRequestError(errs.join(", "));
     }
     const larp = await LarpManager.updateLarp(req.body);
     return res.json({ larp });
@@ -149,14 +149,14 @@ router.put(
  */
 
 router.put(
-  '/:id/image',
+  "/:id/image",
   ensureOwnerOrAdmin,
-  readMultipart('image'),
+  readMultipart("image"),
   async function (req: Request, res: Response, next: NextFunction) {
     //TODO: test middleware
 
     if (!req.file) {
-      throw new BadRequestError('Please attach an image');
+      throw new BadRequestError("Please attach an image");
     }
     const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
 

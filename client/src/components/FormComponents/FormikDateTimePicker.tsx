@@ -1,14 +1,14 @@
-import { TextField, TextFieldProps } from '@mui/material';
-import { DateTimePicker, DateTimePickerProps } from '@mui/x-date-pickers';
-import { FieldProps, useFormikContext } from 'formik';
-import { DateTime } from 'luxon';
-import { getNested } from '../../util/utilities';
+import { TextField, TextFieldProps } from "@mui/material";
+import { DateTimePicker, DateTimePickerProps } from "@mui/x-date-pickers";
+import { FieldProps, useFormikContext } from "formik";
+import { DateTime } from "luxon";
+import { getNested } from "../../util/utilities";
 
 interface FormikDateTimePickerProps
   extends FieldProps,
     Omit<
       DateTimePickerProps<DateTime>,
-      'name' | 'value' | 'onChange' | 'renderInput'
+      "name" | "value" | "onChange" | "renderInput"
     > {}
 
 function FormikDateTimePicker({
@@ -20,7 +20,7 @@ function FormikDateTimePicker({
   const { name } = field;
   const { touched, errors } = form;
   const fieldError =
-    getNested(touched, name) && getNested(errors, name) ? 'Error' : '';
+    getNested(touched, name) && getNested(errors, name) ? "Error" : "";
 
   function handleChange(value: DateTime | null) {
     setFieldValue(name, value);
@@ -39,13 +39,13 @@ function FormikDateTimePicker({
       }}
       slotProps={{
         actionBar: {
-          actions: ['clear', 'today', 'cancel', 'accept'],
+          actions: ["clear", "today", "cancel", "accept"],
         },
         textField: {
           onBlur: handleBlur,
           error: Boolean(fieldError),
           helperText: getNested(errors, name),
-          size: 'small',
+          size: "small",
         } as TextFieldProps,
         openPickerButton: {
           onBlur: handleBlur,

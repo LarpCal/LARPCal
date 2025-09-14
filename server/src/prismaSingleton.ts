@@ -2,13 +2,13 @@
  * depending on the environment.
  */
 
-import { PrismaClient } from '@prisma/client';
-import { mockDeep, mockReset, DeepMockProxy } from 'jest-mock-extended';
+import { PrismaClient } from "@prisma/client";
+import { mockDeep, mockReset, DeepMockProxy } from "jest-mock-extended";
 
 let prisma: PrismaClient | DeepMockProxy<PrismaClient>;
 
-if (process.env.NODE_ENV === 'test') {
-  console.log('Mocking prisma for testing');
+if (process.env.NODE_ENV === "test") {
+  console.log("Mocking prisma for testing");
   prisma = mockDeep<PrismaClient>();
 
   beforeEach(() => {

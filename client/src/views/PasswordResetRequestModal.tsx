@@ -1,5 +1,5 @@
-import { Box, Stack, Typography } from '@mui/material';
-import PasswordResetRequestForm from '../components/Forms/PasswordResetRequestForm';
+import { Box, Stack, Typography } from "@mui/material";
+import PasswordResetRequestForm from "../components/Forms/PasswordResetRequestForm";
 
 type props = {
   handleClose: () => void;
@@ -8,13 +8,13 @@ type props = {
 function PasswordResetRequestModal({ handleClose }: props) {
   return (
     <Stack
-      justifyContent={'center'}
+      justifyContent={"center"}
       sx={{
-        padding: '3rem',
-        backgroundColor: '#f5f2ef',
-        width: '80%',
-        margin: 'auto',
-        borderRadius: '1rem',
+        padding: "3rem",
+        backgroundColor: "#f5f2ef",
+        width: "80%",
+        margin: "auto",
+        borderRadius: "1rem",
       }}
     >
       <Typography component="h2" variant="h3" color="#242424">
@@ -23,9 +23,9 @@ function PasswordResetRequestModal({ handleClose }: props) {
       <Box
         sx={{
           // padding: '1rem',
-          width: '100%',
-          marginTop: '2rem',
-          maxWidth: '500px',
+          width: "100%",
+          marginTop: "2rem",
+          maxWidth: "500px",
         }}
       >
         <PasswordResetRequestForm handleClose={handleClose} />

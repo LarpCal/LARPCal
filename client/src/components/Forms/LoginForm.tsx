@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { UserLoginData } from '../../types';
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { UserLoginData } from "../../types";
 
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Modal } from '@mui/material';
-import PasswordResetRequestPage from '../../views/PasswordResetRequestModal';
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Modal } from "@mui/material";
+import PasswordResetRequestPage from "../../views/PasswordResetRequestModal";
 
 // import './loginForm.scss';
 
 const DEFAULT_FORM_DATA: UserLoginData = {
-  username: '',
-  password: '',
+  username: "",
+  password: "",
 };
 
 type props = {
@@ -47,7 +47,7 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
       await login(formData);
       navigate(`/users/${formData.username}`);
     } catch (err) {
-      setError('Invalid username/password');
+      setError("Invalid username/password");
     }
   }
 
@@ -65,7 +65,7 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
         />
       </Modal>
       <Stack spacing={2} component="form">
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <TextField
             sx={{ flexGrow: 1 }}
             variant="outlined"

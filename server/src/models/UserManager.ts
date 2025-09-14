@@ -1,14 +1,14 @@
-import { prisma } from '../prismaSingleton';
-import { BCRYPT_WORK_FACTOR } from '../config';
-import { UserForCreate, User, UserForUpdate, PublicUser } from '../types';
+import { prisma } from "../prismaSingleton";
+import { BCRYPT_WORK_FACTOR } from "../config";
+import { UserForCreate, User, UserForUpdate, PublicUser } from "../types";
 
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 import {
   NotFoundError,
   BadRequestError,
   UnauthorizedError,
-} from '../utils/expressError';
+} from "../utils/expressError";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -39,7 +39,7 @@ class UserManager {
         return user;
       }
     }
-    throw new UnauthorizedError('Invalid username/password');
+    throw new UnauthorizedError("Invalid username/password");
   }
 
   /** Register a user with userdata
@@ -59,7 +59,7 @@ class UserManager {
     });
     if (email)
       throw new BadRequestError(
-        'An account with that email address already exists',
+        "An account with that email address already exists",
       );
 
     const hashedPassword = await bcrypt.hash(
@@ -102,7 +102,7 @@ class UserManager {
       const { password, ...publicUser } = user;
       return publicUser;
     } catch (err) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
   }
 
@@ -134,7 +134,7 @@ class UserManager {
     }
 
     if (!userData || !Object.keys(userData).length) {
-      throw new BadRequestError('No data provided');
+      throw new BadRequestError("No data provided");
     }
 
     try {
@@ -149,7 +149,7 @@ class UserManager {
       return publicUser;
     } catch (err) {
       console.log(err);
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
   }
 
@@ -161,7 +161,7 @@ class UserManager {
       });
       return deleted.username;
     } catch (err) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
   }
 

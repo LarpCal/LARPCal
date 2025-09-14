@@ -1,10 +1,10 @@
-import { prisma } from '../prismaSingleton';
-import { LarpForCreate, Larp, LarpForUpdate, LarpQuery } from '../types';
-import { BadRequestError, NotFoundError } from '../utils/expressError';
-import { Tag } from '../types';
-import ImageHandler from '../utils/imageHandler';
-import { Prisma, TicketStatus } from '@prisma/client';
-import { deleteMultiple } from '../api/s3';
+import { prisma } from "../prismaSingleton";
+import { LarpForCreate, Larp, LarpForUpdate, LarpQuery } from "../types";
+import { BadRequestError, NotFoundError } from "../utils/expressError";
+import { Tag } from "../types";
+import ImageHandler from "../utils/imageHandler";
+import { Prisma, TicketStatus } from "@prisma/client";
+import { deleteMultiple } from "../api/s3";
 
 const LARP_INCLUDE_OBJ = {
   tags: true,
@@ -63,7 +63,7 @@ class LarpManager {
     if (!query) {
       //No query provided
       larps = await prisma.larp.findMany({
-        orderBy: { start: 'asc' },
+        orderBy: { start: "asc" },
         include: LARP_INCLUDE_OBJ,
       });
     } else if (query && !query.term) {
@@ -73,7 +73,7 @@ class LarpManager {
         AND: {
           title: {
             contains: query.title,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           ticketStatus: {
             equals: query.ticketStatus
@@ -96,20 +96,20 @@ class LarpManager {
           },
           city: {
             contains: query.city,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           country: {
             contains: query.country,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           language: {
             contains: query.language,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           organization: {
             orgName: {
               contains: query.org,
-              mode: 'insensitive',
+              mode: "insensitive",
             },
           },
           isFeatured: {
@@ -123,7 +123,7 @@ class LarpManager {
                 some: {
                   name: {
                     contains: query.tags,
-                    mode: 'insensitive',
+                    mode: "insensitive",
                   },
                 },
               }
@@ -134,7 +134,7 @@ class LarpManager {
       larps = await prisma.larp.findMany({
         where: prismaFilterObject,
         include: LARP_INCLUDE_OBJ,
-        orderBy: { start: 'asc' },
+        orderBy: { start: "asc" },
       });
     } else {
       // Query contains search term and filters
@@ -151,7 +151,7 @@ class LarpManager {
           ],
           title: {
             contains: query.title,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           ticketStatus: {
             equals: query.ticketStatus
@@ -174,20 +174,20 @@ class LarpManager {
           },
           city: {
             contains: query.city,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           country: {
             contains: query.country,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           language: {
             contains: query.language,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           organization: {
             orgName: {
               contains: query.org,
-              mode: 'insensitive',
+              mode: "insensitive",
             },
           },
           isFeatured: {
@@ -201,7 +201,7 @@ class LarpManager {
                 some: {
                   name: {
                     contains: query.tags,
-                    mode: 'insensitive',
+                    mode: "insensitive",
                   },
                 },
               }
@@ -215,9 +215,9 @@ class LarpManager {
         orderBy: [
           {
             _relevance: {
-              fields: ['title', 'description', 'country', 'city', 'language'],
+              fields: ["title", "description", "country", "city", "language"],
               search: query.term!,
-              sort: 'asc',
+              sort: "asc",
             },
           },
         ],
@@ -237,7 +237,7 @@ class LarpManager {
       return larp;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -311,7 +311,7 @@ class LarpManager {
       return larp;
     } catch (err) {
       //use our custom error instead
-      throw new NotFoundError('Record not found');
+      throw new NotFoundError("Record not found");
     }
   }
 
@@ -339,15 +339,15 @@ class LarpManager {
         await deleteMultiple([
           larp.imgUrl.sm.replace(
             `https://${BUCKET_NAME}.s3.amazonaws.com/`,
-            '',
+            "",
           ),
           larp.imgUrl.md.replace(
             `https://${BUCKET_NAME}.s3.amazonaws.com/`,
-            '',
+            "",
           ),
           larp.imgUrl.lg.replace(
             `https://${BUCKET_NAME}.s3.amazonaws.com/`,
-            '',
+            "",
           ),
         ]);
       }

@@ -1,21 +1,21 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Modal, Box } from '@mui/material';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import LarpAPI from '../util/api';
-import { OrganizationForUpdate } from '../types';
+import { Modal, Box } from "@mui/material";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LarpAPI from "../util/api";
+import { OrganizationForUpdate } from "../types";
 
-import { OrgFormProvider } from '../context/OrgFormProvider';
-import { useFetchOrg } from '../hooks/useFetchOrg';
-import EditOrgSchema from '../components/Forms/EditOrgSchema';
-import OrgForm from '../components/Forms/OrgForm';
-import ToastMessage from '../components/ui/ToastMessage';
+import { OrgFormProvider } from "../context/OrgFormProvider";
+import { useFetchOrg } from "../hooks/useFetchOrg";
+import EditOrgSchema from "../components/Forms/EditOrgSchema";
+import OrgForm from "../components/Forms/OrgForm";
+import ToastMessage from "../components/ui/ToastMessage";
 
 function AdminEditOrg() {
   const { id } = useParams();
   if (!id) {
-    throw new Error('Id is required to edit a larp');
+    throw new Error("Id is required to edit a larp");
   }
 
   const [saving, setSaving] = useState(false);

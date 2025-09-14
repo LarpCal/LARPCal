@@ -1,6 +1,6 @@
-import { Tooltip, IconButton } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip, IconButton } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 type EditButtonProps = {
   handleClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;

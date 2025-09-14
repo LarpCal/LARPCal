@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 const EMAIL_HOST = process.env.EMAIL_HOST as string;
 const EMAIL_USER = process.env.EMAIL_USER as string;
@@ -32,7 +32,7 @@ async function sendMail(to: string, subject: string, html: string) {
 function sendPasswordResetEmail(to: string, username: string, link: string) {
   sendMail(
     to,
-    'Password reset request for you Larp Calendar account',
+    "Password reset request for you Larp Calendar account",
     `
     <!DOCTYPE html>
 <html>
