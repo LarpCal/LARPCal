@@ -6,7 +6,7 @@ type FetchLarpsResult = {
   larp: Larp | null;
   setLarp: React.Dispatch<React.SetStateAction<Larp | null>>;
   loading: boolean;
-  error: unknown;
+  error: string[];
 };
 
 function useFetchLarp(id: number): FetchLarpsResult {

@@ -13,7 +13,8 @@ export function isURL(string?: string) {
  * position indicated in the path
  */
 
-export function getNested(obj: unknown, path: string): unknown {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getNested(obj: unknown, path: string): any {
   const keys = path.split(/[.[\]'"]/).filter((p) => p);
   return keys.reduce((accumulator: unknown, currentKey: string) => {
     // Using type assertion to indicate that accumulator is indexable

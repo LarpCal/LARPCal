@@ -8,7 +8,7 @@ type FetchLarpsResult = {
   larps: Larp[];
   setLarps: React.Dispatch<React.SetStateAction<Larp[]>>;
   loading: boolean;
-  error: unknown;
+  error: string[];
 };
 
 /**

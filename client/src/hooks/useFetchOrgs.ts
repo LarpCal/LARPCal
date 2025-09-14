@@ -6,7 +6,7 @@ type FetchOrgsResult = {
   orgs: Organization[];
   setOrgs: React.Dispatch<React.SetStateAction<Organization[]>>;
   loading: boolean;
-  error: unknown;
+  error: string[];
 };
 
 function useFetchOrgs(): FetchOrgsResult {

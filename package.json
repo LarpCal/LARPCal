@@ -11,11 +11,15 @@
     "url": "git+https://github.com/LarpCal/LARPCal.git"
   },
   "scripts": {
-    "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
-    "prepare": "husky",
     "dev:server": "npm -w server run dev",
     "dev:client": "npm -w client run dev",
-    "dev": "concurrently --names server,client -c auto npm:dev:server npm:dev:client"
+    "dev": "concurrently --names server,client -c auto npm:dev:server npm:dev:client",
+    "prepare": "husky",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
+    "typecheck": "concurrently --raw npm:typecheck:server npm:typecheck:client",
+    "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
+    "typecheck:client": "tsc --project client/tsconfig.json --noEmit"
   },
   "workspaces": [
     "server",
@@ -36,7 +40,8 @@
     "typescript-eslint": "^8.43.0"
   },
   "lint-staged": {
-    "{server,client}/**/*": "npm run format"
+    "{server,client}/**/*": "npm run format",
+    "**/*.{js,mjs,ts,tsx}": "npm run lint"
   },
   "prettier": {
     "semi": true,

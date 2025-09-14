@@ -6,7 +6,7 @@ type FetchUsersResult = {
   users: PublicUser[];
   setUsers: React.Dispatch<React.SetStateAction<PublicUser[]>>;
   loading: boolean;
-  error: unknown;
+  error: string[];
 };
 
 function useFetchUsers(): FetchUsersResult {
