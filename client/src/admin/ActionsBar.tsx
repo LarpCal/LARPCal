@@ -2,24 +2,23 @@ import { Stack } from "@mui/material";
 import useLarpControls from "../hooks/useLarpControls";
 import { Larp } from "../types";
 
-
 type ActionsBarProps = {
-    larp: Larp;
+  larp: Larp;
 };
 
 function ActionsBar({ larp }: ActionsBarProps) {
-    // console.log(larp)
+  // console.log(larp)
 
-    const { DeleteLarpButton, EditLarpButton, ToggleFeaturedButton } = useLarpControls(larp);
+  const { DeleteLarpButton, EditLarpButton, ToggleFeaturedButton } =
+    useLarpControls(larp);
 
-    return (
-        <Stack direction="row" >
-            {EditLarpButton}
-            {DeleteLarpButton}
-            {ToggleFeaturedButton}
-        </Stack>
-    );
-
+  return (
+    <Stack direction="row">
+      {EditLarpButton}
+      {DeleteLarpButton}
+      {ToggleFeaturedButton}
+    </Stack>
+  );
 }
 
-export default ActionsBar
+export default ActionsBar;

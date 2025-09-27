@@ -1,5 +1,4 @@
-
-import * as yup from 'yup';
+import * as yup from "yup";
 
 const CreateOrgSchema = yup.object({
   username: yup.string().required("Username is required"),

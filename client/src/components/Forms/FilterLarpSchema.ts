@@ -1,5 +1,5 @@
-import * as yup from 'yup';
-import { TicketStatus } from '../../types';
+import * as yup from "yup";
+import { TicketStatus } from "../../types";
 
 const FilterLarpSchema = yup.object({
   term: yup.string(),
@@ -12,22 +12,22 @@ const FilterLarpSchema = yup.object({
     .date()
     .nullable()
     .notRequired()
-    .typeError('Invalid date format'),
+    .typeError("Invalid date format"),
   startAfter: yup
     .date()
     .nullable()
     .notRequired()
-    .typeError('Invalid date format'),
+    .typeError("Invalid date format"),
   endBefore: yup
     .date()
     .nullable()
     .notRequired()
-    .typeError('Invalid date format'),
+    .typeError("Invalid date format"),
   endAfter: yup
     .date()
     .nullable()
     .notRequired()
-    .typeError('Invalid date format'),
+    .typeError("Invalid date format"),
   allDay: yup.boolean(),
   isPublished: yup.boolean(),
   city: yup.string(),

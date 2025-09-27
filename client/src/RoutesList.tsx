@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useContext } from "react";
 import { userContext } from "./context/userContext";
 
@@ -19,73 +19,68 @@ import AboutPage from "./views/AboutPage";
 import LoginPage from "./views/LoginPage";
 import RegisterPage from "./views/RegisterPage";
 import ChangePasswordForm from "./components/Forms/ChangePasswordForm";
-import MyProfilePage from './views/MyProfilePage';
-
-
+import MyProfilePage from "./views/MyProfilePage";
 
 function RoutesList() {
+  const { user, login, register, logout } = useContext(userContext);
 
-    const {
-        user,
-        login,
-        register,
-        logout,
-    } = useContext(userContext);
+  const { username, isAdmin, organization } = user;
 
-    const {username, isAdmin, organization} = user;
+  const anonRoutes = (
+    <>
+      <Route path="/auth/login" element={<LoginPage login={login} />} />
+      <Route
+        path="/auth/register"
+        element={<RegisterPage register={register} />}
+      />
+      <Route
+        path="/auth/password-reset/confirm"
+        element={<ChangePasswordForm />}
+      />
+    </>
+  );
 
+  const loginRoutes = (
+    <>
+      <Route path="/orgs/apply" element={<CreateOrgPage />} />
+      <Route path="/orgs/:id/edit" element={<EditOrgPage />} />
+      <Route path="/orgs/:id/image" element={<EditOrgImagePage />} />
+      <Route path="/auth/logout" element={<LogOutPage logOut={logout} />} />
+      <Route path="/my-profile" element={<MyProfilePage />} />
+    </>
+  );
 
-    const anonRoutes = (
-        <>
-            <Route path='/auth/login' element={<LoginPage login={login} />} />
-            <Route path='/auth/register' element={<RegisterPage register={register} />} />
-            <Route path='/auth/password-reset/confirm' element={<ChangePasswordForm />} />
-        </>
-    );
+  const organizerRoutes = (
+    <>
+      <Route path="/events/:id/edit" element={<EditLarpPage />} />
+      <Route path="/events/:id/image" element={<EditLarpImagePage />} />
+      <Route path="/events/create" element={<NewLarpPage />} />
+    </>
+  );
 
-    const loginRoutes = (
-        <>
-            <Route path='/orgs/apply' element={<CreateOrgPage />} />
-            <Route path='/orgs/:id/edit' element={<EditOrgPage />} />
-            <Route path='/orgs/:id/image' element={<EditOrgImagePage />} />
-            <Route path='/auth/logout' element={<LogOutPage logOut={logout} />} />
-            <Route path='/my-profile' element={<MyProfilePage />} />
-        </>
-    );
+  const adminRoutes = (
+    <>
+      <Route path="/admin/*" element={<AdminRoutes />} />
+    </>
+  );
 
-    const organizerRoutes = (
-        <>
-            <Route path='/events/:id/edit' element={<EditLarpPage />} />
-            <Route path='/events/:id/image' element={<EditLarpImagePage />} />
-            <Route path='/events/create' element={<NewLarpPage />} />
-        </>
-    );
-
-    const adminRoutes = (
-        <>
-            <Route path='/admin/*' element={<AdminRoutes />} />
-
-        </>
-    );
-
-
-    return (
-        <>
-            <Routes>
-                <Route path='/' element={<HomePage />} />
-                {username ? loginRoutes : anonRoutes}
-                {organization ? organizerRoutes : ""}
-                {isAdmin ? adminRoutes : ""}
-                {/* <Route path='/events/create' element={<NewEventPage />} /> */}
-                <Route path='/orgs/:id' element={<OrgDetailPage />} />
-                <Route path='/events' element={<LarpListPage />} />
-                <Route path='/events/:id' element={<LarpDetailPage />} />
-                {/* <Route path='/demo' element={<DemoHome login={login} />} /> */}
-                <Route path='/about' element={<AboutPage />} />
-                <Route path='*' element={<HomePage />} />
-            </Routes>
-        </>
-    );
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {username ? loginRoutes : anonRoutes}
+        {organization ? organizerRoutes : ""}
+        {isAdmin ? adminRoutes : ""}
+        {/* <Route path='/events/create' element={<NewEventPage />} /> */}
+        <Route path="/orgs/:id" element={<OrgDetailPage />} />
+        <Route path="/events" element={<LarpListPage />} />
+        <Route path="/events/:id" element={<LarpDetailPage />} />
+        {/* <Route path='/demo' element={<DemoHome login={login} />} /> */}
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </>
+  );
 }
 
 export default RoutesList;

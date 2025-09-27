@@ -3,11 +3,11 @@ import { Organization } from "../types";
 import LarpAPI from "../util/api";
 
 type FetchOrgResult = {
-  org:Organization | null,
-  setOrg: React.Dispatch<React.SetStateAction<Organization | null>>,
-  loading:boolean,
-  error:any,
-}
+  org: Organization | null;
+  setOrg: React.Dispatch<React.SetStateAction<Organization | null>>;
+  loading: boolean;
+  error: string[];
+};
 
 function useFetchOrg(id: number): FetchOrgResult {
   const [org, setOrg] = useState<Organization | null>(null);
@@ -20,8 +20,10 @@ function useFetchOrg(id: number): FetchOrgResult {
         const response = await LarpAPI.getOrgById(id);
         setOrg(response);
         setLoading(false);
-      } catch (err:any) {
-        setError(err);
+      } catch (err: unknown) {
+        if (Array.isArray(err)) {
+          setError(err);
+        }
         setLoading(false);
       }
     }
@@ -29,7 +31,7 @@ function useFetchOrg(id: number): FetchOrgResult {
     fetchOrg();
   }, [setOrg, id]);
 
-  return {org, setOrg, loading, error};
+  return { org, setOrg, loading, error };
 }
 
 export { useFetchOrg };

@@ -1,4 +1,3 @@
-
 /** ExpressError extends normal JS error so we can
  *  add a status when we make an instance of it.
  *
@@ -22,7 +21,6 @@ class NotFoundError extends ExpressError {
     super(message, 404);
   }
 }
-
 
 /** 401 UNAUTHORIZED error. */
 
@@ -55,4 +53,3 @@ export {
   BadRequestError,
   ForbiddenError,
 };
-

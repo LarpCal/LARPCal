@@ -9,23 +9,19 @@ import { publishedLarpQuery } from "../util/filterPresets";
 // import { Typography, Box, Stack } from "@mui/material";
 
 function HomePage() {
+  const { larps, loading, error } = useFetchLarps(publishedLarpQuery);
 
-    const { larps, loading, error } = useFetchLarps(publishedLarpQuery);
-
-    return (
+  return (
+    <>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
         <>
-            {
-                loading
-                    ?
-                    <LoadingSpinner />
-                    :
-
-                    <>
-                        <ToastMessage
-                            title="Sorry, there was a problem fetching records for this page"
-                            messages={error}
-                        />
-                        {/* <Stack
+          <ToastMessage
+            title="Sorry, there was a problem fetching records for this page"
+            messages={error}
+          />
+          {/* <Stack
                             direction={{md:"row"}}
                             justifyContent="center"
                             alignItems={"center"}
@@ -81,55 +77,59 @@ function HomePage() {
                             }}
                         /> */}
 
-                        <CategoryBar
-                            title="Featured Events"
-                            filterSet={{
-                                endAfter: DateTime.now().toISO(),
-                                isFeatured:true,
-                                isPublished: true,
-                            }}
-                        />
+          <CategoryBar
+            title="Featured Events"
+            filterSet={{
+              endAfter: DateTime.now().toISO(),
+              isFeatured: true,
+              isPublished: true,
+            }}
+          />
 
-                        <Calendar larps={larps} />
+          <Calendar larps={larps} />
 
-                        <CategoryBar
-                            title="Recently Added"
-                            filterSet={{
-                                createdAfter: DateTime.now().minus({ weeks: 1 }).toISO(),
-                                endAfter: DateTime.now().toISO(),
-                                isPublished: true,
-                            }}
-
-                        />
-                        <CategoryBar
-                            title="Events this Month"
-                            filterSet={{
-                                endAfter: DateTime.now().toISO(),
-                                startBefore: DateTime.now().endOf("month").toISO(),
-                                isPublished: true,
-                            }}
-
-                        />
-                        <CategoryBar
-                            title="Events next Month"
-                            filterSet={{
-                                startAfter: DateTime.now().plus({ month: 1 }).startOf("month").toISO(),
-                                startBefore: DateTime.now().plus({ month: 1 }).endOf("month").toISO(),
-                                isPublished: true,
-                            }}
-                        />
-                        <CategoryBar
-                            title="Family friendly events"
-                            filterSet={{
-                                endAfter: DateTime.now().toISO(),
-                                tags: "family friendly",
-                                isPublished: true,
-                            }}
-                        />
-                    </>
-            }
+          <CategoryBar
+            title="Recently Added"
+            filterSet={{
+              createdAfter: DateTime.now().minus({ weeks: 1 }).toISO(),
+              endAfter: DateTime.now().toISO(),
+              isPublished: true,
+            }}
+          />
+          <CategoryBar
+            title="Events this Month"
+            filterSet={{
+              endAfter: DateTime.now().toISO(),
+              startBefore: DateTime.now().endOf("month").toISO(),
+              isPublished: true,
+            }}
+          />
+          <CategoryBar
+            title="Events next Month"
+            filterSet={{
+              startAfter: DateTime.now()
+                .plus({ month: 1 })
+                .startOf("month")
+                .toISO(),
+              startBefore: DateTime.now()
+                .plus({ month: 1 })
+                .endOf("month")
+                .toISO(),
+              isPublished: true,
+            }}
+          />
+          <CategoryBar
+            title="Family friendly events"
+            filterSet={{
+              endAfter: DateTime.now().toISO(),
+              tags: "family friendly",
+              isPublished: true,
+            }}
+          />
         </>
-    );
+      )}
+    </>
+  );
 }
 
 export default HomePage;

@@ -2,17 +2,16 @@ import { Box, Stack, Typography } from "@mui/material";
 import LoginForm from "../components/Forms/LoginForm";
 import { UserLoginData } from "../types";
 
-
 type LoginPageProps = {
-  login: (credentials: UserLoginData) => Promise<void>,
+  login: (credentials: UserLoginData) => Promise<void>;
 };
 
 function LoginPage({ login }: LoginPageProps) {
   return (
     <Stack
-      justifyContent={'center'}
+      justifyContent={"center"}
       sx={{
-        padding: '3rem',
+        padding: "3rem",
       }}
     >
       <Typography component="h1" variant="h1">
@@ -21,8 +20,8 @@ function LoginPage({ login }: LoginPageProps) {
       <Box
         sx={{
           // padding: '1rem',
-          width: '100%',
-          marginTop: '2rem',
+          width: "100%",
+          marginTop: "2rem",
         }}
       >
         <LoginForm login={login} />

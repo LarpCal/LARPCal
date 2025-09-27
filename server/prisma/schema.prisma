@@ -5,98 +5,98 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  engineType      = "binary"
-  previewFeatures = ["fullTextSearch"]
+    provider        = "prisma-client-js"
+    engineType      = "binary"
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 enum TicketStatus {
-  AVAILABLE
-  LIMITED
-  SOLD_OUT
-  SOON
+    AVAILABLE
+    LIMITED
+    SOLD_OUT
+    SOON
 }
 
 model Larp {
-  id           Int          @id @default(autoincrement())
-  title        String       @default("") @db.VarChar(500)
-  ticketStatus TicketStatus
-  start        DateTime
-  end          DateTime
-  allDay       Boolean      @map("all_day")
-  city         String       @default("") @db.VarChar(100)
-  country      String       @default("") @db.VarChar(100)
-  language     String       @default("") @db.VarChar(100)
-  description  String       @default("")
-  eventUrl     String       @default("") @map("event_url") @db.VarChar(500)
-  tags         Tag[]
-  imgUrl       ImageSet     @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
-  imgSetId     Int          @unique @map("img_set_id")
-  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  orgId        Int
-  isFeatured   Boolean      @default(false)
-  isPublished  Boolean      @default(false)
-  createdTime  DateTime     @default(now())
+    id           Int          @id @default(autoincrement())
+    title        String       @default("") @db.VarChar(500)
+    ticketStatus TicketStatus
+    start        DateTime
+    end          DateTime
+    allDay       Boolean      @map("all_day")
+    city         String       @default("") @db.VarChar(100)
+    country      String       @default("") @db.VarChar(100)
+    language     String       @default("") @db.VarChar(100)
+    description  String       @default("")
+    eventUrl     String       @default("") @map("event_url") @db.VarChar(500)
+    tags         Tag[]
+    imgUrl       ImageSet     @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
+    imgSetId     Int          @unique @map("img_set_id")
+    organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    orgId        Int
+    isFeatured   Boolean      @default(false)
+    isPublished  Boolean      @default(false)
+    createdTime  DateTime     @default(now())
 
-  @@map("larps")
+    @@map("larps")
 }
 
 model Tag {
-  name  String @id @db.VarChar(100)
-  larps Larp[]
+    name  String @id @db.VarChar(100)
+    larps Larp[]
 
-  @@map("tags")
+    @@map("tags")
 }
 
 model User {
-  id                   Int                    @id @default(autoincrement())
-  username             String                 @unique @db.VarChar(25)
-  password             String                 @db.VarChar(200)
-  firstName            String                 @db.VarChar(100)
-  lastName             String                 @db.VarChar(100)
-  email                String                 @unique @db.VarChar(100)
-  isAdmin              Boolean
-  organization         Organization?
-  PasswordResetRequest PasswordResetRequest[]
+    id                   Int                    @id @default(autoincrement())
+    username             String                 @unique @db.VarChar(25)
+    password             String                 @db.VarChar(200)
+    firstName            String                 @db.VarChar(100)
+    lastName             String                 @db.VarChar(100)
+    email                String                 @unique @db.VarChar(100)
+    isAdmin              Boolean
+    organization         Organization?
+    PasswordResetRequest PasswordResetRequest[]
 
-  @@map("users")
+    @@map("users")
 }
 
 model Organization {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
-  username    String   @unique
-  orgName     String   @unique @db.VarChar(100)
-  orgUrl      String   @default("") @map("org_url") @db.VarChar(500)
-  imgUrl      ImageSet @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
-  imgSetId    Int      @unique @map("img_set_id")
-  description String
-  email       String   @unique @db.VarChar(100)
-  isApproved  Boolean
-  larps       Larp[]
+    id          Int      @id @default(autoincrement())
+    user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
+    username    String   @unique
+    orgName     String   @unique @db.VarChar(100)
+    orgUrl      String   @default("") @map("org_url") @db.VarChar(500)
+    imgUrl      ImageSet @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
+    imgSetId    Int      @unique @map("img_set_id")
+    description String
+    email       String   @unique @db.VarChar(100)
+    isApproved  Boolean
+    larps       Larp[]
 
-  @@map("organizations")
+    @@map("organizations")
 }
 
 model ImageSet {
-  id   Int           @id @default(autoincrement())
-  sm   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-sm")
-  md   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-md")
-  lg   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-lg")
-  org  Organization?
-  larp Larp?
+    id   Int           @id @default(autoincrement())
+    sm   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-sm")
+    md   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-md")
+    lg   String        @default("https://sf-larpcal.s3.amazonaws.com/larpImage/default-lg")
+    org  Organization?
+    larp Larp?
 
-  @@map("image_sets")
+    @@map("image_sets")
 }
 
 model PasswordResetRequest {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
-  username  String
-  createdAt DateTime @default(now())
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
+    username  String
+    createdAt DateTime @default(now())
 }

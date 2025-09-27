@@ -1,57 +1,50 @@
-import { jest } from '@jest/globals';
-import request from 'supertest';
-import app from '../../app';
+import { describe, expect, jest, test } from "@jest/globals";
+import request from "supertest";
+import app from "../../app";
 
-import UserManager from '../../models/UserManager';
+import UserManager from "../../models/UserManager";
 import {
+  adminToken,
+  testAdminUser,
   testUser,
   userToken,
-  testAdminUser,
-  adminToken,
-  testOrganizerUser,
-  organizerToken,
-} from '../../test/testUserData';
-
-beforeEach(jest.clearAllMocks);
-
+} from "../../test/testUserData";
+import { omitKeys } from "../../utils/helpers";
 
 /************************** GET ALL **********************/
 describe("GET users/", function () {
   test("OK", async function () {
-    const {password, ...publicTestUser} = testUser
+    const publicTestUser = omitKeys(testUser, "password");
 
     const mockedGetAllUsers = jest.spyOn(UserManager, "findAll");
     mockedGetAllUsers.mockResolvedValueOnce([publicTestUser]);
 
     const resp = await request(app)
-    .get("/users")
-    .set("authorization", `Bearer ${adminToken}`);
+      .get("/users")
+      .set("authorization", `Bearer ${adminToken}`);
 
     expect(resp.statusCode).toEqual(200);
     expect(mockedGetAllUsers).toHaveBeenCalledTimes(1);
     expect(resp.body).toEqual({
-      users: [{
-        ...publicTestUser,
-      }]
+      users: [publicTestUser],
     });
   });
-});``
+});
 
 /************************** GET BY ID **********************/
 describe("GET users/:username", function () {
   test("OK", async function () {
-
     const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);
 
     const resp = await request(app)
       .get(`/users/${testUser.username}`)
-      .set("authorization", `Bearer ${adminToken}`);;
+      .set("authorization", `Bearer ${adminToken}`);
 
     expect(resp.statusCode).toEqual(200);
     expect(mockedGetUser).toHaveBeenCalledTimes(1);
     expect(resp.body).toEqual({
-      user: testUser
+      user: testUser,
     });
   });
 });
@@ -59,11 +52,10 @@ describe("GET users/:username", function () {
 /************************** CREATE USER **********************/
 describe("POST users/", function () {
   test("OK", async function () {
-
     //mock create
     const mockedRegister = jest.spyOn(UserManager, "register");
     mockedRegister.mockResolvedValueOnce(testAdminUser);
-    const {id, organization, ...createData} = testAdminUser
+    const createData = omitKeys(testAdminUser, "id", "organization");
 
     const resp = await request(app)
       .post(`/users/`)
@@ -77,18 +69,16 @@ describe("POST users/", function () {
   });
 });
 
-
 /************************** UPDATE USER **********************/
 describe("PATCH users/:username", function () {
   test("OK", async function () {
-
     //mock lookup for auth middleware
     const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);
 
     //mock update
     const updateData = {
-      firstName: "testUser-updatedFirst"
+      firstName: "testUser-updatedFirst",
     };
     const mockedUpdateUser = jest.spyOn(UserManager, "updateUser");
     mockedUpdateUser.mockResolvedValueOnce({
@@ -107,16 +97,14 @@ describe("PATCH users/:username", function () {
       user: {
         ...testUser,
         firstName: "testUser-updatedFirst",
-      }
+      },
     });
   });
 });
 
-
 /************************** DELETE LARP **********************/
 describe("DELETE users/:username", function () {
   test("OK", async function () {
-
     //mock lookup for auth middleware
     const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);

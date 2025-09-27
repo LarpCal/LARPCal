@@ -2,17 +2,16 @@ import { Box, Stack, Typography } from "@mui/material";
 import { UserForCreate } from "../types";
 import UserRegistrationForm from "../components/Forms/RegisterForm";
 
-
 type RegisterPageProps = {
-    register: (userInfo: UserForCreate) => Promise<void>;
+  register: (userInfo: UserForCreate) => Promise<void>;
 };
 
 function RegisterPage({ register }: RegisterPageProps) {
   return (
     <Stack
-      justifyContent={'center'}
+      justifyContent={"center"}
       sx={{
-        padding: '3rem',
+        padding: "3rem",
       }}
     >
       <Typography component="h1" variant="h1">
@@ -21,11 +20,11 @@ function RegisterPage({ register }: RegisterPageProps) {
       <Box
         sx={{
           // padding: '1rem',
-          width: '100%',
-          marginTop: '2rem',
+          width: "100%",
+          marginTop: "2rem",
         }}
       >
-        <UserRegistrationForm register={register}/>
+        <UserRegistrationForm register={register} />
       </Box>
     </Stack>
   );

@@ -2,12 +2,16 @@ import LarpAPI from "../util/api";
 import { useNavigate } from "react-router-dom";
 
 import TooltipButton from "../components/FormComponents/TooltipButton";
-import { faImage, faPencil, faStar, faTrash, } from "@fortawesome/free-solid-svg-icons";
+import {
+  faImage,
+  faPencil,
+  faStar,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { Larp } from "../types";
 
 function useLarpControls(larp: Larp) {
-
-  const larpId = larp.id
+  const larpId = larp.id;
 
   const navigate = useNavigate();
 
@@ -15,7 +19,7 @@ function useLarpControls(larp: Larp) {
     e.stopPropagation();
     e.preventDefault();
     LarpAPI.DeleteLarp(larpId);
-    navigate('/events');
+    navigate("/events");
   }
 
   function editLarp(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -35,8 +39,8 @@ function useLarpControls(larp: Larp) {
     e.preventDefault();
     LarpAPI.UpdateLarp({
       ...larp,
-      isFeatured:!larp.isFeatured
-    })
+      isFeatured: !larp.isFeatured,
+    });
   }
 
   // const DeleteLarpButton = <DeleteLarpButtonComponent handleDelete={deleteLarp} />;
@@ -70,9 +74,12 @@ function useLarpControls(larp: Larp) {
     />
   );
 
-
-  return { DeleteLarpButton, EditLarpButton, EditImageButton, ToggleFeaturedButton };
-
+  return {
+    DeleteLarpButton,
+    EditLarpButton,
+    EditImageButton,
+    ToggleFeaturedButton,
+  };
 }
 
 export default useLarpControls;
