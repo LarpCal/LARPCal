@@ -14,7 +14,7 @@ import { Box, Link, Stack, Typography } from "@mui/material";
 import { JSDateToLuxon } from "../../util/typeConverters";
 
 import "./LarpDetails.scss";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { userContext } from "../../context/userContext";
 import useLarpControls from "../../hooks/useLarpControls";
 
@@ -30,6 +30,11 @@ function LarpDetails({ larp }: LarpDetailsProps) {
   const { username, isAdmin } = user;
   const { EditLarpButton, DeleteLarpButton, EditImageButton } =
     useLarpControls(larp);
+
+  const description = useMemo(
+    () => larp.description.split("\n").filter(Boolean),
+    [larp.description],
+  );
 
   return (
     <Box className="LarpDetails">
@@ -116,7 +121,11 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           <Typography component="h3" variant="h2" className="Date & Time">
             About this event:
           </Typography>
-          <Typography>{larp.description}</Typography>
+          {description.map((line, index) => (
+            <Typography key={index} paragraph>
+              {line}
+            </Typography>
+          ))}
         </section>
 
         <section id="Location">
