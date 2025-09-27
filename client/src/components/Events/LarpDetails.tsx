@@ -32,7 +32,30 @@ function LarpDetails({ larp }: LarpDetailsProps) {
     useLarpControls(larp);
 
   const description = useMemo(
-    () => larp.description.split("\n").filter(Boolean),
+    () =>
+      larp.description
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => {
+          // Make URLs clickable.
+          const urlRegex = /(https?:\/\/[^\s]+)/g;
+          const parts = line.trim().split(urlRegex);
+
+          return parts.map((part, idx) =>
+            urlRegex.test(part) ? (
+              <a
+                key={idx}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {part}
+              </a>
+            ) : (
+              part
+            ),
+          );
+        }),
     [larp.description],
   );
 
@@ -113,7 +136,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
             // color={ticketColor}
             variant={"details2"}
           >
-            Tickets: {larp.ticketStatus}
+            Tickets: {larp.ticketStatus.replace(/_/g, " ")}
           </Typography>
         </Box>
 
