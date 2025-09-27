@@ -17,6 +17,7 @@
     "prepare": "husky",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
+    "test": "npm -w server run test",
     "typecheck": "concurrently --raw npm:typecheck:server npm:typecheck:client",
     "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
     "typecheck:client": "tsc --project client/tsconfig.json --noEmit"
