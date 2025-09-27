@@ -86,6 +86,15 @@ function HomePage() {
             }}
           />
 
+          <CategoryBar
+            title="Available Now"
+            filterSet={{
+              endAfter: DateTime.now().toISO(),
+              ticketStatus: ["AVAILABLE", "LIMITED"],
+              isPublished: true,
+            }}
+          />
+
           <Calendar larps={larps} />
 
           <CategoryBar

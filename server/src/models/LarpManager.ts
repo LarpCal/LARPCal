@@ -60,13 +60,23 @@ class LarpManager {
     const isPublished =
       query?.isPublished !== undefined ? query.isPublished : true;
 
+    //No query provided
     if (!query) {
-      //No query provided
-      larps = await prisma.larp.findMany({
+      return prisma.larp.findMany({
         orderBy: { start: "asc" },
         include: LARP_INCLUDE_OBJ,
       });
-    } else if (query && !query.term) {
+    }
+
+    const ticketStatus = (
+      query.ticketStatus
+        ? Array.isArray(query.ticketStatus)
+          ? query.ticketStatus
+          : [query.ticketStatus]
+        : []
+    ).map((status) => TicketStatus[status]);
+
+    if (query && !query.term) {
       // Query contains filters but no search term
 
       const prismaFilterObject: Prisma.LarpWhereInput = {
@@ -76,9 +86,7 @@ class LarpManager {
             mode: "insensitive",
           },
           ticketStatus: {
-            equals: query.ticketStatus
-              ? TicketStatus[query.ticketStatus]
-              : undefined,
+            in: ticketStatus,
           },
           start: {
             gte: query.startAfter ? new Date(query.startAfter) : undefined,
@@ -154,9 +162,7 @@ class LarpManager {
             mode: "insensitive",
           },
           ticketStatus: {
-            equals: query.ticketStatus
-              ? TicketStatus[query.ticketStatus]
-              : undefined,
+            in: ticketStatus,
           },
           start: {
             gte: query.startAfter ? new Date(query.startAfter) : undefined,
