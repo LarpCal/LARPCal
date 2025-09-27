@@ -1,10 +1,9 @@
+import { describe, test, jest, expect } from "@jest/globals";
 import "../../config"; //this loads the test database
 import request from "supertest";
 import app from "../../app";
 import UserManager from "../../models/UserManager";
 import { testUser } from "../../test/testUserData";
-
-beforeEach(jest.clearAllMocks);
 
 /************************************** POST /auth/token */
 

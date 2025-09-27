@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:16
-    container_name: larpcal_db
     environment:
       POSTGRES_USER: larpcal
       POSTGRES_PASSWORD: password

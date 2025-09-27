@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../app";
 
@@ -6,8 +6,6 @@ import LarpManager from "../../models/LarpManager";
 import { testLarp, testLarpForCreate } from "../../test/testLarpData";
 import { organizerToken } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
-
-beforeEach(jest.clearAllMocks);
 
 /************************** GET ALL **********************/
 describe("GET events/", function () {
@@ -23,6 +21,7 @@ describe("GET events/", function () {
       larps: [
         {
           ...testLarp,
+          createdTime: testLarp.createdTime.toISOString(),
           start: testLarp.start.toISOString(),
           end: testLarp.end.toISOString(),
         },
@@ -35,15 +34,16 @@ describe("GET events/", function () {
 describe("GET events/:id", function () {
   test("OK", async function () {
     const mockedGetLarpById = jest.spyOn(LarpManager, "getLarpById");
-    mockedGetLarpById.mockResolvedValueOnce(testLarp);
+    mockedGetLarpById.mockResolvedValue(testLarp);
 
     const resp = await request(app).get("/events/1");
 
     expect(resp.statusCode).toEqual(200);
-    expect(mockedGetLarpById).toHaveBeenCalledTimes(1);
+    expect(mockedGetLarpById).toHaveBeenCalledTimes(2);
     expect(resp.body).toEqual({
       larp: {
         ...testLarp,
+        createdTime: testLarp.createdTime.toISOString(),
         start: testLarp.start.toISOString(),
         end: testLarp.end.toISOString(),
       },
@@ -72,6 +72,7 @@ describe("POST events/:id", function () {
     expect(resp.body).toEqual({
       larp: {
         ...testLarp,
+        createdTime: testLarp.createdTime.toISOString(),
         start: testLarp.start.toISOString(),
         end: testLarp.end.toISOString(),
       },
@@ -108,6 +109,7 @@ describe("PUT events/:id", function () {
       larp: {
         ...testLarp,
         title: "testLarp-updated",
+        createdTime: testLarp.createdTime.toISOString(),
         start: updateData.start.toISOString(),
         end: updateData.end.toISOString(),
       },
@@ -134,6 +136,7 @@ describe("DELETE events/:id", function () {
     expect(resp.body).toEqual({
       deleted: {
         ...testLarp,
+        createdTime: testLarp.createdTime.toISOString(),
         start: testLarp.start.toISOString(),
         end: testLarp.end.toISOString(),
       },

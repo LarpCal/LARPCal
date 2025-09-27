@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../app";
 
@@ -10,8 +10,6 @@ import {
   userToken,
 } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
-
-beforeEach(jest.clearAllMocks);
 
 /************************** GET ALL **********************/
 describe("GET users/", function () {
@@ -28,11 +26,7 @@ describe("GET users/", function () {
     expect(resp.statusCode).toEqual(200);
     expect(mockedGetAllUsers).toHaveBeenCalledTimes(1);
     expect(resp.body).toEqual({
-      users: [
-        {
-          ...publicTestUser,
-        },
-      ],
+      users: [publicTestUser],
     });
   });
 });

@@ -8,7 +8,6 @@ import { DeepMockProxy, mockDeep, mockReset } from "jest-mock-extended";
 let prisma: PrismaClient | DeepMockProxy<PrismaClient>;
 
 if (process.env.NODE_ENV === "test") {
-  console.log("Mocking prisma for testing");
   prisma = mockDeep<PrismaClient>();
 
   beforeEach(() => {
