@@ -1,4 +1,4 @@
-name: Lint, Typecheck, and Format
+name: Jest Tests
 
 on:
   push:
