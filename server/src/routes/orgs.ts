@@ -27,7 +27,7 @@ router.post(
   ensureLoggedIn,
   // readMultipart("image"),
 
-  async function (req: Request, res: Response) {
+  async function (req, res) {
     const validator = jsonschema.validate(req.body, orgForCreateSchema, {
       required: true,
     });

@@ -1,5 +1,5 @@
 import { prisma } from "../../prismaSingleton";
-import { jest } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 
 const mockPrisma = prisma as unknown as DeepMockProxy<PrismaClient>;
 
@@ -8,12 +8,12 @@ import { testLarp, testLarpForCreate } from "../../test/testLarpData";
 import { DeepMockProxy } from "jest-mock-extended";
 import { PrismaClient } from "@prisma/client";
 
-beforeEach(jest.clearAllMocks);
-
 describe("Test post events/", function () {
   test("Works", async function () {
     //set up mocks
+    // @ts-expect-error -- Not sure how to type this.
     mockPrisma.larp.create.mockResolvedValueOnce({ ...testLarp });
+    // @ts-expect-error -- Not sure how to type this.
     mockPrisma.larp.findUniqueOrThrow.mockResolvedValueOnce(testLarp);
 
     //run test
