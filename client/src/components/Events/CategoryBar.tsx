@@ -21,7 +21,9 @@ function CategoryBar({ title, filterSet }: CategoryBarProps) {
   }
 
   //don't render empty lists
-  if (larps.length === 0) return "";
+  if (larps.length === 0) {
+    return null;
+  }
 
   return (
     <Box className="CategoryBar">

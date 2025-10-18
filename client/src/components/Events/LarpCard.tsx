@@ -77,7 +77,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
         flexBasis={1}
       >
         <Typography color={ticketColor} variant={"details2"}>
-          Tickets: {larp.ticketStatus}
+          Tickets: {larp.ticketStatus.replace(/_/g, " ")}
         </Typography>
         <Link
           component={RouterLink}
@@ -138,7 +138,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
           </Stack>
         </Box>
 
-        <Stack direction="row" flexWrap="wrap" spacing={1} margin="auto">
+        <Stack direction="row" flexWrap="wrap" gap={1} margin="auto">
           {larp.tags.slice(0, 4).map((tag) => (
             <TagCard key={tag.name} tag={tag} />
           ))}

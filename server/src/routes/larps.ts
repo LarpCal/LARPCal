@@ -9,7 +9,7 @@ import {
 import readMultipart from "../middleware/multer";
 const router = express.Router();
 
-import { BadRequestError } from "../utils/expressError";
+import { BadRequestError, ExpressError } from "../utils/expressError";
 
 import LarpManager from "../models/LarpManager";
 
@@ -149,15 +149,16 @@ router.put(
   "/:id/image",
   ensureOwnerOrAdmin,
   readMultipart("image"),
-  async function (req: Request, res: Response) {
-    //TODO: test middleware
-
+  async function (req, res) {
     if (!req.file) {
       throw new BadRequestError("Please attach an image");
     }
-    const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
-
-    return res.json(larp);
+    try {
+      const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
+      return res.json(larp);
+    } catch {
+      throw new ExpressError("Image upload failed");
+    }
   },
 );
 

@@ -14,7 +14,7 @@ import { Box, Link, Stack, Typography } from "@mui/material";
 import { JSDateToLuxon } from "../../util/typeConverters";
 
 import "./LarpDetails.scss";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { userContext } from "../../context/userContext";
 import useLarpControls from "../../hooks/useLarpControls";
 
@@ -31,12 +31,40 @@ function LarpDetails({ larp }: LarpDetailsProps) {
   const { EditLarpButton, DeleteLarpButton, EditImageButton } =
     useLarpControls(larp);
 
+  const description = useMemo(
+    () =>
+      larp.description
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => {
+          // Make URLs clickable.
+          const urlRegex = /(https?:\/\/[^\s]+)/g;
+          const parts = line.trim().split(urlRegex);
+
+          return parts.map((part, idx) =>
+            urlRegex.test(part) ? (
+              <a
+                key={idx}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {part}
+              </a>
+            ) : (
+              part
+            ),
+          );
+        }),
+    [larp.description],
+  );
+
   return (
     <Box className="LarpDetails">
       {!larp.isPublished && (
         <ToastMessage
           messages={[
-            "Your event has been saved, but your account is still pending approval.  Your event will be automatically published once your organizer account has been reviewed by an admin.",
+            "Your LARP has been saved, but your account is still pending approval.  Your LARP will be automatically published once your organizer account has been reviewed by an admin.",
           ]}
           title="Saved (but not published)"
           severity="success"
@@ -108,15 +136,19 @@ function LarpDetails({ larp }: LarpDetailsProps) {
             // color={ticketColor}
             variant={"details2"}
           >
-            Tickets: {larp.ticketStatus}
+            Tickets: {larp.ticketStatus.replace(/_/g, " ")}
           </Typography>
         </Box>
 
         <section id="About">
           <Typography component="h3" variant="h2" className="Date & Time">
-            About this event:
+            About this LARP:
           </Typography>
-          <Typography>{larp.description}</Typography>
+          {description.map((line, index) => (
+            <Typography key={index} paragraph>
+              {line}
+            </Typography>
+          ))}
         </section>
 
         <section id="Location">

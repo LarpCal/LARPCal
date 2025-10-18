@@ -31,12 +31,14 @@ app.use(() => {
 
 /** Generic error handler; anything unhandled goes here. */
 const genericErrorHandler: ErrorRequestHandler = (err, req, res) => {
-  if (process.env.NODE_ENV !== "test") console.error(err.stack);
+  if (process.env.NODE_ENV !== "test") {
+    console.error(err);
+  }
 
   const status = err.status || 500;
   const message = err.message;
 
-  return res.status(status).json({
+  res.status(status).json({
     error: { message, status },
   });
 };

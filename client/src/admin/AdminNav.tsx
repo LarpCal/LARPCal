@@ -19,7 +19,7 @@ function AdminNav() {
       <List>
         <ListItem>
           <Link component={NavLink} to="/admin/events">
-            Events
+            LARPs
           </Link>
         </ListItem>
         <ListItem>

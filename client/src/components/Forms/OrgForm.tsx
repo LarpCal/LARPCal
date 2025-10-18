@@ -28,7 +28,6 @@ function OrgForm() {
           <Stack direction="column" spacing={2} sx={{ margin: "1rem" }}>
             <FastField
               component={FormikMuiTextField}
-              placeholder="Name your event"
               name="orgName"
               id="orgName"
               label="Organization Name"

@@ -21,67 +21,20 @@ function HomePage() {
             title="Sorry, there was a problem fetching records for this page"
             messages={error}
           />
-          {/* <Stack
-                            direction={{md:"row"}}
-                            justifyContent="center"
-                            alignItems={"center"}
-                            spacing={3}
-                            sx={{
-                                margin: {
-                                    xs:"1rem 10% 1rem 10%",
-                                    sm:"3rem 10% 3rem 10%",
-                                    md:"5rem 10% 5rem 10%",
-                                },
-                            }}
-                        >
-                            <Box
-                                component="img"
-                                src="/BannerIcon.svg"
-                                sx={{
-                                    aspectRatio: '1/1',
-                                    width: {
-                                        xs:'50%',
-                                        sm: '40%',
-                                        md:'35%',
-                                    },
-                                    // opacity:"80%"
-                                }}
-                            />
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
-                            >
-                                <Typography
-                                    variant="h2"
-                                    // color="white"
-                                    sx={{
-                                        fontSize: {
-                                            xs: "2.5rem",
-                                            sm: "3rem",
-                                            md: "3.5rem",
-                                        },
-                                        color: (theme) => theme.palette.primary.light,
-                                        // lineBreak:"loose",
-                                        textAlign: {xs:"center", md:"left"},
-                                    }}
-                                >
-                                    Your Hub for <Box component="span" sx={{ color: (theme) => theme.palette.primary.main }}>Live Action Role Playing </Box> Events
-                                </Typography>
-                            </Stack>
-                        </Stack>
-
-                        <Carousel
-                            filterSet={{
-                                startAfter: DateTime.now().toISO(),
-                                isFeatured: true,
-                            }}
-                        /> */}
-
           <CategoryBar
-            title="Featured Events"
+            title="Featured LARPs"
             filterSet={{
               endAfter: DateTime.now().toISO(),
               isFeatured: true,
+              isPublished: true,
+            }}
+          />
+
+          <CategoryBar
+            title="Available Now"
+            filterSet={{
+              endAfter: DateTime.now().toISO(),
+              ticketStatus: ["AVAILABLE", "LIMITED"],
               isPublished: true,
             }}
           />
@@ -97,7 +50,7 @@ function HomePage() {
             }}
           />
           <CategoryBar
-            title="Events this Month"
+            title="LARPs this Month"
             filterSet={{
               endAfter: DateTime.now().toISO(),
               startBefore: DateTime.now().endOf("month").toISO(),
@@ -105,7 +58,7 @@ function HomePage() {
             }}
           />
           <CategoryBar
-            title="Events next Month"
+            title="LARPs next Month"
             filterSet={{
               startAfter: DateTime.now()
                 .plus({ month: 1 })
@@ -119,7 +72,7 @@ function HomePage() {
             }}
           />
           <CategoryBar
-            title="Family friendly events"
+            title="Family friendly LARPs"
             filterSet={{
               endAfter: DateTime.now().toISO(),
               tags: "family friendly",

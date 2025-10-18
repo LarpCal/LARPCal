@@ -141,7 +141,7 @@ function NavBar() {
               to={`/events/create`}
               onClick={() => setShowAccountMenu(false)}
             >
-              Create an Event
+              Create a LARP
             </MenuItem>
             <MenuItem
               component={RouterLink}
@@ -168,7 +168,7 @@ function NavBar() {
               to={`/events/create`}
               onClick={() => setShowAccountMenu(false)}
             >
-              Create an Event
+              Create a LARP
             </MenuItem>
             <MenuItem
               component={RouterLink}
@@ -261,7 +261,7 @@ function NavBar() {
           to="/events"
           onClick={() => setShowAccountMenu(false)}
         >
-          Events
+          LARPs
         </MenuItem>
         {UNAPPROVED_ORG_ITEMS}
         {APPROVED_ORG_ITEMS}
@@ -348,7 +348,7 @@ function NavBar() {
                 className="NavBar-button"
               >
                 <FontAwesomeIcon icon={faCalendar} />
-                EVENTS
+                LARPS
               </Button>
               <Button
                 className="NavBar-button"
