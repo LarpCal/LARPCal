@@ -71,6 +71,7 @@ function LarpsDashboard() {
         return JSDateToLuxon(params.value).toLocaleString({
           month: "short",
           day: "numeric",
+          year: "numeric",
         });
       },
     },
@@ -82,6 +83,7 @@ function LarpsDashboard() {
         return JSDateToLuxon(params.value).toLocaleString({
           month: "short",
           day: "numeric",
+          year: "numeric",
         });
       },
     },
