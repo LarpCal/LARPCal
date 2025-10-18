@@ -34,13 +34,12 @@ function EventForm() {
       >
         <Form>
           <Stack direction="column" spacing={2} sx={{ margin: "1rem" }}>
-            {/* <label htmlFor="title"><Typography variant='body2'>Event Title</Typography></label> */}
             <FastField
               component={FormikMuiTextField}
-              placeholder="Name your event"
+              placeholder="Name your LARP"
               name="title"
               id="larp-title"
-              label="Event title"
+              label="LARP title"
               fullWidth
             />
             <Field
@@ -58,10 +57,10 @@ function EventForm() {
             />
             <FastField
               component={FormikMuiTextField}
-              placeholder="Add a description for your event"
+              placeholder="Add a description for your LARP"
               name="description"
               id="larp-description"
-              label="Event description"
+              label="LARP description"
               fullWidth
               multiline
               minRows={3}
@@ -69,21 +68,21 @@ function EventForm() {
             />
             <FastField
               component={FormikMuiTextField}
-              placeholder="What city will your event take place in"
+              placeholder="What city will your LARP take place in"
               name="city"
               id="larp-city"
               label="City"
             />
             <FastField
               component={FormikMuiTextField}
-              placeholder="What country will your event take place in?"
+              placeholder="What country will your LARP take place in?"
               name="country"
               id="larp-country"
               label="Country"
             />
             <FastField
               component={FormikMuiTextField}
-              placeholder="What is the primary language for your event?"
+              placeholder="What is the primary language for your LARP?"
               name="language"
               id="larp-language"
               label="Language"

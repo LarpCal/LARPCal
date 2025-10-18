@@ -60,14 +60,14 @@ function OrgDetails({ org }: OrgDetailsProps) {
         </section>
 
         <CategoryBar
-          title={`${org.orgName}'s Upcoming Events`}
+          title={`${org.orgName}'s Upcoming LARPs`}
           filterSet={{
             org: org.orgName,
             endAfter: DateTime.now().toISO(),
           }}
         />
         <CategoryBar
-          title={`${org.orgName}'s Past Events`}
+          title={`${org.orgName}'s Past LARPs`}
           filterSet={{
             org: org.orgName,
             endBefore: DateTime.now().toISO(),

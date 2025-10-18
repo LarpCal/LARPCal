@@ -45,7 +45,7 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
     return (
       <Box className="EventList-empty">
         <Typography variant="body1" color="charcoal" align="center">
-          No events match this search.
+          No LARPs match this search.
         </Typography>
       </Box>
     );

@@ -29,7 +29,7 @@ function OrgDetailPage() {
           <Alert severity="success" icon={<FontAwesomeIcon icon={faCheck} />}>
             Your application is currently being reviewed by our admin team. Once
             your application has been approved you will be able to publish
-            events. Send questions to{" "}
+            LARPs. Send questions to{" "}
             <Link component={RouterLink} to="mailto:info@larpcalendar.com">
               info@larpcalendar.com
             </Link>

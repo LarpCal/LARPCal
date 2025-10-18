@@ -67,15 +67,15 @@ function DemoHome({ login }: DemoHomeProps) {
             <List dense>
               <ListItem>
                 <FontAwesomeIcon icon={faCheck} /> &nbsp; Fulltext search for
-                events
+                LARPs
               </ListItem>
               <ListItem>
                 <FontAwesomeIcon icon={faCheck} /> &nbsp; Event List page will
                 be filterable by date, location, tags and more
               </ListItem>
               <ListItem>
-                <FontAwesomeIcon icon={faCheck} /> &nbsp;
-                {`Category displays (featured, this month etc) will display only the relevant events`}
+                <FontAwesomeIcon icon={faCheck} /> &nbsp; Category displays
+                (featured, this month etc) will display only the relevant LARPs
               </ListItem>
               <ListItem>
                 <FontAwesomeIcon icon={faArrowRight} /> &nbsp; Connection to

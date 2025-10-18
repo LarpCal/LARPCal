@@ -64,7 +64,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
       {!larp.isPublished && (
         <ToastMessage
           messages={[
-            "Your event has been saved, but your account is still pending approval.  Your event will be automatically published once your organizer account has been reviewed by an admin.",
+            "Your LARP has been saved, but your account is still pending approval.  Your LARP will be automatically published once your organizer account has been reviewed by an admin.",
           ]}
           title="Saved (but not published)"
           severity="success"
@@ -142,7 +142,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
 
         <section id="About">
           <Typography component="h3" variant="h2" className="Date & Time">
-            About this event:
+            About this LARP:
           </Typography>
           {description.map((line, index) => (
             <Typography key={index} paragraph>

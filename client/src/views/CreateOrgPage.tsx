@@ -68,9 +68,9 @@ function CreateOrgPage() {
         Become an organizer
       </Typography>
       <Typography m="2rem">
-        Would you like to add your events to the calendar? We'd love to have
-        you! Fill out the form below and our team will review your application.
-        Once you're approved, you'll be able to post your own events.
+        Would you like to add your LARPs to the calendar? We'd love to have you!
+        Fill out the form below and our team will review your application. Once
+        you're approved, you'll be able to post your own LARPs.
       </Typography>
       <OrgFormProvider<OrganizationForCreate>
         onSubmitCallback={saveOrg}

@@ -29,14 +29,14 @@ function useOrgControls(orgId: number) {
   const DeleteOrgButton = (
     <TooltipButton
       handleClick={deleteOrg}
-      title="Delete this Event"
+      title="Delete this LARP"
       icon={faTrash}
     />
   );
   const EditOrgButton = (
     <TooltipButton
       handleClick={editOrg}
-      title="Edit this Event"
+      title="Edit this LARP"
       icon={faPencil}
     />
   );
