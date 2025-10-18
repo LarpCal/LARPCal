@@ -40,7 +40,7 @@ async function sendMail(to: string, subject: string, html: string) {
 }
 
 function sendPasswordResetEmail(to: string, username: string, link: string) {
-  sendMail(
+  return sendMail(
     to,
     "Password reset request for you Larp Calendar account",
     `
