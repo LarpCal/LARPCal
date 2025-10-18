@@ -62,14 +62,14 @@ function OrgDetails({ org }: OrgDetailsProps) {
         <CategoryBar
           title={`${org.orgName}'s Upcoming LARPs`}
           filterSet={{
-            org: org.orgName,
+            orgId: org.id,
             endAfter: DateTime.now().toISO(),
           }}
         />
         <CategoryBar
           title={`${org.orgName}'s Past LARPs`}
           filterSet={{
-            org: org.orgName,
+            orgId: org.id,
             endBefore: DateTime.now().toISO(),
           }}
         />

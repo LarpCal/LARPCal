@@ -85,9 +85,8 @@ class LarpManager {
             contains: query.title,
             mode: "insensitive",
           },
-          ticketStatus: {
-            in: ticketStatus,
-          },
+          ticketStatus:
+            ticketStatus.length > 0 ? { in: ticketStatus } : undefined,
           start: {
             gte: query.startAfter ? new Date(query.startAfter) : undefined,
             lte: query.startBefore ? new Date(query.startBefore) : undefined,
@@ -118,6 +117,9 @@ class LarpManager {
             orgName: {
               contains: query.org,
               mode: "insensitive",
+            },
+            id: {
+              equals: query.orgId,
             },
           },
           isFeatured: {

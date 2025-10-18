@@ -59,6 +59,7 @@ export type LarpQuery = {
   country?: string;
   language?: string;
   org?: string;
+  orgId?: number;
   published?: boolean;
   isFeatured?: boolean;
   createdBefore?: string;
