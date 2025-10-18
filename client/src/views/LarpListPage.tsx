@@ -2,13 +2,12 @@ import LarpList from "../components/Events/LarpList";
 import ToastMessage from "../components/ui/ToastMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useFetchLarps } from "../hooks/useFetchLarps";
-import { useSearchParams } from "react-router-dom";
+import { useSearchQuery } from "../hooks/useSearchQuery";
 
 function LarpListPage() {
-  const [searchParams] = useSearchParams();
-  const _queryParam = searchParams.get("q") || null;
+  const queryParams = useSearchQuery();
 
-  const { larps, loading, error } = useFetchLarps({}, true);
+  const { larps, loading, error } = useFetchLarps(queryParams, true);
 
   return loading ? (
     <LoadingSpinner />
