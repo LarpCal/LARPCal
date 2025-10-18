@@ -21,6 +21,7 @@
     "@mui/material": "^5.15.18",
     "@mui/x-data-grid": "^7.10.0",
     "@mui/x-date-pickers": "^7.8.0",
+    "@tanstack/react-query": "^5.90.5",
     "@types/material-ui": "^0.21.17",
     "@types/yup": "^0.32.0",
     "axios": "^1.7.2",
