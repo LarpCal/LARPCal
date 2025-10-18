@@ -6,18 +6,20 @@ import { useSearchParams } from "react-router-dom";
 
 function LarpListPage() {
   const [searchParams] = useSearchParams();
-  const queryParam = searchParams.get("q") || null;
+  const _queryParam = searchParams.get("q") || null;
 
-  const { larps, loading, error } = useFetchLarps(queryParam, true);
+  const { larps, loading, error } = useFetchLarps({}, true);
 
   return loading ? (
     <LoadingSpinner />
   ) : (
     <>
-      <ToastMessage
-        title="Sorry, there was a problem fetching records for this page"
-        messages={error}
-      />
+      {error?.message && (
+        <ToastMessage
+          title="Sorry, there was a problem fetching records for this page"
+          messages={error.message}
+        />
+      )}
       <LarpList larps={larps} />
     </>
   );

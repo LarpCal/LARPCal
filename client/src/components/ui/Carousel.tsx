@@ -17,10 +17,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useFetchLarps } from "../../hooks/useFetchLarps";
 import { LarpQuery } from "../../types";
-import { base64Encode } from "../../util/utilities";
-import "./Carousel.scss";
 import { Link as RouterLink } from "react-router-dom";
 import DurationDisplay from "../Events/DurationDisplay";
+
+import "./Carousel.scss";
 
 type CarouselProps = {
   filterSet: LarpQuery;
@@ -34,8 +34,7 @@ const BREAKPOINTS = {
 const MAX_WIDTH = 1280;
 
 function EventCarousel({ filterSet }: CarouselProps) {
-  const query = base64Encode(JSON.stringify(filterSet));
-  const { larps } = useFetchLarps(query);
+  const { larps } = useFetchLarps(filterSet);
   const [displayIdx, setDisplayIdx] = useState(0);
   const [windowSize, setWindowSize] = useState(window.innerWidth);
   const [itemSizes, setItemSizes] = useState({

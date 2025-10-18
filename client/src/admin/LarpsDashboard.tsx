@@ -14,27 +14,20 @@ import { Larp } from "../types";
 import ToggleFeaturedButton from "../components/FormComponents/ToggleFeaturedButton";
 
 function LarpsDashboard() {
-  const { larps, setLarps, loading, error } = useFetchLarps(null);
+  const { larps, loading, error, refetch } = useFetchLarps();
   const navigate = useNavigate();
 
   async function handleDelete(id: number) {
     await LarpAPI.DeleteLarp(id);
-    setLarps(() => larps.filter((larp) => larp.id !== id));
+    await refetch();
   }
 
   async function toggleFeatured(larp: Larp) {
-    const { organization, ...larpForUpdate } = larp;
+    const { organization: _, ...larpForUpdate } = larp;
 
-    const updated = await LarpAPI.UpdateLarp({
+    await LarpAPI.UpdateLarp({
       ...larpForUpdate,
       isFeatured: !larpForUpdate.isFeatured,
-    });
-    setLarps(() => {
-      const newLarps = larps.map((newLarp) => {
-        if (newLarp.id !== larp.id) return newLarp;
-        return { ...updated, organization };
-      });
-      return newLarps;
     });
   }
 
@@ -123,7 +116,7 @@ function LarpsDashboard() {
     <>
       <ToastMessage
         title="Sorry, there was a problem loading your data"
-        messages={error}
+        messages={error?.message}
       />
       <Box
         sx={{
