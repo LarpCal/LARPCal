@@ -98,7 +98,11 @@ function LarpDetails({ larp }: LarpDetailsProps) {
         spacing={2}
         alignContent="center"
       >
-        <Typography variant="h4" className="filled-secondary">
+        <Typography
+          variant="h4"
+          className="filled-secondary"
+          sx={{ padding: "0.5rem" }}
+        >
           {JSDateToLuxon(larp.start).toLocaleString({
             weekday: "short",
             month: "long",
