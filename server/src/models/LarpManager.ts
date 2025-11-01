@@ -160,7 +160,7 @@ class LarpManager {
       };
     }
 
-    const orderBy = term
+    const orderBy: Prisma.LarpOrderByWithRelationInput = term
       ? ({
           _relevance: {
             fields: ["title", "description", "country", "city", "language"],
@@ -168,7 +168,7 @@ class LarpManager {
             sort: "asc",
           },
         } satisfies Prisma.LarpOrderByWithRelationInput)
-      : undefined;
+      : { start: "asc" };
 
     return prisma.larp.findMany({
       where: queryFilters,

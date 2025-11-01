@@ -12,24 +12,31 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";
 import { Larp } from "../types";
 import ToggleFeaturedButton from "../components/FormComponents/ToggleFeaturedButton";
+import { useMutation } from "@tanstack/react-query";
 
 function LarpsDashboard() {
   const { larps, loading, error, refetch } = useFetchLarps();
   const navigate = useNavigate();
 
-  async function handleDelete(id: number) {
-    await LarpAPI.DeleteLarp(id);
-    await refetch();
-  }
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: (id: number) => LarpAPI.DeleteLarp(id),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const { mutate: toggleFeaturedMutation } = useMutation({
+    mutationFn(larp: Larp) {
+      const { organization: _, ...larpForUpdate } = larp;
 
-  async function toggleFeatured(larp: Larp) {
-    const { organization: _, ...larpForUpdate } = larp;
-
-    await LarpAPI.UpdateLarp({
-      ...larpForUpdate,
-      isFeatured: !larpForUpdate.isFeatured,
-    });
-  }
+      return LarpAPI.UpdateLarp({
+        ...larpForUpdate,
+        isFeatured: !larpForUpdate.isFeatured,
+      });
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", width: 50 },
@@ -93,9 +100,9 @@ function LarpsDashboard() {
       width: 200,
       getActions: (params) => {
         return [
-          <DeleteButton handleDelete={() => handleDelete(params.row.id)} />,
+          <DeleteButton handleDelete={() => deleteMutation(params.row.id)} />,
           <ToggleFeaturedButton
-            handleClick={() => toggleFeatured(params.row)}
+            handleClick={() => toggleFeaturedMutation(params.row)}
             isFeatured={params.row.isFeatured}
           />,
           <EditButton
