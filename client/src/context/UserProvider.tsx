@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { UserForCreate, UserLoginData, UserForUpdate } from "../types";
-import { ANON_USER, NullableUser, userContext } from "../context/userContext";
+import { ANON_USER, NullableUser, userContext } from "./userContext";
 import LarpAPI from "../util/api";
 
 type UserProviderProps = {
