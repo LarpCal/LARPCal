@@ -97,6 +97,7 @@ export type User = UserForCreate & {
   isAdmin: boolean;
   id: number;
   organization: Organization | null;
+  following: Pick<Organization, "id" | "orgName">[];
 };
 
 export type PublicUser = Omit<User, "password">;
@@ -122,6 +123,8 @@ export type Organization = OrganizationForCreate & {
   imgUrl: ImageSet;
   imgSetId: number;
   larps: Larp[];
+  followerCount: number;
+  isFollowedByUser?: boolean;
 };
 
 export type OrganizationForUpdate = Omit<

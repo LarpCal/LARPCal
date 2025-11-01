@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 type TooltipButtonProps = {
-  handleClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleClick?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => void;
   title: string;
   icon: IconDefinition;
 };

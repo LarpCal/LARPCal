@@ -6,8 +6,6 @@ import {
   ensureMatchingOrganizerOrAdmin,
 } from "../middleware/auth";
 import readMultipart from "../middleware/multer";
-const router = express.Router();
-
 import { BadRequestError } from "../utils/expressError";
 
 import jsonschema from "jsonschema";
@@ -15,6 +13,9 @@ import orgForCreateSchema from "../schemas/orgForCreate.json";
 import orgForUpdateSchema from "../schemas/orgForUpdate.json";
 import orgApprovalSchema from "../schemas/orgApproval.json";
 import OrgManager from "../models/OrgManager";
+import UserManager from "../models/UserManager";
+
+const router = express.Router();
 
 /** POST /
  *  Creates and returns a new org record
@@ -50,8 +51,17 @@ router.post(
  * @auth none
  */
 router.get("/:id", async function (req: Request, res: Response) {
-  const org = await OrgManager.getOrgById(+req.params.id);
-  return res.json({ org });
+  const { followers, ...org } = await OrgManager.getOrgById(+req.params.id);
+  const username = res.locals.user?.username;
+  return res.json({
+    org: {
+      ...org,
+      followerCount: followers.length,
+      isFollowedByUser: username
+        ? followers.some((f) => f.user.username === username)
+        : false,
+    },
+  });
 });
 
 /** GET /
@@ -151,5 +161,14 @@ router.put(
     return res.json(larp);
   },
 );
+
+router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
+  const username = res.locals.user.username as string;
+  const user = await UserManager.getUser(username);
+
+  const following = await OrgManager.follow(+req.params.id, user.id);
+
+  res.json({ following });
+});
 
 export default router;

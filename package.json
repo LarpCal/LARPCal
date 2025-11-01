@@ -42,8 +42,8 @@
     "typescript-eslint": "^8.43.0"
   },
   "lint-staged": {
-    "{server,client}/**/*": "npm run format",
-    "**/*.{js,mjs,ts,tsx}": "npm run lint"
+    "{server,client}/**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}": "prettier --write",
+    "**/*.{js,mjs,ts,tsx}": "eslint"
   },
   "prettier": {
     "semi": true,

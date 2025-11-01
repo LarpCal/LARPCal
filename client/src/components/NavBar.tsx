@@ -1,6 +1,5 @@
 import React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { userContext } from "../context/userContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -25,9 +24,10 @@ import "./NavBar.scss";
 import { NavLink as RouterLink } from "react-router-dom";
 import SearchBar from "./ui/SearchBar";
 import FilterLarpsForm from "./Forms/FilterLarpsForm";
+import { useUser } from "../hooks/useUser";
 
 function NavBar() {
-  const { user } = useContext(userContext);
+  const { user } = useUser();
   const { username, organization, isAdmin } = user;
 
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -110,6 +110,13 @@ function NavBar() {
               onClick={() => setShowAccountMenu(false)}
             >
               My Profile
+            </MenuItem>
+            <MenuItem
+              component={RouterLink}
+              to="/following"
+              onClick={() => setShowAccountMenu(false)}
+            >
+              Followed Organizers
             </MenuItem>
             {!organization && (
               <>
