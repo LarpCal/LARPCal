@@ -57,14 +57,16 @@ router.get("/", ensureAdmin, async function (req: Request, res: Response) {
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get(
-  "/:username",
-  // ensureCorrectUserOrAdmin,
-  async function (req: Request, res: Response) {
-    const user = await UserManager.getUser(req.params.username);
-    return res.json({ user });
-  },
-);
+router.get("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
+  const user = await UserManager.getUser(req.params.username);
+  const following = await UserManager.getUserFollows(req.params.username);
+  return res.json({
+    user: {
+      ...user,
+      following,
+    },
+  });
+});
 
 /** PATCH /[username] { user } => { user }
  *

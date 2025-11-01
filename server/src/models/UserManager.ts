@@ -107,6 +107,25 @@ class UserManager {
     }
   }
 
+  static async getUserFollows(username: string) {
+    try {
+      const userFollows = await prisma.userFollow.findMany({
+        where: { user: { username } },
+        include: {
+          org: {
+            select: {
+              id: true,
+              orgName: true,
+            },
+          },
+        },
+      });
+      return userFollows.map((follow) => follow.org);
+    } catch {
+      throw new NotFoundError("User not found");
+    }
+  }
+
   /** Update user data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
