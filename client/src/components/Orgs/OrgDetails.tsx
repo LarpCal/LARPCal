@@ -3,12 +3,13 @@ import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import CategoryBar from "../Events/CategoryBar";
 import "./OrgDetails.scss";
-import useOrgControls from "../../hooks/useOrgControls";
 import { useContext } from "react";
 import { userContext } from "../../context/userContext";
 import { DateTime } from "luxon";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import LarpAPI from "../../util/api";
+import { faImage, faPencil } from "@fortawesome/free-solid-svg-icons";
+import TooltipButton from "../FormComponents/TooltipButton";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -17,7 +18,6 @@ type OrgDetailsProps = {
 function OrgDetails({ org }: OrgDetailsProps) {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
-  const { EditOrgButton, EditImageButton } = useOrgControls(org.id);
 
   const queryClient = useQueryClient();
   const { mutate: followMutate } = useMutation({
@@ -38,8 +38,15 @@ function OrgDetails({ org }: OrgDetailsProps) {
       >
         {(org.username === username || isAdmin === true) && (
           <Stack direction="row" className="organizerControls">
-            {EditOrgButton}
-            {EditImageButton}
+            <RouterLink to={`/orgs/${org.id}/edit`}>
+              <TooltipButton
+                title="Edit organization details"
+                icon={faPencil}
+              />
+            </RouterLink>
+            <RouterLink to={`/orgs/${org.id}/image`}>
+              <TooltipButton title="Update Banner Image" icon={faImage} />
+            </RouterLink>
           </Stack>
         )}
       </Box>
