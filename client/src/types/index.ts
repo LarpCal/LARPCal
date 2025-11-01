@@ -122,6 +122,8 @@ export type Organization = OrganizationForCreate & {
   imgUrl: ImageSet;
   imgSetId: number;
   larps: Larp[];
+  followerCount: number;
+  isFollowedByUser?: boolean;
 };
 
 export type OrganizationForUpdate = Omit<

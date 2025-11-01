@@ -1,5 +1,5 @@
 import { Organization } from "../../types";
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import CategoryBar from "../Events/CategoryBar";
 import "./OrgDetails.scss";
@@ -7,6 +7,8 @@ import useOrgControls from "../../hooks/useOrgControls";
 import { useContext } from "react";
 import { userContext } from "../../context/userContext";
 import { DateTime } from "luxon";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import LarpAPI from "../../util/api";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -17,6 +19,14 @@ function OrgDetails({ org }: OrgDetailsProps) {
   const { username, isAdmin } = user;
   const { EditOrgButton, EditImageButton } = useOrgControls(org.id);
 
+  const queryClient = useQueryClient();
+  const { mutate: followMutate } = useMutation({
+    mutationFn: () => LarpAPI.followOrg(org.id),
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: ["org", org.id] });
+    },
+  });
+
   return (
     <Box className="OrgDetails">
       <Box
@@ -26,13 +36,11 @@ function OrgDetails({ org }: OrgDetailsProps) {
           backgroundSize: "cover",
         }}
       >
-        {org.username === username || isAdmin === true ? (
+        {(org.username === username || isAdmin === true) && (
           <Stack direction="row" className="organizerControls">
             {EditOrgButton}
             {EditImageButton}
           </Stack>
-        ) : (
-          <></>
         )}
       </Box>
       <Stack
@@ -45,6 +53,14 @@ function OrgDetails({ org }: OrgDetailsProps) {
           <Link component={RouterLink} to={`/orgs/${org.id}`}>
             {org.orgName}
           </Link>
+          <Button
+            variant="outlined"
+            sx={{ ml: "1rem" }}
+            onClick={() => followMutate()}
+          >
+            {org.isFollowedByUser ? "Unfollow" : "Follow"}
+            {org.followerCount > 0 && ` (${org.followerCount})`}
+          </Button>
         </Typography>
 
         <section id="About">

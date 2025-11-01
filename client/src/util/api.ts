@@ -274,6 +274,15 @@ class LarpAPI {
     return response.org;
   }
 
+  static async followOrg(orgId: number): Promise<{ followed: boolean }> {
+    const response = await this.request(
+      `orgs/${orgId}/follow`,
+      undefined,
+      "put",
+    );
+    return response;
+  }
+
   /**  DELETE  */
   static async DeleteOrg(id: number): Promise<Organization> {
     const response = await this.request(`orgs/${id}`, undefined, "delete");
