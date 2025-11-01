@@ -1,117 +1,86 @@
-import React, { useEffect, useState } from "react";
+import { PropsWithChildren, useCallback, useState } from "react";
 import { UserForCreate, UserLoginData, UserForUpdate } from "../types";
-import { ANON_USER, NullableUser, userContext } from "./userContext";
+import { ANON_USER, userContext } from "./userContext";
 import LarpAPI from "../util/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-type UserProviderProps = {
-  children: React.ReactNode;
-};
+export default function UserProvider({ children }: PropsWithChildren) {
+  const [username, setUsername] = useState(() => loadUsername());
 
-export default function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<NullableUser>(ANON_USER);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string[] | null>(null);
-
-  /** Sets state about our current user and token by doing the following:
-   * -Stores the users token in local storages
-   * -Sets the token property on the LarpAPI class
-   * -Makes an api call and updates the user state
-   */
-  useEffect(
-    function fetchUserOnMountOrChange() {
-      async function fetchUser() {
-        setLoading(true);
-        setError(null);
-        try {
-          if (token) {
-            const username = LarpAPI.getUsernameFromToken(token);
-            const userData = await LarpAPI.getUser(username);
-            setUser(userData);
-          } else {
-            setUser(ANON_USER); // If no token, reset to anonymous user
-          }
-        } catch (e) {
-          console.error(e);
-          setError(() => [`Error fetching user: ${e}`]);
-          setUser(ANON_USER);
-        } finally {
-          setLoading(false);
-        }
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["user", username],
+    queryFn: async () => {
+      if (!username) {
+        return null;
       }
-
-      fetchUser();
+      const userData = await LarpAPI.getUser(username);
+      return userData;
     },
-    [token],
-  );
+    enabled: !!username,
+  });
+
+  const queryClient = useQueryClient();
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["user", username] });
+  }, [username]);
 
   /** Calls the api with login credentials and tries to log the user in
    * If successful, updates the token and the user states.
    * credentials: {username, password}
    */
-
-  async function login(credentials: UserLoginData) {
+  const login = useCallback(async (credentials: UserLoginData) => {
     const token = await LarpAPI.userLogin(credentials);
     localStorage.setItem("token", token);
-    setToken(token);
-  }
+    setUsername(LarpAPI.getUsernameFromToken(token));
+  }, []);
 
-  /** Logs the user out
-   *  Clears token from localstorage and resets state for the app */
-  function logout() {
-    setUser(ANON_USER);
-    localStorage.removeItem("token");
+  const logout = useCallback(() => {
     LarpAPI.userLogout();
-    setToken(null);
-  }
+    localStorage.removeItem("token");
+    setUsername(null);
+  }, []);
 
-  /** Calls the api with user data and tries to create a new account.
-   * If successful, updates the token and user states.
-   *
-   * userInfo:{username, password, firstName, lastName, email}
-   */
-  async function register(userInfo: UserForCreate) {
-    console.log("calling register");
+  const register = useCallback(async (userInfo: UserForCreate) => {
     const token = await LarpAPI.userSignup(userInfo);
     localStorage.setItem("token", token);
-    setToken(token);
-  }
+    setUsername(LarpAPI.getUsernameFromToken(token));
+  }, []);
 
-  async function update(userInfo: UserForUpdate) {
-    console.log("calling update");
-    try {
-      if (!token) {
-        throw new Error("No token found");
+  const { mutateAsync: update, isPending } = useMutation({
+    mutationFn: (userInfo: UserForUpdate) => {
+      if (!username) {
+        throw new Error("Not logged in");
       }
-      setLoading(true);
-      const username = LarpAPI.getUsernameFromToken(token);
-      const userData = await LarpAPI.updateUser(userInfo, username);
-      setUser(userData);
-    } catch (err) {
-      console.error(err);
-      setError([`Error updating user: ${err}`]);
-    } finally {
-      setLoading(false);
-    }
-  }
+      return LarpAPI.updateUser(userInfo, username);
+    },
+  });
 
   return (
     <userContext.Provider
       value={{
-        user,
-        setUser,
-        token,
-        setToken,
+        user: data ?? ANON_USER,
         login,
         logout,
         register,
-        loading,
+        loading: isLoading || isPending,
         update,
-        error,
+        refetch,
+        error: isError ? ["There was a problem loading user data"] : null,
       }}
     >
       {children}
     </userContext.Provider>
   );
+}
+
+function loadUsername() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    return LarpAPI.getUsernameFromToken(token);
+  } catch {
+    return null;
+  }
 }

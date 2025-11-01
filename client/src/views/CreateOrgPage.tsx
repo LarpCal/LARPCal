@@ -1,17 +1,17 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import LarpAPI from "../util/api";
 import { Navigate, useNavigate } from "react-router-dom";
 import { OrganizationForCreate } from "../types";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { OrgFormProvider } from "../context/OrgFormProvider";
 import { Box, Modal, Typography } from "@mui/material";
-import { userContext } from "../context/userContext";
 import OrgForm from "../components/Forms/OrgForm";
 import CreateOrgSchema from "../components/Forms/CreateOrgSchema";
 import ToastMessage from "../components/ui/ToastMessage";
+import { useUser } from "../hooks/useUser";
 
 function CreateOrgPage() {
-  const { user, setUser } = useContext(userContext);
+  const { user, refetch } = useUser();
   const [saving, setSaving] = useState(false);
   const [errs, setErrs] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -37,10 +37,7 @@ function CreateOrgPage() {
       const savedOrg = await LarpAPI.CreateOrganization({
         ...formData,
       });
-      setUser({
-        ...user,
-        organization: savedOrg,
-      });
+      await refetch();
       await LarpAPI.refreshToken();
       navigate(`/orgs/${savedOrg.id}/image`);
     } catch (e: unknown) {

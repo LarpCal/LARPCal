@@ -12,35 +12,42 @@ import { useMutation } from "@tanstack/react-query";
 import LarpAPI from "../util/api";
 
 export default function FollowedOrgs() {
-  const { user } = useUser();
+  const { user, refetch } = useUser();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (orgId: number) => LarpAPI.followOrg(orgId),
-    onSuccess: () => {},
+    onSuccess: async () => {
+      await refetch();
+    },
   });
 
   return (
     <Stack spacing={2} alignContent="center" m="2rem">
       <Typography variant="h2">Followed organizations</Typography>
-      <List sx={{ maxWidth: 500, width: "100%", alignSelf: "center" }}>
-        {user.following?.map((org) => (
-          <ListItem
-            key={org.id}
-            secondaryAction={
-              <IconButton
-                edge="end"
-                aria-label="Stop following"
-                onClick={() => mutate(org.id)}
-                disabled={isPending}
-              >
-                <RemoveCircleIcon />
-              </IconButton>
-            }
-          >
-            <ListItemText>{org.orgName}</ListItemText>
-          </ListItem>
-        ))}
-      </List>
+      {user.following.length > 0 && (
+        <List sx={{ maxWidth: 500, width: "100%", alignSelf: "center" }}>
+          {user.following.map((org) => (
+            <ListItem
+              key={org.id}
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="Stop following"
+                  onClick={() => mutate(org.id)}
+                  disabled={isPending}
+                >
+                  <RemoveCircleIcon />
+                </IconButton>
+              }
+            >
+              <ListItemText>{org.orgName}</ListItemText>
+            </ListItem>
+          ))}
+        </List>
+      )}
+      {user.following.length === 0 && (
+        <Typography>You are not following any organizations.</Typography>
+      )}
     </Stack>
   );
 }

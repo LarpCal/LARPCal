@@ -28,26 +28,17 @@ export type NullableUser = {
 
 type UserContextType = {
   user: NullableUser;
-  setUser: React.Dispatch<React.SetStateAction<NullableUser>>;
-  token: string | null;
-  setToken: React.Dispatch<React.SetStateAction<string | null>>;
   login: (credentials: UserLoginData) => Promise<void>;
   logout: () => void;
   register: (userInfo: UserForCreate) => Promise<void>;
   update: (userInfo: UserForUpdate) => Promise<void>;
+  refetch: () => Promise<void>;
   loading: boolean;
   error: string[] | null;
 };
 
 export const userContext = React.createContext<UserContextType>({
   user: ANON_USER,
-  setUser: () => {
-    throw new Error("setUser function not provided");
-  },
-  token: null,
-  setToken: () => {
-    throw new Error("setToken function not provided");
-  },
   login: async () => {
     throw new Error("login function not provided");
   },
@@ -59,6 +50,9 @@ export const userContext = React.createContext<UserContextType>({
   },
   update: async () => {
     throw new Error("update function not provided");
+  },
+  refetch: async () => {
+    throw new Error("refetch function not provided");
   },
   error: null,
   loading: false,
