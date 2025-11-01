@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Slide, Typography } from "@mui/material";
 
 type ToastMessageProps = {
-  messages: string[];
+  messages?: string | string[];
   title: string;
   severity?: "success" | "error";
 };
@@ -13,6 +13,14 @@ function ToastMessage({
   title,
   severity = "error",
 }: ToastMessageProps) {
+  if (!messages || (Array.isArray(messages) && messages.length === 0)) {
+    return null;
+  }
+
+  if (!Array.isArray(messages)) {
+    messages = [messages];
+  }
+
   const severityIcons = {
     success: faCheck,
     error: faX,

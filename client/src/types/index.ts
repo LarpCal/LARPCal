@@ -71,6 +71,7 @@ export type LarpQuery = {
   country?: string;
   language?: string;
   org?: string;
+  orgId?: number;
   isFeatured?: boolean;
   createdBefore?: string;
   createdAfter?: string;

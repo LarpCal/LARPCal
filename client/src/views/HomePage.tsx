@@ -19,7 +19,7 @@ function HomePage() {
         <>
           <ToastMessage
             title="Sorry, there was a problem fetching records for this page"
-            messages={error}
+            messages={error?.message}
           />
           <CategoryBar
             title="Featured LARPs"

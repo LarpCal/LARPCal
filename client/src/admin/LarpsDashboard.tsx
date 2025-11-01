@@ -12,31 +12,31 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";
 import { Larp } from "../types";
 import ToggleFeaturedButton from "../components/FormComponents/ToggleFeaturedButton";
+import { useMutation } from "@tanstack/react-query";
 
 function LarpsDashboard() {
-  const { larps, setLarps, loading, error } = useFetchLarps(null);
+  const { larps, loading, error, refetch } = useFetchLarps();
   const navigate = useNavigate();
 
-  async function handleDelete(id: number) {
-    await LarpAPI.DeleteLarp(id);
-    setLarps(() => larps.filter((larp) => larp.id !== id));
-  }
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: (id: number) => LarpAPI.DeleteLarp(id),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const { mutate: toggleFeaturedMutation } = useMutation({
+    mutationFn(larp: Larp) {
+      const { organization: _, ...larpForUpdate } = larp;
 
-  async function toggleFeatured(larp: Larp) {
-    const { organization, ...larpForUpdate } = larp;
-
-    const updated = await LarpAPI.UpdateLarp({
-      ...larpForUpdate,
-      isFeatured: !larpForUpdate.isFeatured,
-    });
-    setLarps(() => {
-      const newLarps = larps.map((newLarp) => {
-        if (newLarp.id !== larp.id) return newLarp;
-        return { ...updated, organization };
+      return LarpAPI.UpdateLarp({
+        ...larpForUpdate,
+        isFeatured: !larpForUpdate.isFeatured,
       });
-      return newLarps;
-    });
-  }
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", width: 50 },
@@ -71,6 +71,7 @@ function LarpsDashboard() {
         return JSDateToLuxon(params.value).toLocaleString({
           month: "short",
           day: "numeric",
+          year: "numeric",
         });
       },
     },
@@ -82,6 +83,7 @@ function LarpsDashboard() {
         return JSDateToLuxon(params.value).toLocaleString({
           month: "short",
           day: "numeric",
+          year: "numeric",
         });
       },
     },
@@ -98,9 +100,9 @@ function LarpsDashboard() {
       width: 200,
       getActions: (params) => {
         return [
-          <DeleteButton handleDelete={() => handleDelete(params.row.id)} />,
+          <DeleteButton handleDelete={() => deleteMutation(params.row.id)} />,
           <ToggleFeaturedButton
-            handleClick={() => toggleFeatured(params.row)}
+            handleClick={() => toggleFeaturedMutation(params.row)}
             isFeatured={params.row.isFeatured}
           />,
           <EditButton
@@ -121,7 +123,7 @@ function LarpsDashboard() {
     <>
       <ToastMessage
         title="Sorry, there was a problem loading your data"
-        messages={error}
+        messages={error?.message}
       />
       <Box
         sx={{

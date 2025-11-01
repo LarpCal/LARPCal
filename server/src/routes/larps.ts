@@ -88,14 +88,14 @@ router.get(
 
 router.get("/", async function (req: Request, res: Response) {
   if (req.query && req.query.q) {
-    const q: string = req.query.q as string;
+    const q = req.query.q as string;
     const decodedQuery = atob(q);
     const query = JSON.parse(decodedQuery);
     const larps = await LarpManager.getAllLarps(query);
-    return res.json({ larps });
+    res.json({ larps, query });
   } else {
     const larps = await LarpManager.getAllLarps();
-    return res.json({ larps });
+    res.json({ larps });
   }
 });
 

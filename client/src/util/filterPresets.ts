@@ -1,23 +1,12 @@
 import { DateTime } from "luxon";
 import { LarpQuery } from "../types";
-import { base64Decode, base64Encode } from "./utilities";
 
-function filterToQuery(filter: LarpQuery): string {
-  return base64Encode(JSON.stringify(filter));
-}
-
-function queryToFilter(query: string): LarpQuery {
-  return JSON.parse(base64Decode(query));
-}
-
-const activeLarpQuery = filterToQuery({
+export const activeLarpQuery = {
   isPublished: true,
   endAfter: DateTime.now().toISO(),
-});
+} satisfies LarpQuery;
 
-const publishedLarpQuery = filterToQuery({
+export const publishedLarpQuery = {
   isPublished: true,
   endAfter: DateTime.now().toISO(),
-});
-
-export { filterToQuery, queryToFilter, activeLarpQuery, publishedLarpQuery };
+} satisfies LarpQuery;

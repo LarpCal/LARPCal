@@ -56,11 +56,7 @@ class LarpManager {
   }
 
   static async getAllLarps(query?: LarpQuery): Promise<Larp[]> {
-    let larps: Larp[];
-    const isPublished =
-      query?.isPublished !== undefined ? query.isPublished : true;
-
-    //No query provided
+    // No query provided
     if (!query) {
       return prisma.larp.findMany({
         orderBy: { start: "asc" },
@@ -76,160 +72,109 @@ class LarpManager {
         : []
     ).map((status) => TicketStatus[status]);
 
-    if (query && !query.term) {
-      // Query contains filters but no search term
-
-      const prismaFilterObject: Prisma.LarpWhereInput = {
-        AND: {
-          title: {
+    let queryFilters: Prisma.LarpWhereInput = {
+      title: query.title
+        ? {
             contains: query.title,
             mode: "insensitive",
-          },
-          ticketStatus: {
-            in: ticketStatus,
-          },
-          start: {
-            gte: query.startAfter ? new Date(query.startAfter) : undefined,
-            lte: query.startBefore ? new Date(query.startBefore) : undefined,
-          },
-          end: {
-            gte: query.endAfter ? new Date(query.endAfter) : undefined,
-            lte: query.endBefore ? new Date(query.endBefore) : undefined,
-          },
-          createdTime: {
-            gte: query.createdAfter ? new Date(query.createdAfter) : undefined,
-            lte: query.createdBefore
-              ? new Date(query.createdBefore)
-              : undefined,
-          },
-          city: {
-            contains: query.city,
-            mode: "insensitive",
-          },
-          country: {
-            contains: query.country,
-            mode: "insensitive",
-          },
-          language: {
-            contains: query.language,
-            mode: "insensitive",
-          },
-          organization: {
-            orgName: {
-              contains: query.org,
-              mode: "insensitive",
-            },
-          },
-          isFeatured: {
-            equals: query.isFeatured,
-          },
-          isPublished: {
-            equals: isPublished,
-          },
-          tags: query.tags
-            ? {
-                some: {
-                  name: {
-                    contains: query.tags,
-                    mode: "insensitive",
-                  },
-                },
-              }
-            : undefined,
+          }
+        : undefined,
+      ticketStatus: ticketStatus.length > 0 ? { in: ticketStatus } : undefined,
+      start: {
+        gte: query.startAfter ? new Date(query.startAfter) : undefined,
+        lte: query.startBefore ? new Date(query.startBefore) : undefined,
+      },
+      end: {
+        gte: query.endAfter ? new Date(query.endAfter) : undefined,
+        lte: query.endBefore ? new Date(query.endBefore) : undefined,
+      },
+      createdTime: {
+        gte: query.createdAfter ? new Date(query.createdAfter) : undefined,
+        lte: query.createdBefore ? new Date(query.createdBefore) : undefined,
+      },
+      city: {
+        contains: query.city,
+        mode: "insensitive",
+      },
+      country: {
+        contains: query.country,
+        mode: "insensitive",
+      },
+      language: {
+        contains: query.language,
+        mode: "insensitive",
+      },
+      organization: {
+        orgName: {
+          contains: query.org,
+          mode: "insensitive",
         },
-      };
+        id: {
+          equals: query.orgId,
+        },
+      },
+      isFeatured: {
+        equals: query.isFeatured,
+      },
+      isPublished: {
+        equals: query.isPublished ?? true,
+      },
+      tags: query.tags
+        ? {
+            some: {
+              name: {
+                contains: query.tags,
+                mode: "insensitive",
+              },
+            },
+          }
+        : undefined,
+    };
 
-      larps = await prisma.larp.findMany({
-        where: prismaFilterObject,
-        include: LARP_INCLUDE_OBJ,
-        orderBy: { start: "asc" },
-      });
-    } else {
-      // Query contains search term and filters
-      const prismaFilterObject: Prisma.LarpWhereInput = {
+    // Query contains search term and filters
+    const term = query.term
+      ? query.term
+          .split(" ")
+          .map((s) => s.trim())
+          .join(" & ")
+      : null;
+    if (term) {
+      const termFilter = {
+        search: term,
+        mode: "insensitive",
+      } satisfies Prisma.StringFilter;
+
+      queryFilters = {
         AND: {
           OR: [
-            { title: { search: query.term } },
-            { description: { search: query.term } },
-            { city: { search: query.term } },
-            { country: { search: query.term } },
-            { language: { search: query.term } },
-            { tags: { some: { name: { contains: query.term } } } },
-            { organization: { orgName: { contains: query.term } } },
+            { title: termFilter },
+            { description: termFilter },
+            { city: termFilter },
+            { country: termFilter },
+            { language: termFilter },
+            { tags: { some: { name: termFilter } } },
+            { organization: { orgName: termFilter } },
           ],
-          title: {
-            contains: query.title,
-            mode: "insensitive",
-          },
-          ticketStatus: {
-            in: ticketStatus,
-          },
-          start: {
-            gte: query.startAfter ? new Date(query.startAfter) : undefined,
-            lte: query.startBefore ? new Date(query.startBefore) : undefined,
-          },
-          end: {
-            gte: query.endAfter ? new Date(query.endAfter) : undefined,
-            lte: query.endBefore ? new Date(query.endBefore) : undefined,
-          },
-          createdTime: {
-            gte: query.createdAfter ? new Date(query.createdAfter) : undefined,
-            lte: query.createdBefore
-              ? new Date(query.createdBefore)
-              : undefined,
-          },
-          city: {
-            contains: query.city,
-            mode: "insensitive",
-          },
-          country: {
-            contains: query.country,
-            mode: "insensitive",
-          },
-          language: {
-            contains: query.language,
-            mode: "insensitive",
-          },
-          organization: {
-            orgName: {
-              contains: query.org,
-              mode: "insensitive",
-            },
-          },
-          isFeatured: {
-            equals: query.isFeatured,
-          },
-          isPublished: {
-            equals: isPublished,
-          },
-          tags: query.tags
-            ? {
-                some: {
-                  name: {
-                    contains: query.tags,
-                    mode: "insensitive",
-                  },
-                },
-              }
-            : undefined,
+          ...queryFilters,
         },
       };
-
-      larps = await prisma.larp.findMany({
-        where: prismaFilterObject,
-        include: LARP_INCLUDE_OBJ,
-        orderBy: [
-          {
-            _relevance: {
-              fields: ["title", "description", "country", "city", "language"],
-              search: query.term!,
-              sort: "asc",
-            },
-          },
-        ],
-      });
     }
-    return larps;
+
+    const orderBy: Prisma.LarpOrderByWithRelationInput = term
+      ? ({
+          _relevance: {
+            fields: ["title", "description", "country", "city", "language"],
+            search: term,
+            sort: "asc",
+          },
+        } satisfies Prisma.LarpOrderByWithRelationInput)
+      : { start: "asc" };
+
+    return prisma.larp.findMany({
+      where: queryFilters,
+      include: LARP_INCLUDE_OBJ,
+      orderBy,
+    });
   }
 
   static async getLarpById(id: number): Promise<Larp> {

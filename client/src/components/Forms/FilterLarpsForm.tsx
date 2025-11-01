@@ -24,7 +24,7 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
         const value = filterFormData[typedKey];
 
         if (typedKey === "isFeatured" || typedKey === "isPublished") {
-          if (typeof value === "boolean") reducedFormData[typedKey] = value;
+          reducedFormData[typedKey] = !!value;
         } else if (typedKey === "ticketStatus") {
           if (
             value === "AVAILABLE" ||
@@ -32,10 +32,14 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
             value === "SOLD_OUT" ||
             value === ""
           ) {
-            reducedFormData[typedKey] = value as LarpQuery[typeof typedKey];
+            reducedFormData[typedKey] = value;
           }
-        } else if (value !== null && value !== undefined && value !== "") {
-          reducedFormData[typedKey] = value as LarpQuery[typeof typedKey];
+        } else if (typedKey === "orgId") {
+          if (value && typeof value === "number") {
+            reducedFormData[typedKey] = value;
+          }
+        } else if (typeof value === "string" && value.trim() !== "") {
+          reducedFormData[typedKey] = value;
         }
       });
 

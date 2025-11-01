@@ -7,13 +7,17 @@ import eslintConfigPrettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommended,
+  ...pluginQuery.configs["flat/recommended"],
   {
     files: ["client/**/*.{ts,tsx}"],
-    plugins: { "react-hooks": reactHooks },
+    plugins: {
+      "react-hooks": reactHooks,
+    },
     languageOptions: {
       globals: globals.browser,
     },
