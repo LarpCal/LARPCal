@@ -16,19 +16,18 @@
       bottom: 1rem;
       right: 1rem;
       border-radius: 5px;
-      transition: background-color 0.2s;
-      background-color: #070707ff;
+      background-color: #070707;
 
-      button {
-        color: white;
+      a {
+        color: #e7e7e7;
         margin: 0 0.5rem;
         font-size: 2rem;
-      }
-    }
+        transition: color 0.3s ease;
 
-    .organizerControls:hover {
-      transition: background-color 0.2s;
-      background-color: #07070777;
+        &:hover {
+          color: white;
+        }
+      }
     }
   }
 

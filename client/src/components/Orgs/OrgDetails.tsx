@@ -8,8 +8,12 @@ import { userContext } from "../../context/userContext";
 import { DateTime } from "luxon";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import LarpAPI from "../../util/api";
-import { faImage, faPencil } from "@fortawesome/free-solid-svg-icons";
-import TooltipButton from "../FormComponents/TooltipButton";
+import {
+  faImage,
+  faPencil,
+  faBullhorn,
+} from "@fortawesome/free-solid-svg-icons";
+import { LinkIconButton } from "../FormComponents/LinkIconButton";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -38,15 +42,21 @@ function OrgDetails({ org }: OrgDetailsProps) {
       >
         {(org.username === username || isAdmin === true) && (
           <Stack direction="row" className="organizerControls">
-            <RouterLink to={`/orgs/${org.id}/edit`}>
-              <TooltipButton
-                title="Edit organization details"
-                icon={faPencil}
-              />
-            </RouterLink>
-            <RouterLink to={`/orgs/${org.id}/image`}>
-              <TooltipButton title="Update Banner Image" icon={faImage} />
-            </RouterLink>
+            <LinkIconButton
+              title="Manage Newsletters"
+              to={`/orgs/${org.id}/newsletter`}
+              icon={faBullhorn}
+            />
+            <LinkIconButton
+              title="Edit details"
+              to={`/orgs/${org.id}/edit`}
+              icon={faPencil}
+            />
+            <LinkIconButton
+              title="Update image"
+              to={`/orgs/${org.id}/image`}
+              icon={faImage}
+            />
           </Stack>
         )}
       </Box>
