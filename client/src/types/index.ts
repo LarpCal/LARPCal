@@ -97,6 +97,7 @@ export type User = UserForCreate & {
   isAdmin: boolean;
   id: number;
   organization: Organization | null;
+  following: Pick<Organization, "id" | "orgName">[];
 };
 
 export type PublicUser = Omit<User, "password">;

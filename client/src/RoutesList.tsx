@@ -14,12 +14,12 @@ import EditOrgPage from "./views/EditOrgPage";
 import EditLarpImagePage from "./views/EditLarpImagePage";
 import LogOutPage from "./views/LogOutPage";
 import EditOrgImagePage from "./views/EditOrgImagePage";
-// import DemoHome from "./views/DemoHome";
 import AboutPage from "./views/AboutPage";
 import LoginPage from "./views/LoginPage";
 import RegisterPage from "./views/RegisterPage";
 import ChangePasswordForm from "./components/Forms/ChangePasswordForm";
 import MyProfilePage from "./views/MyProfilePage";
+import FollowedOrgs from "./views/FollowedOrgs";
 
 function RoutesList() {
   const { user, login, register, logout } = useContext(userContext);
@@ -47,6 +47,7 @@ function RoutesList() {
       <Route path="/orgs/:id/image" element={<EditOrgImagePage />} />
       <Route path="/auth/logout" element={<LogOutPage logOut={logout} />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
+      <Route path="/following" element={<FollowedOrgs />} />
     </>
   );
 

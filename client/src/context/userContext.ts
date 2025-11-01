@@ -6,13 +6,14 @@ import {
   UserLoginData,
 } from "../types";
 
-const ANON_USER: NullableUser = {
+export const ANON_USER: NullableUser = {
   username: null,
   firstName: null,
   lastName: null,
   email: null,
   isAdmin: null,
   organization: null,
+  following: [],
 };
 
 export type NullableUser = {
@@ -22,6 +23,7 @@ export type NullableUser = {
   email: string | null;
   isAdmin: boolean | null;
   organization: Organization | null;
+  following: Pick<Organization, "id" | "orgName">[];
 };
 
 type UserContextType = {
@@ -37,7 +39,7 @@ type UserContextType = {
   error: string[] | null;
 };
 
-const userContext = React.createContext<UserContextType>({
+export const userContext = React.createContext<UserContextType>({
   user: ANON_USER,
   setUser: () => {
     throw new Error("setUser function not provided");
@@ -61,5 +63,3 @@ const userContext = React.createContext<UserContextType>({
   error: null,
   loading: false,
 });
-
-export { userContext, ANON_USER };
