@@ -7,6 +7,7 @@ import {
 import { BadRequestError, NotFoundError } from "../utils/expressError";
 import ImageHandler from "../utils/imageHandler";
 import { deleteMultiple } from "../api/s3";
+import { Prisma } from "@prisma/client";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -16,7 +17,7 @@ const ORG_INCLUDE_OBJ = {
       imgUrl: true,
     },
   },
-};
+} satisfies Prisma.OrganizationInclude;
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const DEFAULT_IMG_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default`;
@@ -54,13 +55,22 @@ class OrgManager {
     });
   }
 
-  static async getOrgById(id: number): Promise<Organization> {
+  static async getOrgById(id: number) {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
-        where: {
-          id: id,
+        where: { id },
+        include: {
+          ...ORG_INCLUDE_OBJ,
+          followers: {
+            select: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
         },
-        include: ORG_INCLUDE_OBJ,
       });
       return org;
     } catch {
@@ -100,7 +110,6 @@ class OrgManager {
   }
 
   static async updateOrg(newOrg: OrganizationForUpdate): Promise<Organization> {
-    console.log(newOrg.username);
     const currentOrg: Organization =
       await prisma.organization.findUniqueOrThrow({
         where: { id: newOrg.id },
@@ -150,6 +159,23 @@ class OrgManager {
       include: ORG_INCLUDE_OBJ,
     });
     return org;
+  }
+
+  static async follow(id: number, userId: number) {
+    try {
+      await prisma.userFollow.delete({
+        where: { userId_orgId: { orgId: id, userId } },
+      });
+      return false;
+    } catch {
+      await prisma.userFollow.create({
+        data: {
+          orgId: id,
+          userId: userId,
+        },
+      });
+      return true;
+    }
   }
 
   static async deleteOrgById(id: number): Promise<Organization> {
@@ -211,6 +237,7 @@ class OrgManager {
     }
 
     org.imgUrl = {
+      id: org.imgUrl.id,
       sm: `${basePath}-sm-${uuid}`,
       md: `${basePath}-md-${uuid}`,
       lg: `${basePath}-lg-${uuid}`,
