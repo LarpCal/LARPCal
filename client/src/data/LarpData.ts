@@ -29,6 +29,7 @@ const testOrganization: Organization = {
   email: "testOrg@test.com",
   isApproved: true,
   larps: [],
+  followerCount: 0,
 };
 
 const TestLarp1: Larp = {

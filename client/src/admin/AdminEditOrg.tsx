@@ -21,7 +21,7 @@ function AdminEditOrg() {
   const [saving, setSaving] = useState(false);
   const [saveErrs, setSaveErrs] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { org, setOrg, loading, error } = useFetchOrg(parseInt(id));
+  const { org, loading, error } = useFetchOrg(parseInt(id));
 
   /** Convert data to maintain type safety */
   function orgToOrgForUpdate(): OrganizationForUpdate | null {
@@ -39,10 +39,9 @@ function AdminEditOrg() {
   async function saveOrg(formData: OrganizationForUpdate) {
     try {
       setSaving(true);
-      const savedOrg = await LarpAPI.UpdateOrg({
+      await LarpAPI.UpdateOrg({
         ...formData,
       });
-      setOrg(savedOrg);
       setSaving(false);
       navigate(`/admin/orgs/${org!.id}`);
     } catch (e: unknown) {
