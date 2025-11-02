@@ -14,6 +14,8 @@ import orgForUpdateSchema from "../schemas/orgForUpdate.json";
 import orgApprovalSchema from "../schemas/orgApproval.json";
 import OrgManager from "../models/OrgManager";
 import UserManager from "../models/UserManager";
+import { NewsletterManager } from "../models/NewsletterManager";
+import { toValidId } from "../utils/helpers";
 
 const router = express.Router();
 
@@ -170,5 +172,89 @@ router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
 
   res.json({ following });
 });
+
+/** Newsletters */
+
+router.get(
+  "/:id/newsletters",
+  ensureMatchingOrganizerOrAdmin,
+  async (req, res) => {
+    const orgId = toValidId(req.params.id);
+
+    const manager = new NewsletterManager(orgId);
+    const newsletters = await manager.getNewsletters();
+
+    res.json({ newsletters });
+  },
+
+  router.post(
+    "/:id/newsletters",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+
+      const { subject, text } = req.body;
+      if (!subject || !text) {
+        throw new BadRequestError("Missing subject or text");
+      }
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.createNewsletter(subject, text);
+
+      res.status(201).json({ newsletter });
+    },
+  ),
+
+  router.get(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.getNewsletter(newsletterId);
+
+      res.json({ newsletter });
+    },
+  ),
+
+  router.put(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const { subject, text } = req.body;
+      if (!subject || !text) {
+        throw new BadRequestError("Missing subject or text");
+      }
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.updateNewsletter(
+        newsletterId,
+        subject,
+        text,
+      );
+
+      res.json({ newsletter });
+    },
+  ),
+
+  router.put(
+    "/:id/newsletters/:newsletterId/send",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+      await manager.sendNewsletter(newsletterId);
+
+      res.json({ sent: true });
+    },
+  ),
+);
 
 export default router;

@@ -18,6 +18,7 @@ const USER_INCLUDE_OBJ = {
     },
   },
 };
+
 class UserManager {
   /**Authenticate a user with username/password
    * Returns User
@@ -80,12 +81,9 @@ class UserManager {
   /** Returns a list of userData without passwords */
   static async findAll(): Promise<PublicUser[]> {
     const users = await prisma.user.findMany({
-      include: { organization: true },
+      include: USER_INCLUDE_OBJ,
     });
-    const response = users.map((user: User) => {
-      const publicUser = omitKeys(user, "password");
-      return publicUser;
-    });
+    const response = users.map((user: User) => omitKeys(user, "password"));
 
     return response;
   }

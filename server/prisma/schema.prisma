@@ -64,6 +64,7 @@ model User {
   organization         Organization?
   PasswordResetRequest PasswordResetRequest[]
   following            UserFollow[]
+  newsletterSubscribed Boolean                @default(false)
 
   @@map("users")
 }
@@ -81,6 +82,7 @@ model Organization {
   isApproved  Boolean
   larps       Larp[]
   followers   UserFollow[]
+  newsletters Newsletter[]
 
   @@map("organizations")
 }
@@ -110,4 +112,15 @@ model UserFollow {
   org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@id([userId, orgId])
+}
+
+model Newsletter {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  sentAt    DateTime?
+  subject   String
+  text      String
+  orgId     Int?
+  org       Organization? @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  forceSend Boolean       @default(false)
 }
