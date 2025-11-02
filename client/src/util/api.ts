@@ -328,6 +328,26 @@ class LarpAPI {
     );
     return response.newsletter;
   }
+
+  static async sendOrgNewsletter(
+    orgId: number,
+    newsletterId: number,
+  ): Promise<boolean> {
+    const response = await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}/send`,
+      undefined,
+      "post",
+    );
+    return response.sent;
+  }
+
+  static async deleteOrgNewsletter(orgId: number, newsletterId: number) {
+    await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}`,
+      undefined,
+      "delete",
+    );
+  }
 }
 
 export default LarpAPI;

@@ -7,9 +7,13 @@ import ErrorDisplay from "../FormComponents/ErrorDisplay";
 
 interface NewsletterFormProps {
   onCancel: MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 }
 
-export function NewsletterForm({ onCancel }: NewsletterFormProps) {
+export function NewsletterForm({
+  onCancel,
+  disabled = false,
+}: NewsletterFormProps) {
   const { isValid, errors, dirty } = useFormikContext<Newsletter>();
   const errorMessage = useMemo(
     () =>
@@ -26,6 +30,7 @@ export function NewsletterForm({ onCancel }: NewsletterFormProps) {
           name="subject"
           id="subject"
           label="Subject"
+          disabled={disabled}
         />
         <FastField
           component={FormikMuiTextField}
@@ -35,6 +40,7 @@ export function NewsletterForm({ onCancel }: NewsletterFormProps) {
           multiline
           minRows={10}
           maxRows={30}
+          disabled={disabled}
         />
 
         {!isValid && <ErrorDisplay message={errorMessage} />}
@@ -44,7 +50,7 @@ export function NewsletterForm({ onCancel }: NewsletterFormProps) {
           color="success"
           type="submit"
           variant="contained"
-          disabled={!isValid || !dirty}
+          disabled={!isValid || !dirty || disabled}
         >
           Save
         </Button>

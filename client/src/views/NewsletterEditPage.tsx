@@ -11,6 +11,7 @@ import { NewsletterForCreate } from "../types";
 import { newsletterSchema } from "../components/Forms/newsletterSchema";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { JSDateToLuxon } from "../util/typeConverters";
 
 export default function NewsletterEditPage() {
   const orgId = useIdParam();
@@ -68,12 +69,30 @@ export default function NewsletterEditPage() {
         {newsletter ? "Edit Newsletter" : "Create Newsletter"}
       </Typography>
 
+      {!!newsletter?.sentAt && (
+        <Typography>
+          Newsletter sent on{" "}
+          {JSDateToLuxon(new Date(newsletter.sentAt)).toLocaleString({
+            weekday: "short",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+          {". "}You cannot edit a newsletter that has already been sent.
+        </Typography>
+      )}
+
       <Formik
         initialValues={newsletter ?? emptyNewsletter}
         onSubmit={mutate}
         validationSchema={newsletterSchema}
       >
-        <NewsletterForm onCancel={handleCancel} />
+        <NewsletterForm
+          onCancel={handleCancel}
+          disabled={!!newsletter?.sentAt}
+        />
       </Formik>
     </Box>
   );
