@@ -12,7 +12,7 @@ export class NewsletterManager {
 
   public async getNewsletters() {
     const newsletters = await prisma.newsletter.findMany({
-      where: { orgId: this.orgId },
+      where: { orgId: this.orgId || undefined },
       orderBy: { createdAt: "desc" },
     });
     return Promise.all(newsletters.map((nl) => this.cleanOutput(nl)));
@@ -20,7 +20,7 @@ export class NewsletterManager {
 
   public async getNewsletter(newsletterId: number) {
     const newsletter = await prisma.newsletter.findFirst({
-      where: { id: newsletterId, orgId: this.orgId },
+      where: { id: newsletterId, orgId: this.orgId || undefined },
     });
     if (!newsletter) {
       throw new NotFoundError("Newsletter not found");

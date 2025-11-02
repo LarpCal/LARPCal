@@ -12,20 +12,20 @@ interface LinkIconButtonProps {
 export function LinkIconButton(
   props: LinkIconButtonProps & Omit<IconButtonProps<typeof Link>, "component">,
 ) {
-  if (props.tooltip) {
-    const { tooltip, ...rest } = props;
-    return (
-      <Tooltip title={tooltip}>
-        <LinkIconButton {...rest} />
-      </Tooltip>
-    );
-  }
-
-  const { to, icon, ...rest } = props;
-
-  return (
+  const { tooltip, to, icon, ...rest } = props;
+  const button = (
     <IconButton {...rest} component={Link} to={to}>
       <FontAwesomeIcon icon={icon} />
     </IconButton>
   );
+
+  if (tooltip) {
+    return (
+      <Tooltip title={tooltip}>
+        <span>{button}</span>
+      </Tooltip>
+    );
+  }
+
+  return button;
 }

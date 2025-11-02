@@ -47,29 +47,29 @@ function useLarpControls(larp: Larp) {
   // const EditLarpButton = <EditLarpButtonComponent handleClick={editLarp} />;
   const DeleteLarpButton = (
     <TooltipButton
-      handleClick={deleteLarp}
-      title="Delete this Event"
+      onClick={deleteLarp}
+      tooltip="Delete this Event"
       icon={faTrash}
     />
   );
   const EditLarpButton = (
     <TooltipButton
-      handleClick={editLarp}
-      title="Edit this Event"
+      onClick={editLarp}
+      tooltip="Edit this Event"
       icon={faPencil}
     />
   );
   const EditImageButton = (
     <TooltipButton
-      handleClick={editImage}
-      title="Update Banner Image"
+      onClick={editImage}
+      tooltip="Update Banner Image"
       icon={faImage}
     />
   );
   const ToggleFeaturedButton = (
     <TooltipButton
-      handleClick={toggleFeatured}
-      title="Toggle Featured Event"
+      onClick={toggleFeatured}
+      tooltip="Toggle Featured Event"
       icon={faStar}
     />
   );

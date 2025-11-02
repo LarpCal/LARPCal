@@ -289,6 +289,8 @@ class LarpAPI {
     return response.deleted;
   }
 
+  /** NEWSLETTERS */
+
   static async getOrgNewsletters(orgId: number): Promise<Newsletter[]> {
     const response = await this.request(`orgs/${orgId}/newsletters`);
     return response.newsletters;
@@ -347,6 +349,45 @@ class LarpAPI {
       undefined,
       "delete",
     );
+  }
+
+  /** Admin Newsletter */
+  static async getAllNewsletters(): Promise<Newsletter[]> {
+    const response = await this.request("newsletters");
+    return response.newsletters;
+  }
+
+  static async getNewsletterById(id: number): Promise<Newsletter> {
+    const response = await this.request(`newsletters/${id}`);
+    return response.newsletter;
+  }
+
+  static async createNewsletter(
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request("newsletters", data, "post");
+    return response.newsletter;
+  }
+
+  static async updateNewsletter(
+    id: number,
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request(`newsletters/${id}`, data, "put");
+    return response.newsletter;
+  }
+
+  static async deleteNewsletter(id: number): Promise<void> {
+    await this.request(`newsletters/${id}`, undefined, "delete");
+  }
+
+  static async sendNewsletter(id: number): Promise<boolean> {
+    const response = await this.request(
+      `newsletters/${id}/send`,
+      undefined,
+      "post",
+    );
+    return response.sent;
   }
 }
 

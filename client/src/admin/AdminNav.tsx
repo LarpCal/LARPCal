@@ -32,6 +32,11 @@ function AdminNav() {
             Organizers
           </Link>
         </ListItem>
+        <ListItem>
+          <Link component={NavLink} to="/admin/newsletters">
+            Newsletters
+          </Link>
+        </ListItem>
       </List>
     </Stack>
   );

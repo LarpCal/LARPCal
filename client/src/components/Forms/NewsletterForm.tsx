@@ -54,7 +54,12 @@ export function NewsletterForm({
         >
           Save
         </Button>
-        <Button color="error" variant="contained" onClick={onCancel}>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={onCancel}
+          disabled={disabled}
+        >
           Cancel
         </Button>
       </Stack>
