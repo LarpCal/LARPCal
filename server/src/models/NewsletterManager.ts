@@ -1,6 +1,11 @@
 import { Newsletter } from "@prisma/client";
 import { prisma } from "../prismaSingleton";
 import { omitKeys } from "../utils/helpers";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../utils/expressError";
 
 export class NewsletterManager {
   public constructor(private orgId: number | null = null) {}
@@ -14,11 +19,13 @@ export class NewsletterManager {
   }
 
   public async getNewsletter(newsletterId: number) {
-    return this.cleanOutput(
-      prisma.newsletter.findFirstOrThrow({
-        where: { id: newsletterId, orgId: this.orgId },
-      }),
-    );
+    const newsletter = await prisma.newsletter.findFirst({
+      where: { id: newsletterId, orgId: this.orgId },
+    });
+    if (!newsletter) {
+      throw new NotFoundError("Newsletter not found");
+    }
+    return this.cleanOutput(newsletter);
   }
 
   public async createNewsletter(subject: string, text: string) {
@@ -52,12 +59,34 @@ export class NewsletterManager {
     );
   }
 
+  public async deleteNewsletter(newsletterId: number) {
+    if (this.orgId) {
+      this.verifyNewsletterBelongsToOrg(newsletterId);
+    }
+    const newsletter = await this.getNewsletter(newsletterId);
+    if (newsletter.sentAt) {
+      throw new BadRequestError(
+        "Cannot delete a newsletter that has been sent",
+      );
+    }
+    await prisma.newsletter.delete({
+      where: { id: newsletterId },
+    });
+  }
+
   public async sendNewsletter(newsletterId: number, force = false) {
     let emails: string[];
 
+    const newsletter = await this.getNewsletter(newsletterId);
+    if (newsletter.sentAt) {
+      throw new BadRequestError("Newsletter has already been sent");
+    }
+
     if (this.orgId) {
       if (force) {
-        throw new Error("Organizations cannot force send newsletters");
+        throw new BadRequestError(
+          "Organizations cannot force send newsletters",
+        );
       }
       this.verifyNewsletterBelongsToOrg(newsletterId);
 
@@ -93,13 +122,16 @@ export class NewsletterManager {
 
   protected async verifyNewsletterBelongsToOrg(newsletterId: number) {
     if (this.orgId === null) {
-      throw new Error("Organization ID is null");
+      throw new BadRequestError("Organization ID is null");
     }
     const newsletter = await prisma.newsletter.findUnique({
       where: { id: newsletterId },
     });
-    if (!newsletter || newsletter.orgId !== this.orgId) {
-      throw new Error("Newsletter does not belong to organization");
+    if (!newsletter) {
+      throw new NotFoundError("Newsletter not found");
+    }
+    if (newsletter.orgId !== this.orgId) {
+      throw new UnauthorizedError("Newsletter does not belong to organization");
     }
     return true;
   }

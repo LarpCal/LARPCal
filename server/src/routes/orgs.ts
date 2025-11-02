@@ -242,7 +242,21 @@ router.get(
     },
   ),
 
-  router.put(
+  router.delete(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+
+      await manager.deleteNewsletter(newsletterId);
+      res.json({ deleted: newsletterId });
+    },
+  ),
+
+  router.post(
     "/:id/newsletters/:newsletterId/send",
     ensureMatchingOrganizerOrAdmin,
     async (req, res) => {
