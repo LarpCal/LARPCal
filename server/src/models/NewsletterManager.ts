@@ -1,42 +1,36 @@
+import { Newsletter } from "@prisma/client";
 import { prisma } from "../prismaSingleton";
+import { omitKeys } from "../utils/helpers";
 
 export class NewsletterManager {
   public constructor(private orgId: number | null = null) {}
 
   public async getNewsletters() {
-    return prisma.newsletter.findMany({
+    const newsletters = await prisma.newsletter.findMany({
       where: { orgId: this.orgId },
       orderBy: { createdAt: "desc" },
     });
+    return Promise.all(newsletters.map((nl) => this.cleanOutput(nl)));
   }
 
   public async getNewsletter(newsletterId: number) {
-    return prisma.newsletter.findFirstOrThrow({
-      where: { id: newsletterId, orgId: this.orgId },
-    });
+    return this.cleanOutput(
+      prisma.newsletter.findFirstOrThrow({
+        where: { id: newsletterId, orgId: this.orgId },
+      }),
+    );
   }
 
   public async createNewsletter(subject: string, text: string) {
-    return prisma.newsletter.create({
-      data: {
-        orgId: this.orgId,
-        subject,
-        text,
-      },
-    });
-  }
-
-  public async verifyNewsletterBelongsToOrg(newsletterId: number) {
-    if (this.orgId === null) {
-      throw new Error("Organization ID is null");
-    }
-    const newsletter = await prisma.newsletter.findUnique({
-      where: { id: newsletterId },
-    });
-    if (!newsletter || newsletter.orgId !== this.orgId) {
-      throw new Error("Newsletter does not belong to organization");
-    }
-    return true;
+    return this.cleanOutput(
+      prisma.newsletter.create({
+        data: {
+          orgId: this.orgId,
+          subject,
+          text,
+        },
+      }),
+    );
   }
 
   public async updateNewsletter(
@@ -47,13 +41,15 @@ export class NewsletterManager {
     if (this.orgId) {
       this.verifyNewsletterBelongsToOrg(newsletterId);
     }
-    return prisma.newsletter.update({
-      where: { id: newsletterId },
-      data: {
-        subject,
-        text,
-      },
-    });
+    return this.cleanOutput(
+      prisma.newsletter.update({
+        where: { id: newsletterId },
+        data: {
+          subject,
+          text,
+        },
+      }),
+    );
   }
 
   public async sendNewsletter(newsletterId: number, force = false) {
@@ -93,5 +89,26 @@ export class NewsletterManager {
       where: { id: newsletterId },
       data: { sentAt: now },
     });
+  }
+
+  protected async verifyNewsletterBelongsToOrg(newsletterId: number) {
+    if (this.orgId === null) {
+      throw new Error("Organization ID is null");
+    }
+    const newsletter = await prisma.newsletter.findUnique({
+      where: { id: newsletterId },
+    });
+    if (!newsletter || newsletter.orgId !== this.orgId) {
+      throw new Error("Newsletter does not belong to organization");
+    }
+    return true;
+  }
+
+  protected async cleanOutput(newsletter: Newsletter | Promise<Newsletter>) {
+    const nl = await newsletter;
+    if (this.orgId) {
+      return omitKeys(nl, "orgId", "forceSend");
+    }
+    return nl;
   }
 }
