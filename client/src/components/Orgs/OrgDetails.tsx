@@ -44,7 +44,7 @@ function OrgDetails({ org }: OrgDetailsProps) {
           <Stack direction="row" className="organizerControls">
             <LinkIconButton
               title="Manage Newsletters"
-              to={`/orgs/${org.id}/newsletter`}
+              to={`/orgs/${org.id}/newsletters`}
               icon={faBullhorn}
             />
             <LinkIconButton

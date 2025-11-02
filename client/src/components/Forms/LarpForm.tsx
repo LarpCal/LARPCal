@@ -27,7 +27,6 @@ function EventForm() {
   return (
     <>
       <Box
-        className="RecipeForm"
         sx={{
           width: "100%",
         }}

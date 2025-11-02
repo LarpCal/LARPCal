@@ -16,16 +16,10 @@ type Props<T> = {
 function OrgFormProvider<
   T extends Organization | OrganizationForCreate | OrganizationForUpdate,
 >({ org, onSubmitCallback, schema, children }: Props<T>) {
-  function modelToFormValues(org: T) {
-    return {
-      ...org,
-    };
-  }
-
   return (
     <Formik
-      initialValues={modelToFormValues(org)}
-      onSubmit={async (values) => await onSubmitCallback(values)}
+      initialValues={org}
+      onSubmit={onSubmitCallback}
       validationSchema={schema}
     >
       {children}

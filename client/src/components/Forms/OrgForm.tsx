@@ -4,22 +4,21 @@ import { FastField } from "formik";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
 import ErrorDisplay from "../FormComponents/ErrorDisplay";
+import { useMemo } from "react";
 
 function OrgForm() {
   const { isValid, errors } = useFormikContext<Organization>();
-  const errorMessage = `
-        Please check following fields to continue:
-        ${Object.keys(errors)
-          .map((key) => {
-            return key !== "steps" ? key : null;
-          })
-          .join(", ")}
-    `;
+  const errorMessage = useMemo(
+    () =>
+      `Please check following fields to continue: ${Object.keys(errors)
+        .map((key) => (key !== "steps" ? key : null))
+        .join(", ")}`,
+    [errors],
+  );
 
   return (
     <>
       <Box
-        className="RecipeForm"
         sx={{
           width: "100%",
         }}
@@ -69,7 +68,7 @@ function OrgForm() {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={isValid ? false : true}
+                  disabled={!isValid}
                 >
                   <Typography variant="h5">Save Changes</Typography>
                 </Button>
