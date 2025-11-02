@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useIdParam } from "../hooks/useIdParam";
 import LarpAPI from "../util/api";
@@ -12,6 +12,7 @@ import { newsletterSchema } from "../components/Forms/newsletterSchema";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { JSDateToLuxon } from "../util/typeConverters";
+import { useNewsletter } from "../hooks/useNewsletter";
 
 export default function NewsletterEditPage() {
   const orgId = useIdParam();
@@ -22,11 +23,7 @@ export default function NewsletterEditPage() {
     isLoading,
     isError,
     error,
-  } = useQuery({
-    queryKey: ["orgNewsletter", orgId, newsletterId],
-    queryFn: async () => LarpAPI.getOrgNewsletter(orgId, newsletterId!),
-    enabled: newsletterId !== null,
-  });
+  } = useNewsletter(newsletterId);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();

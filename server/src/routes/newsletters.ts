@@ -2,6 +2,8 @@ import express from "express";
 import { NewsletterManager } from "../models/NewsletterManager";
 import { ensureAdmin } from "../middleware/auth";
 import { toValidId } from "../utils/helpers";
+import OrgManager from "../models/OrgManager";
+import { UnauthorizedError } from "../utils/expressError";
 
 const router = express.Router();
 
@@ -18,9 +20,25 @@ router.post("/", ensureAdmin, async (req, res) => {
   res.status(201).json({ newsletter });
 });
 
-router.get("/:id", ensureAdmin, async (req, res) => {
+router.get("/:id", async (req, res) => {
   const newsletterId = toValidId(req.params.id);
   const newsletter = await manager.getNewsletter(newsletterId);
+  if (!newsletter.sentAt) {
+    const user = res.locals.user;
+    if (!user) {
+      throw new UnauthorizedError(
+        "Must be logged in to view draft newsletters",
+      );
+    }
+    if (newsletter.orgId && user.isAdmin !== true) {
+      const org = await OrgManager.getOrgById(newsletter.orgId);
+      if (user.username !== org.username) {
+        throw new UnauthorizedError(
+          "Not authorized to view this draft newsletter",
+        );
+      }
+    }
+  }
   res.json({ newsletter });
 });
 

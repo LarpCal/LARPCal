@@ -100,7 +100,7 @@ const columns: GridColDef<Newsletter>[] = [
         <LinkIconButton
           tooltip="View Preview"
           icon={faEye}
-          to={`/admin/newsletters/${row.id}/view`}
+          to={`/newsletters/${row.id}`}
         />,
         <SendNewsletterButton
           newsletterId={row.id}

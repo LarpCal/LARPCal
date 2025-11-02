@@ -139,7 +139,7 @@ export class NewsletterManager {
   protected async cleanOutput(newsletter: Newsletter | Promise<Newsletter>) {
     const nl = await newsletter;
     if (this.orgId) {
-      return omitKeys(nl, "orgId", "forceSend");
+      return omitKeys(nl, "forceSend");
     }
     return nl;
   }

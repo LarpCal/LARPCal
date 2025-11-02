@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -16,9 +15,14 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";
 import { Link } from "react-router-dom";
 import { useCallback, useState } from "react";
-import { JSDateToLuxon } from "../util/typeConverters";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faPaperPlane,
+  faPencil,
+} from "@fortawesome/free-solid-svg-icons";
+import TooltipButton from "../components/FormComponents/TooltipButton";
+import { LinkIconButton } from "../components/FormComponents/LinkIconButton";
+import { DateTime } from "luxon";
 
 export default function OrgNewslettersPage() {
   const orgId = useIdParam();
@@ -40,29 +44,9 @@ export default function OrgNewslettersPage() {
     setTimeout(() => setMessage(""), 5000);
   }, []);
 
-  const queryClient = useQueryClient();
-  const { mutate: handleSend, isPending: sendPending } = useMutation({
-    mutationFn: (id: number) => LarpAPI.sendOrgNewsletter(orgId, id),
-    async onSuccess() {
-      await queryClient.invalidateQueries({
-        queryKey: ["orgNewsletters", orgId],
-      });
-      showMessage("Newsletter sent successfully");
-    },
-  });
-  const { mutate: handleDelete, isPending: deletePending } = useMutation({
-    mutationFn: (id: number) => LarpAPI.deleteOrgNewsletter(orgId, id),
-    async onSuccess() {
-      await queryClient.invalidateQueries({
-        queryKey: ["orgNewsletters", orgId],
-      });
-      showMessage("Newsletter deleted successfully");
-    },
-  });
-
   const dateToText = useCallback(
     (dateString: string) =>
-      JSDateToLuxon(new Date(dateString)).toLocaleString({
+      DateTime.fromISO(dateString).toLocaleString({
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -106,16 +90,17 @@ export default function OrgNewslettersPage() {
               key={newsletter.id}
               secondaryAction={
                 <NewsletterActions
-                  disabled={sendPending || deletePending || !!newsletter.sentAt}
-                  onDelete={() => handleDelete(newsletter.id)}
-                  onSend={() => handleSend(newsletter.id)}
+                  disabled={!!newsletter.sentAt}
+                  orgId={orgId}
+                  newsletterId={newsletter.id}
+                  showMessage={showMessage}
                 />
               }
               disablePadding
             >
               <ListItemButton
                 component={Link}
-                to={`/orgs/${orgId}/newsletters/${newsletter.id}`}
+                to={`/newsletters/${newsletter.id}`}
               >
                 <ListItemText
                   primary={newsletter.subject}
@@ -135,24 +120,60 @@ export default function OrgNewslettersPage() {
 }
 
 interface NewsletterActionsProps {
+  orgId: number;
+  newsletterId: number;
   disabled: boolean;
-  onSend: () => void;
-  onDelete: () => void;
+  showMessage: (msg: string) => void;
 }
 
 function NewsletterActions({
+  orgId,
+  newsletterId,
+  showMessage,
   disabled,
-  onSend,
-  onDelete,
 }: NewsletterActionsProps) {
+  const queryClient = useQueryClient();
+  const { mutate: onSend, isPending: sendPending } = useMutation({
+    mutationFn: () => LarpAPI.sendOrgNewsletter(orgId, newsletterId),
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: ["orgNewsletters", orgId],
+      });
+      showMessage("Newsletter sent successfully");
+    },
+  });
+  const { mutate: onDelete, isPending: deletePending } = useMutation({
+    mutationFn: () => LarpAPI.deleteOrgNewsletter(orgId, newsletterId),
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: ["orgNewsletters", orgId],
+      });
+      showMessage("Newsletter deleted successfully");
+    },
+  });
+
+  const isPending = sendPending || deletePending;
+
   return (
     <Stack direction="row" spacing={1}>
-      <IconButton color="success" disabled={disabled} onClick={onSend}>
-        <FontAwesomeIcon icon={faPaperPlane} />
-      </IconButton>
-      <IconButton color="error" disabled={disabled} onClick={onDelete}>
-        <FontAwesomeIcon icon={faTrash} />
-      </IconButton>
+      <LinkIconButton
+        tooltip="Edit Newsletter"
+        icon={faPencil}
+        to={`/orgs/${orgId}/newsletters/${newsletterId}`}
+      />
+      <TooltipButton
+        tooltip="Send Newsletter"
+        icon={faPaperPlane}
+        disabled={disabled || isPending}
+        onClick={() => onSend()}
+      />
+      <TooltipButton
+        tooltip="Delete Newsletter"
+        icon={faTrash}
+        color="error"
+        disabled={disabled || isPending}
+        onClick={() => onDelete()}
+      />
     </Stack>
   );
 }

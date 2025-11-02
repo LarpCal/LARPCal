@@ -22,6 +22,7 @@ import MyProfilePage from "./views/MyProfilePage";
 import FollowedOrgs from "./views/FollowedOrgs";
 import OrgNewslettersPage from "./views/OrgNewslettersPage";
 import NewsletterEditPage from "./views/NewsletterEditPage";
+import NewsletterPreviewPage from "./views/NewsletterPreview";
 
 function RoutesList() {
   const { user, login, register, logout } = useContext(userContext);
@@ -87,6 +88,7 @@ function RoutesList() {
         <Route path="/orgs/:id" element={<OrgDetailPage />} />
         <Route path="/events" element={<LarpListPage />} />
         <Route path="/events/:id" element={<LarpDetailPage />} />
+        <Route path="/newsletters/:id" element={<NewsletterPreviewPage />} />
         {/* <Route path='/demo' element={<DemoHome login={login} />} /> */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<HomePage />} />
