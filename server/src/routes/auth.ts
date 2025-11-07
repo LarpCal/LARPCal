@@ -112,16 +112,17 @@ router.post(
 
       //send email with magic link
       const link = `${CORS_URL}/auth/password-reset/confirm?token=${token}`;
-      sendPasswordResetEmail(passwordResetRequest.user.email, username, link);
+      await sendPasswordResetEmail(
+        passwordResetRequest.user.email,
+        username,
+        link,
+      );
 
-      return res
-        .status(200)
-        .set("Content-Type", "text/html")
-        .send("Request Recieved");
+      res.status(200).set("Content-Type", "text/html").send("Request Recieved");
     } catch (e) {
       if (e instanceof NotFoundError) {
         //Fail silently. Do not verify that username doesn't exist
-        return res
+        res
           .status(200)
           .set("Content-Type", "text/html")
           .send("Request Recieved");
