@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Box, Modal } from "@mui/material";
@@ -8,7 +8,6 @@ import LarpAPI from "../util/api";
 import { LarpForUpdate } from "../types";
 
 import { LarpFormProvider } from "../context/LarpFormProvider";
-import { userContext } from "../context/userContext";
 import { useFetchLarp } from "../hooks/useFetchLarp";
 import ToastMessage from "../components/ui/ToastMessage";
 
@@ -21,8 +20,6 @@ function AdminEditLarp() {
   const [saving, setSaving] = useState(false);
   const [saveErrs, setSaveErrs] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { user } = useContext(userContext);
-  const { organization } = user;
   const { larp, setLarp, loading, error } = useFetchLarp(parseInt(id));
 
   /** Type conversion. Schema prevents a simple cast from working. */
@@ -45,10 +42,7 @@ function AdminEditLarp() {
   async function saveLarp(formData: LarpForUpdate) {
     try {
       setSaving(true);
-      const savedLarp = await LarpAPI.UpdateLarp({
-        ...formData,
-        orgId: organization!.id,
-      });
+      const savedLarp = await LarpAPI.UpdateLarp(formData);
       setLarp(savedLarp);
       setSaving(false);
       navigate(`/admin/events/${savedLarp.id}`);

@@ -4,14 +4,12 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useIdParam } from "../hooks/useIdParam";
 import { useNewsletter } from "../hooks/useNewsletter";
 import { DateTimeFormat } from "../components/ui/DateTimeFormat";
-import { useBody } from "../hooks/useBody";
 import { Link as RouterLink } from "react-router-dom";
+import { BodyText } from "../components/ui/BodyText";
 
 export default function NewsletterPreviewPage() {
   const newsletterId = useIdParam();
   const { isLoading, error, data: newsletter } = useNewsletter(newsletterId);
-
-  const text = useBody(newsletter?.text);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -44,7 +42,7 @@ export default function NewsletterPreviewPage() {
         </Typography>
       )}
       <Divider sx={{ my: "1rem" }} />
-      {text}
+      <BodyText text={newsletter?.text} />
     </Box>
   );
 }

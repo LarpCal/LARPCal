@@ -15,9 +15,9 @@ import {
 
 import TagCard from "./TagDisplay";
 import { JSDateToLuxon } from "../../util/typeConverters";
-import useLarpControls from "../../hooks/useLarpControls";
 import { userContext } from "../../context/userContext";
 import { useContext } from "react";
+import LarpActions from "./LarpActions";
 
 type LarpCardProps = {
   larp: Larp;
@@ -27,8 +27,6 @@ export default function LarpCard({ larp }: LarpCardProps) {
   const theme = useTheme();
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
-  const { EditLarpButton, DeleteLarpButton, EditImageButton } =
-    useLarpControls(larp);
 
   let ticketColor = theme.palette.success.main;
   if (larp.ticketStatus === "LIMITED") ticketColor = theme.palette.warning.main;
@@ -56,18 +54,12 @@ export default function LarpCard({ larp }: LarpCardProps) {
           }}
         ></Box>
       </Link>
-      {larp.organization.username === username || isAdmin === true ? (
-        <Stack
-          direction="row"
-          className="larpControls"
-          justifyContent="space-around"
-        >
-          {EditLarpButton}
-          {EditImageButton}
-          {DeleteLarpButton}
-        </Stack>
-      ) : (
-        <></>
+      {(larp.organization.username === username || isAdmin === true) && (
+        <LarpActions
+          larpId={larp.id}
+          isAdmin={isAdmin}
+          borderRadius="0 0 5px 5px"
+        />
       )}
 
       <Stack

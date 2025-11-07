@@ -15,26 +15,6 @@
       right: 1rem;
       top: 1rem;
     }
-
-    .larpControls {
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
-      border-radius: 5px;
-      transition: background-color 0.2s;
-      background-color: #070707ff;
-
-      button {
-        color: white;
-        margin: 0 0.5rem;
-        font-size: 2rem;
-      }
-    }
-
-    .larpControls:hover {
-      transition: background-color 0.2s;
-      background-color: #07070777;
-    }
   }
 
   section {
