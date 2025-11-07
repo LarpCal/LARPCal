@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import LarpAPI from "../util/api";
 import { Newsletter } from "../types";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
-import { DateTime } from "luxon";
 import { useFetchOrg } from "../hooks/useFetchOrg";
 import { Link } from "react-router-dom";
 import { LinkIconButton } from "../components/FormComponents/LinkIconButton";
@@ -15,6 +14,7 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import TooltipButton from "../components/FormComponents/TooltipButton";
+import { DateTimeFormat } from "../components/ui/DateTimeFormat";
 
 export function NewslettersDashboard() {
   const { data, isLoading } = useQuery({
@@ -76,12 +76,7 @@ const columns: GridColDef<Newsletter>[] = [
       if (params.row.sentAt) {
         return (
           <Typography variant="details1" color="success.main">
-            Sent on{" "}
-            {DateTime.fromISO(params.row.sentAt).toLocaleString({
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
+            Sent on <DateTimeFormat>{params.row.sentAt}</DateTimeFormat>
           </Typography>
         );
       }

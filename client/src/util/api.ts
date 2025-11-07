@@ -359,7 +359,7 @@ class LarpAPI {
 
   static async getNewsletterById(id: number): Promise<Newsletter> {
     const response = await this.request(`newsletters/${id}`);
-    return response.newsletter;
+    return response;
   }
 
   static async createNewsletter(

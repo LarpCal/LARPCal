@@ -144,6 +144,7 @@ export interface Newsletter extends NewsletterForCreate {
   createdAt: string;
   sentAt: string | null;
   orgId: number | null;
+  orgName?: string;
 }
 
 /*************************** AUTH */
