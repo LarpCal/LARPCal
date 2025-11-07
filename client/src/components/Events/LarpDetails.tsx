@@ -1,7 +1,3 @@
-import { Larp } from "../../types";
-import TagCard from "./TagDisplay";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,
   faEnvelope,
@@ -9,17 +5,21 @@ import {
   faLocationDot,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Link, Stack, Typography } from "@mui/material";
+import { useContext } from "react";
+import { Link as RouterLink } from "react-router-dom";
+
+import { Larp } from "../../types";
 import { JSDateToLuxon } from "../../util/typeConverters";
+import { userContext } from "../../context/userContext";
+import ToastMessage from "../ui/ToastMessage";
+import { BodyText } from "../ui/BodyText";
+
+import LarpActions from "./LarpActions";
+import TagCard from "./TagDisplay";
 
 import "./LarpDetails.scss";
-import { useContext, useMemo } from "react";
-import { userContext } from "../../context/userContext";
-import useLarpControls from "../../hooks/useLarpControls";
-
-import { Link as RouterLink } from "react-router-dom";
-import ToastMessage from "../ui/ToastMessage";
 
 type LarpDetailsProps = {
   larp: Larp;
@@ -28,36 +28,6 @@ type LarpDetailsProps = {
 function LarpDetails({ larp }: LarpDetailsProps) {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
-  const { EditLarpButton, DeleteLarpButton, EditImageButton } =
-    useLarpControls(larp);
-
-  const description = useMemo(
-    () =>
-      larp.description
-        .split("\n")
-        .filter(Boolean)
-        .map((line) => {
-          // Make URLs clickable.
-          const urlRegex = /(https?:\/\/[^\s]+)/g;
-          const parts = line.trim().split(urlRegex);
-
-          return parts.map((part, idx) =>
-            urlRegex.test(part) ? (
-              <a
-                key={idx}
-                href={part}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {part}
-              </a>
-            ) : (
-              part
-            ),
-          );
-        }),
-    [larp.description],
-  );
 
   return (
     <Box className="LarpDetails">
@@ -77,18 +47,14 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           backgroundSize: "cover",
         }}
       >
-        {larp.organization.username === username || isAdmin === true ? (
-          <Stack
-            direction="row"
-            className="larpControls"
-            justifyContent="space-around"
-          >
-            {EditLarpButton}
-            {EditImageButton}
-            {DeleteLarpButton}
-          </Stack>
-        ) : (
-          <></>
+        {(larp.organization.username === username || isAdmin === true) && (
+          <LarpActions
+            larpId={larp.id}
+            isAdmin={isAdmin}
+            position="absolute"
+            bottom="1rem"
+            right="1rem"
+          />
         )}
       </Box>
 
@@ -148,11 +114,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           <Typography component="h3" variant="h2" className="Date & Time">
             About this LARP:
           </Typography>
-          {description.map((line, index) => (
-            <Typography key={index} paragraph>
-              {line}
-            </Typography>
-          ))}
+          <BodyText text={larp.description} />
         </section>
 
         <section id="Location">

@@ -20,6 +20,9 @@ import RegisterPage from "./views/RegisterPage";
 import ChangePasswordForm from "./components/Forms/ChangePasswordForm";
 import MyProfilePage from "./views/MyProfilePage";
 import FollowedOrgs from "./views/FollowedOrgs";
+import OrgNewslettersPage from "./views/OrgNewslettersPage";
+import NewsletterEditPage from "./views/NewsletterEditPage";
+import NewsletterPreviewPage from "./views/NewsletterPreview";
 
 function RoutesList() {
   const { user, login, register, logout } = useContext(userContext);
@@ -45,6 +48,15 @@ function RoutesList() {
       <Route path="/orgs/apply" element={<CreateOrgPage />} />
       <Route path="/orgs/:id/edit" element={<EditOrgPage />} />
       <Route path="/orgs/:id/image" element={<EditOrgImagePage />} />
+      <Route path="/orgs/:id/newsletters" element={<OrgNewslettersPage />} />
+      <Route
+        path="/orgs/:id/newsletters/new"
+        element={<NewsletterEditPage />}
+      />
+      <Route
+        path="/orgs/:id/newsletters/:newsletterId"
+        element={<NewsletterEditPage />}
+      />
       <Route path="/auth/logout" element={<LogOutPage logOut={logout} />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/following" element={<FollowedOrgs />} />
@@ -76,6 +88,7 @@ function RoutesList() {
         <Route path="/orgs/:id" element={<OrgDetailPage />} />
         <Route path="/events" element={<LarpListPage />} />
         <Route path="/events/:id" element={<LarpDetailPage />} />
+        <Route path="/newsletters/:id" element={<NewsletterPreviewPage />} />
         {/* <Route path='/demo' element={<DemoHome login={login} />} /> */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<HomePage />} />

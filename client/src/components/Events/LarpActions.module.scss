@@ -1,0 +1,15 @@
+.stack {
+  background-color: #070707;
+  border-radius: 5px;
+
+  :is(button, a) {
+    color: #ddd;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}

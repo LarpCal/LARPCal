@@ -149,7 +149,7 @@ async function ensureMatchingOrganizerOrAdmin(
   next: NextFunction,
 ) {
   const user = res.locals.user;
-  const username = res.locals.user?.username;
+  const username = user?.username;
   const org = await OrgManager.getOrgById(+req.params.id);
   if (username && (username === org.username || user.isAdmin === true)) {
     return next();

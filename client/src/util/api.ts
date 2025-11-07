@@ -13,6 +13,8 @@ import {
   User,
   UserForCreate,
   UserLoginData,
+  Newsletter,
+  NewsletterForCreate,
 } from "../types";
 import { JsonToLarp } from "./typeConverters";
 
@@ -27,8 +29,6 @@ class LarpAPI {
   static token = "";
 
   static async request(endpoint: string, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
     const url = `${BASE_URL}${endpoint}`;
     const headers = { Authorization: `Bearer ${LarpAPI.token}` };
     const params = method === "get" ? data : {};
@@ -289,46 +289,106 @@ class LarpAPI {
     return response.deleted;
   }
 
-  /************************ FAVORITES ********************************/
-  //NOTE: These methods are not yet converted from a different project
+  /** NEWSLETTERS */
 
-  // static async getCookbook(username: string) {
-  //   const response = await this.request(
-  //     `users/${username}/cookbook`
-  //   );
-  //   return response.cookbook;
-  // }
+  static async getOrgNewsletters(orgId: number): Promise<Newsletter[]> {
+    const response = await this.request(`orgs/${orgId}/newsletters`);
+    return response.newsletters;
+  }
 
-  // static async addToCookbook(larpId: number, username: string) {
-  //   const response = await this.request(
-  //     `events/${larpId}/addToCookbook`,
-  //     { larpId, username },
-  //     'post'
-  //   );
-  //   if (response.statusCode === 201) { return true; }
-  //   return false; //is this what we want to return here?
-  // }
+  static async getOrgNewsletter(
+    orgId: number,
+    newsletterId: number,
+  ): Promise<Newsletter> {
+    const response = await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}`,
+    );
+    return response.newsletter;
+  }
 
-  // static async removeFromCookbook(larpId: number, username: string) {
-  //   const response = await this.request(
-  //     `events/${larpId}/removeFromCookbook`,
-  //     { larpId, username },
-  //     'post'
-  //   );
-  //   if (response.statusCode === 200) { return true; }
-  //   return false;
-  // }
+  static async createOrgNewsletter(
+    orgId: number,
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request(
+      `orgs/${orgId}/newsletters`,
+      data,
+      "post",
+    );
+    return response.newsletter;
+  }
 
-  /************************ BUG REPORTS ********************************/
+  static async updateOrgNewsletter(
+    orgId: number,
+    newsletterId: number,
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}`,
+      data,
+      "put",
+    );
+    return response.newsletter;
+  }
 
-  // static async createBugReport(reportedBy: string, reportText: string) {
-  //   const response = await this.request(
-  //     `bugReports`,
-  //     { bugReport: { reportedBy, reportText } },
-  //     'post'
-  //   );
-  //   return response.bugReport;
-  // }
+  static async sendOrgNewsletter(
+    orgId: number,
+    newsletterId: number,
+  ): Promise<boolean> {
+    const response = await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}/send`,
+      undefined,
+      "post",
+    );
+    return response.sent;
+  }
+
+  static async deleteOrgNewsletter(orgId: number, newsletterId: number) {
+    await this.request(
+      `orgs/${orgId}/newsletters/${newsletterId}`,
+      undefined,
+      "delete",
+    );
+  }
+
+  /** Admin Newsletter */
+  static async getAllNewsletters(): Promise<Newsletter[]> {
+    const response = await this.request("newsletters");
+    return response.newsletters;
+  }
+
+  static async getNewsletterById(id: number): Promise<Newsletter> {
+    const response = await this.request(`newsletters/${id}`);
+    return response;
+  }
+
+  static async createNewsletter(
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request("newsletters", data, "post");
+    return response.newsletter;
+  }
+
+  static async updateNewsletter(
+    id: number,
+    data: NewsletterForCreate,
+  ): Promise<Newsletter> {
+    const response = await this.request(`newsletters/${id}`, data, "put");
+    return response.newsletter;
+  }
+
+  static async deleteNewsletter(id: number): Promise<void> {
+    await this.request(`newsletters/${id}`, undefined, "delete");
+  }
+
+  static async sendNewsletter(id: number): Promise<boolean> {
+    const response = await this.request(
+      `newsletters/${id}/send`,
+      undefined,
+      "post",
+    );
+    return response.sent;
+  }
 }
 
 export default LarpAPI;

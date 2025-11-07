@@ -12,25 +12,6 @@
     position: relative;
   }
 
-  .larpControls {
-    // position: absolute;
-    // bottom: 0;
-    width: 100%;
-    transition: background-color 0.2s;
-    background-color: #070707ff;
-
-    button {
-      color: white;
-      margin: 0 0.5rem;
-      font-size: 1rem;
-    }
-  }
-
-  .larpControls:hover {
-    transition: background-color 0.2s;
-    background-color: #070707cc;
-  }
-
   & .LarpCard-content {
     width: 100%;
     // padding: .5rem .75rem;

@@ -7,6 +7,7 @@ import larpRoutes from "./routes/larps";
 import usersRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
 import orgsRoutes from "./routes/orgs";
+import newslettersRoutes from "./routes/newsletters";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/auth", authRoutes);
 app.use("/events", larpRoutes);
 app.use("/users", usersRoutes);
 app.use("/orgs", orgsRoutes);
+app.use("/newsletters", newslettersRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(() => {

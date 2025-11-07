@@ -82,9 +82,6 @@
       "type": "string",
       "format": "url"
     },
-    "orgId": {
-      "type": "number"
-    },
     "isFeatured": {
       "type": "boolean"
     },

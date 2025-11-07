@@ -132,6 +132,21 @@ export type OrganizationForUpdate = Omit<
   "larps"
 >;
 
+/** NEWSLETTERS */
+
+export interface NewsletterForCreate {
+  subject: string;
+  text: string;
+}
+
+export interface Newsletter extends NewsletterForCreate {
+  id: number;
+  createdAt: string;
+  sentAt: string | null;
+  orgId: number | null;
+  orgName?: string;
+}
+
 /*************************** AUTH */
 
 export type PasswordResetRequest = {
