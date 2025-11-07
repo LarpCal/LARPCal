@@ -4,7 +4,7 @@ import { NewsletterForm } from "../components/Forms/NewsletterForm";
 import { Formik } from "formik";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import LarpAPI from "../util/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ErrorDisplay from "../components/FormComponents/ErrorDisplay";
@@ -24,6 +24,8 @@ export function EditNewsletter() {
     enabled: !!id,
   });
 
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: NewsletterForCreate) => {
       if (id) {
@@ -32,9 +34,14 @@ export function EditNewsletter() {
         return LarpAPI.createNewsletter(data);
       }
     },
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: ["newsletters"],
+      });
+      navigate("/admin/newsletters");
+    },
   });
 
-  const navigate = useNavigate();
   const handleCancel = useCallback(() => {
     navigate("/admin/newsletters");
   }, []);

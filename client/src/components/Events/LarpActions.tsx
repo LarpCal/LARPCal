@@ -35,7 +35,7 @@ function LarpActions({
       justifyContent="space-around"
     >
       <LinkIconButton
-        to={`${adminPrefix}/events/${larpId}/image`}
+        to={`${adminPrefix}/events/${larpId}/edit`}
         tooltip="Edit this Event"
         icon={faPencil}
       />

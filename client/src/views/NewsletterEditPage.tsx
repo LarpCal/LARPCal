@@ -11,8 +11,8 @@ import { NewsletterForCreate } from "../types";
 import { newsletterSchema } from "../components/Forms/newsletterSchema";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { JSDateToLuxon } from "../util/typeConverters";
 import { useNewsletter } from "../hooks/useNewsletter";
+import { DateTimeFormat } from "../components/ui/DateTimeFormat";
 
 export default function NewsletterEditPage() {
   const orgId = useIdParam();
@@ -69,14 +69,7 @@ export default function NewsletterEditPage() {
       {!!newsletter?.sentAt && (
         <Typography>
           Newsletter sent on{" "}
-          {JSDateToLuxon(new Date(newsletter.sentAt)).toLocaleString({
-            weekday: "short",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-          })}
+          <DateTimeFormat time>{newsletter.sentAt}</DateTimeFormat>
           {". "}You cannot edit a newsletter that has already been sent.
         </Typography>
       )}

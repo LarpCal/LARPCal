@@ -9,6 +9,7 @@ import FormikDateTimePicker from "../FormComponents/FormikDateTimePicker";
 import ErrorDisplay from "../FormComponents/ErrorDisplay";
 import { FastField, Field } from "formik";
 import { DateTime } from "luxon";
+import { MarkdownInfo } from "../FormComponents/MarkdownInfo";
 
 // type EventFormProps = {
 // };
@@ -65,6 +66,7 @@ function EventForm() {
               minRows={3}
               maxRows={10}
             />
+            <MarkdownInfo />
             <FastField
               component={FormikMuiTextField}
               placeholder="What city will your LARP take place in"

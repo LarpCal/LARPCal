@@ -4,6 +4,7 @@ import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
 import { Newsletter } from "../../types";
 import { MouseEventHandler, useMemo } from "react";
 import ErrorDisplay from "../FormComponents/ErrorDisplay";
+import { MarkdownInfo } from "../FormComponents/MarkdownInfo";
 
 interface NewsletterFormProps {
   onCancel: MouseEventHandler<HTMLButtonElement>;
@@ -42,6 +43,7 @@ export function NewsletterForm({
           maxRows={30}
           disabled={disabled}
         />
+        {!disabled && <MarkdownInfo />}
 
         {!isValid && <ErrorDisplay message={errorMessage} />}
       </Stack>
