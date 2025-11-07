@@ -23,6 +23,9 @@ router.post("/", ensureAdmin, async (req, res) => {
 router.get("/:id", async (req, res) => {
   const newsletterId = toValidId(req.params.id);
   const newsletter = await manager.getNewsletter(newsletterId);
+  const org = newsletter.orgId
+    ? await OrgManager.getOrgById(newsletter.orgId)
+    : null;
   if (!newsletter.sentAt) {
     const user = res.locals.user;
     if (!user) {
@@ -30,8 +33,7 @@ router.get("/:id", async (req, res) => {
         "Must be logged in to view draft newsletters",
       );
     }
-    if (newsletter.orgId && user.isAdmin !== true) {
-      const org = await OrgManager.getOrgById(newsletter.orgId);
+    if (org && user.isAdmin !== true) {
       if (user.username !== org.username) {
         throw new UnauthorizedError(
           "Not authorized to view this draft newsletter",
@@ -39,7 +41,8 @@ router.get("/:id", async (req, res) => {
       }
     }
   }
-  res.json({ newsletter });
+  const ret = org ? { ...newsletter, orgName: org.orgName } : newsletter;
+  res.json(ret);
 });
 
 router.put("/:id", ensureAdmin, async (req, res) => {
