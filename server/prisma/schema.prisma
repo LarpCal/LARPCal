@@ -65,6 +65,7 @@ model User {
   PasswordResetRequest PasswordResetRequest[]
   following            UserFollow[]
   newsletterSubscribed Boolean                @default(false)
+  newsletterRemoteId   String?
 
   @@map("users")
 }
@@ -83,6 +84,7 @@ model Organization {
   larps       Larp[]
   followers   UserFollow[]
   newsletters Newsletter[]
+  listId      String?
 
   @@map("organizations")
 }
