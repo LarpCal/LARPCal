@@ -177,7 +177,7 @@ export class NewsletterManager {
   private async cleanOutput(newsletter: Newsletter | Promise<Newsletter>) {
     const nl = await newsletter;
     if (this.orgId) {
-      return omitKeys(nl, "forceSend", "campaignId");
+      return omitKeys(nl, "forceSend");
     }
     return nl;
   }

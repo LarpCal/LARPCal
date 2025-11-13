@@ -172,6 +172,7 @@ class OrgManager {
         data: {
           orgId: id,
           userId: userId,
+          emails: true,
         },
       });
       return true;
