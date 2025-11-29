@@ -169,17 +169,24 @@ export class NewsletterManager {
     instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
     if (!user.newsletterRemoteId) {
-      const { body } = await instance.createContact({
-        email: user.email,
-        listIds,
-      });
-      if (!body.id) {
+      let remoteId: string;
+      try {
+        const { body } = await instance.getContactInfo(user.email);
+        remoteId = body.id.toString();
+      } catch {
+        const { body } = await instance.createContact({
+          email: user.email,
+          listIds,
+        });
+        remoteId = body.id!.toString();
+      }
+      if (!remoteId) {
         throw new Error("Failed to create contact in Brevo");
       }
 
       await prisma.user.update({
         where: { id: userId },
-        data: { newsletterRemoteId: body.id.toString() },
+        data: { newsletterRemoteId: remoteId },
       });
     } else {
       await instance.updateContact(user.newsletterRemoteId, {
