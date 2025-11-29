@@ -1,6 +1,6 @@
 import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
-import { NotFoundError } from "./utils/expressError";
+import { InputValidationError, NotFoundError } from "./utils/expressError";
 
 import { authenticateJWT } from "./middleware/auth";
 import larpRoutes from "./routes/larps";
@@ -40,9 +40,15 @@ const genericErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   const status = err.status || 500;
   const message = err.message;
 
-  res.status(status).json({
-    error: { message, status },
-  });
+  if (err instanceof InputValidationError) {
+    res.status(status).json({
+      error: { message, status, errors: err.errors },
+    });
+  } else {
+    res.status(status).json({
+      error: { message, status },
+    });
+  }
 };
 app.use(genericErrorHandler);
 
