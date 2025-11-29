@@ -21,6 +21,7 @@ import * as jwt from "jsonwebtoken";
 import { CORS_URL, SECRET_KEY } from "../config";
 import { sendPasswordResetEmail } from "../utils/emailHandler";
 import { ensureLoggedIn } from "../middleware/auth";
+import { toValidUsername } from "../utils/helpers";
 
 router.post("/error", async () => {
   throw new BadRequestError("test error");
@@ -55,16 +56,12 @@ router.post("/token", async function (req: Request, res: Response) {
  * Authorization required: Logged in
  */
 
-router.post(
-  "/token/refresh",
-  ensureLoggedIn,
-  async function (req: Request, res: Response) {
-    const { username } = res.locals.user;
-    const user = await UserManager.getUser(username);
-    const token = createToken(user);
-    return res.json({ token });
-  },
-);
+router.post("/token/refresh", ensureLoggedIn, async (req, res) => {
+  const username = toValidUsername(res);
+  const user = await UserManager.getUser(username);
+  const token = createToken(user);
+  return res.json({ token });
+});
 
 /** POST /auth/register:   { user } => { token }
  *

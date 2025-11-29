@@ -11,6 +11,12 @@ export type ImageSet = {
   lg: string;
 };
 
+export interface UserToken {
+  username: string;
+  isOrganizer: boolean;
+  isAdmin: boolean;
+}
+
 /*************************** LARPS */
 
 export type TicketStatus = "AVAILABLE" | "LIMITED" | "SOLD_OUT" | "SOON";

@@ -161,7 +161,7 @@ class OrgManager {
     return org;
   }
 
-  static async follow(id: number, userId: number) {
+  static async follow(id: number, userId: number, emails: boolean) {
     try {
       await prisma.userFollow.delete({
         where: { userId_orgId: { orgId: id, userId } },
@@ -172,7 +172,7 @@ class OrgManager {
         data: {
           orgId: id,
           userId: userId,
-          emails: true,
+          emails,
         },
       });
       return true;

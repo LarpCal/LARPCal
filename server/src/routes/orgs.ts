@@ -15,7 +15,7 @@ import orgApprovalSchema from "../schemas/orgApproval.json";
 import OrgManager from "../models/OrgManager";
 import UserManager from "../models/UserManager";
 import { NewsletterManager } from "../models/NewsletterManager";
-import { isEmailArray, toValidId } from "../utils/helpers";
+import { isEmailArray, toValidId, toValidUsername } from "../utils/helpers";
 
 const router = express.Router();
 
@@ -165,10 +165,13 @@ router.put(
 );
 
 router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
-  const username = res.locals.user.username as string;
+  const username = toValidUsername(res);
   const user = await UserManager.getUser(username);
+  const orgId = toValidId(req.params.id);
 
-  const following = await OrgManager.follow(+req.params.id, user.id);
+  const subscribe = !!req.query.subscribe;
+
+  const following = await OrgManager.follow(orgId, user.id, subscribe);
 
   res.json({ following });
 });
