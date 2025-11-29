@@ -1,10 +1,10 @@
 import * as Brevo from "@getbrevo/brevo";
-import { Newsletter, Prisma } from "@prisma/client";
+import { Newsletter } from "@prisma/client";
 import { AxiosError } from "axios";
 import { marked } from "marked";
 
 import {
-  BREVO_ADMIN_SEGMENT_ID,
+  BREVO_ADMIN_LIST_ID,
   BREVO_API_KEY,
   BREVO_SENDER_EMAIL,
   CORS_URL,
@@ -135,6 +135,49 @@ export class NewsletterManager {
     }
   }
 
+  public async syncUserSubscriptions(userId: number) {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: {
+        following: {
+          include: {
+            org: true,
+          },
+        },
+      },
+    });
+
+    const listIds = await Promise.all(
+      user.following.map((follow) => this.orgListId(follow.orgId)),
+    );
+    if (user.newsletterSubscribed) {
+      listIds.push(BREVO_ADMIN_LIST_ID);
+    }
+
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
+
+    if (!user.newsletterRemoteId) {
+      const { body } = await instance.createContact({
+        email: user.email,
+        extId: user.id.toString(),
+        listIds,
+      });
+      if (!body.id) {
+        throw new Error("Failed to create contact in Brevo");
+      }
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { newsletterRemoteId: body.id.toString() },
+      });
+    } else {
+      await instance.updateContact(user.newsletterRemoteId, {
+        listIds,
+      });
+    }
+  }
+
   public async createContact(userId: number, email: string) {
     const instance = new Brevo.ContactsApi();
     instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
@@ -212,7 +255,7 @@ export class NewsletterManager {
     } else {
       params.name = `LARPCal - ${newsletter.subject} (${newsletter.id})`;
       params.subject = `${newsletter.subject} - LARPCal`;
-      params.recipients!.segmentIds = [BREVO_ADMIN_SEGMENT_ID];
+      params.recipients!.listIds = [BREVO_ADMIN_LIST_ID];
 
       markdown += `\n\nSent by LARPCal.`;
     }
@@ -226,25 +269,6 @@ export class NewsletterManager {
     return params;
   }
 
-  private async getSubscribedUserEmails(force = false) {
-    let where: Prisma.UserWhereInput = {};
-    if (this.orgId) {
-      where = {
-        following: {
-          some: { orgId: this.orgId },
-          every: { emails: true },
-        },
-      };
-    } else if (!force) {
-      where = { newsletterSubscribed: true };
-    }
-    const users = await prisma.user.findMany({
-      where,
-      select: { email: true },
-    });
-    return users.map((user) => user.email);
-  }
-
   private getApiKey() {
     if (!BREVO_API_KEY) {
       throw new Error("BREVO_API_KEY is not set");
@@ -252,12 +276,15 @@ export class NewsletterManager {
     return BREVO_API_KEY;
   }
 
-  private async orgListId() {
-    if (this.orgId === null) {
-      throw new BadRequestError("Organization ID is null");
+  private async orgListId(orgId?: number) {
+    orgId ??= this.orgId ?? undefined;
+    if (!orgId) {
+      throw new Error(
+        "Organization ID is required to get organization list ID",
+      );
     }
     const org = await prisma.organization.findUniqueOrThrow({
-      where: { id: this.orgId },
+      where: { id: orgId },
     });
 
     if (org.listId) {
@@ -282,7 +309,7 @@ export class NewsletterManager {
     });
 
     await prisma.organization.update({
-      where: { id: this.orgId },
+      where: { id: orgId },
       data: { listId: list.id.toString() },
     });
 
