@@ -5,6 +5,8 @@ import {
   LinkProps as RouterLinkProps,
 } from "react-router-dom";
 
-export const TextLink: FC<LinkProps & RouterLinkProps> = (props) => {
+export const TextLink: FC<Omit<LinkProps, "component"> & RouterLinkProps> = (
+  props,
+) => {
   return <Link component={RouterLink} {...props} />;
 };

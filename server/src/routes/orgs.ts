@@ -15,7 +15,12 @@ import orgApprovalSchema from "../schemas/orgApproval.json";
 import OrgManager from "../models/OrgManager";
 import UserManager from "../models/UserManager";
 import { NewsletterManager } from "../models/NewsletterManager";
-import { isEmailArray, toValidId, toValidUsername } from "../utils/helpers";
+import {
+  isEmailArray,
+  omitKeys,
+  toValidId,
+  toValidUsername,
+} from "../utils/helpers";
 
 const router = express.Router();
 
@@ -77,7 +82,12 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.get("/", async function (req: Request, res: Response) {
   const orgs = await OrgManager.getAllOrgs();
-  return res.json({ orgs });
+  return res.json({
+    orgs: orgs.map((org) => ({
+      ...omitKeys(org, "imgSetId", "_count"),
+      followers: org._count.followers,
+    })),
+  });
 });
 
 /** DELETE /[id]

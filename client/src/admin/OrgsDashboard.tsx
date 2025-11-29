@@ -4,14 +4,14 @@ import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import LarpAPI from "../util/api";
 import DeleteButton from "../components/FormComponents/DeleteButton";
 import EditButton from "../components/FormComponents/EditButton";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useFetchOrgs } from "../hooks/useFetchOrgs";
 import ApproveButton from "../components/FormComponents/ApproveButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../components/ui/ToastMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { TextLink } from "../components/ui/TextLink";
 
 function OrgsDashboard() {
   const { orgs, setOrgs, loading, error } = useFetchOrgs();
@@ -35,36 +35,37 @@ function OrgsDashboard() {
       field: "orgName",
       headerName: "Name",
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <Link component={RouterLink} to={`/admin/orgs/${params.row.id}`}>
-            {params.row.orgName}
-          </Link>
-        );
-      },
+      renderCell: (params) => (
+        <TextLink to={`/admin/orgs/${params.row.id}`}>
+          {params.row.orgName}
+        </TextLink>
+      ),
     },
     {
       field: "username",
       headerName: "Account",
+      renderCell: (params) => (
+        <TextLink to={`/admin/users/${params.row.username}`}>
+          {params.row.username}
+        </TextLink>
+      ),
     },
     {
       field: "email",
       headerName: "email",
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <Link component={RouterLink} to={`mailto:${params.row.email}`}>
-            {params.row.email}
-          </Link>
-        );
-      },
+      renderCell: (params) => (
+        <TextLink to={`mailto:${params.row.email}`}>
+          {params.row.email}
+        </TextLink>
+      ),
     },
     {
       field: "isApproved",
       headerName: "Status",
       align: "center",
-      renderCell: (params) => {
-        return params.row.isApproved ? (
+      renderCell: (params) =>
+        params.row.isApproved ? (
           <Typography variant="details1" color="success.main">
             {" "}
             Approved{" "}
@@ -74,8 +75,12 @@ function OrgsDashboard() {
             {" "}
             Not Approved{" "}
           </Typography>
-        );
-      },
+        ),
+    },
+    {
+      field: "followers",
+      headerName: "Followers",
+      type: "number",
     },
     {
       field: "actions",

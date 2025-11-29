@@ -49,10 +49,14 @@ class OrgManager {
     return org;
   }
 
-  static async getAllOrgs(): Promise<Organization[]> {
-    return await prisma.organization.findMany({
+  static async getAllOrgs() {
+    return prisma.organization.findMany({
       orderBy: { id: "asc" },
-      include: ORG_INCLUDE_OBJ,
+      include: {
+        _count: {
+          select: { followers: true },
+        },
+      },
     });
   }
 
