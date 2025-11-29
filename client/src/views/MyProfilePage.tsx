@@ -1,31 +1,29 @@
-import { useContext } from "react";
-import { userContext } from "../context/userContext";
 import { FastField, Form, Formik } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import FormikMuiTextField from "../components/FormComponents/FormikMuiTextField";
-import { User, UserForUpdate } from "../types";
+import { PublicUser, UserForUpdate } from "../types";
 import userUpdateSchema from "../components/Forms/userUpdateSchema";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { useUser } from "../hooks/useUser";
+import FormikCheckbox from "../components/FormComponents/FormikCheckbox";
 
-function MyProfilePage() {
-  const {
-    user: maybeNullUser,
-    update,
-    loading,
-    error,
-  } = useContext(userContext);
+export default function MyProfilePage() {
+  const { user: maybeNullUser, update, loading, error } = useUser();
   const navigate = useNavigate();
   if (maybeNullUser.username === null) {
     return <Navigate to="/auth/login" />;
   }
-  const user = maybeNullUser as User;
+  const user = maybeNullUser as PublicUser;
 
   async function handleSubmit(formData: UserForUpdate) {
     if (loading) {
       return;
     }
-    await update(formData);
+    const userData = formData.password
+      ? formData
+      : { ...formData, password: undefined };
+    await update(userData);
     if (error) {
       return;
     }
@@ -38,19 +36,24 @@ function MyProfilePage() {
 
   return (
     <Formik
-      initialValues={user}
+      initialValues={{
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        subscribed: user.subscribed,
+        password: "",
+      }}
       validationSchema={userUpdateSchema}
       onSubmit={handleSubmit}
     >
       {({ isValid }) => (
         <Form className="UserUpdateForm">
           <Stack direction="column" spacing={2} sx={{ margin: "1rem" }}>
-            <FastField
-              component={FormikMuiTextField}
+            <TextField
               variant="outlined"
-              id="username"
-              label="User name"
-              name="username"
+              label="Username"
+              value={user.username}
+              disabled
             />
             <FastField
               component={FormikMuiTextField}
@@ -93,6 +96,12 @@ function MyProfilePage() {
                 fullWidth
               />
             </Stack>
+            <FastField
+              component={FormikCheckbox}
+              id="subscribed"
+              label="Subscribe to LARPCal news"
+              name="subscribed"
+            />
             <Button
               type="submit"
               variant="contained"
@@ -107,5 +116,3 @@ function MyProfilePage() {
     </Formik>
   );
 }
-
-export default MyProfilePage;

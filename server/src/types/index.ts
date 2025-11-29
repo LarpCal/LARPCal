@@ -87,7 +87,7 @@ export type UserForCreate = {
 export type User = UserForCreate & {
   id: number;
   organization: Organization | null;
-  subscribed?: boolean;
+  subscribed: boolean;
 };
 
 export type PublicUser = Omit<User, "password">;

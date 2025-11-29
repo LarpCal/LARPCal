@@ -131,7 +131,7 @@ class LarpAPI {
   /** GET */
 
   //get full user data
-  static async getUser(username: string) {
+  static async getUser(username: string): Promise<PublicUser> {
     const response = await this.request(`users/${username}`);
     return response.user;
   }
@@ -274,9 +274,21 @@ class LarpAPI {
     return response.org;
   }
 
-  static async followOrg(orgId: number): Promise<{ followed: boolean }> {
+  static async followOrg(
+    orgId: number,
+    subscribe: boolean,
+  ): Promise<{ followed: true; subscribe: boolean }> {
     const response = await this.request(
       `orgs/${orgId}/follow`,
+      { subscribe },
+      "put",
+    );
+    return response;
+  }
+
+  static async unfollowOrg(orgId: number): Promise<{ following: false }> {
+    const response = await this.request(
+      `orgs/${orgId}/unfollow`,
       undefined,
       "put",
     );

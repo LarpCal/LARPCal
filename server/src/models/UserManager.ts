@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
+import { Prisma } from "@prisma/client";
+
 import { prisma } from "../prismaSingleton";
 import { BCRYPT_WORK_FACTOR } from "../config";
-import { PublicUser, User, UserForCreate, UserForUpdate } from "../types";
-
-import bcrypt from "bcrypt";
+import { PublicUser, UserForCreate, UserForUpdate } from "../types";
 
 import {
   BadRequestError,
@@ -36,9 +37,7 @@ class UserManager {
     if (fullUserData) {
       const isValid = await bcrypt.compare(password, fullUserData.password);
       if (isValid === true) {
-        const publicUserData = omitKeys(fullUserData, "password");
-        const user: PublicUser = publicUserData;
-        return user;
+        return userToPublicUser(fullUserData);
       }
     }
     throw new UnauthorizedError("Invalid username/password");
@@ -74,8 +73,7 @@ class UserManager {
       data: userData,
       include: USER_INCLUDE_OBJ,
     });
-    const publicUser = omitKeys(savedUser, "password");
-    return publicUser;
+    return userToPublicUser(savedUser);
   }
 
   /** Returns a list of userData without passwords */
@@ -83,9 +81,7 @@ class UserManager {
     const users = await prisma.user.findMany({
       include: USER_INCLUDE_OBJ,
     });
-    const response = users.map((user: User) => omitKeys(user, "password"));
-
-    return response;
+    return users.map(userToPublicUser);
   }
 
   /** Fetches a User by username.
@@ -98,13 +94,7 @@ class UserManager {
         where: { username },
         include: USER_INCLUDE_OBJ,
       });
-      const publicUser = omitKeys(
-        user,
-        "password",
-        "newsletterRemoteId",
-        "newsletterSubscribed",
-      );
-      return { ...publicUser, subscribed: user.newsletterSubscribed };
+      return userToPublicUser(user);
     } catch {
       throw new NotFoundError("User not found");
     }
@@ -166,13 +156,12 @@ class UserManager {
     try {
       const updatedUser = await prisma.user.update({
         where: {
-          username: username,
+          username,
         },
-        data: userData,
+        data: omitKeys(userData, "subscribed"),
         include: USER_INCLUDE_OBJ,
       });
-      const publicUser = omitKeys(updatedUser, "password");
-      return publicUser;
+      return userToPublicUser(updatedUser);
     } catch (err) {
       console.log(err);
       throw new NotFoundError("User not found");
@@ -192,6 +181,17 @@ class UserManager {
   }
 
   // end class
+}
+
+function userToPublicUser(
+  user: Prisma.UserGetPayload<{
+    include: { organization: { include: { imgUrl: true } } };
+  }>,
+): PublicUser {
+  return {
+    ...omitKeys(user, "password", "newsletterRemoteId", "newsletterSubscribed"),
+    subscribed: user.newsletterSubscribed,
+  };
 }
 
 export default UserManager;

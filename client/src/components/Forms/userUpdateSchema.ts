@@ -1,7 +1,6 @@
 import * as yup from "yup";
 
 const userUpdateSchema = yup.object({
-  username: yup.string().required("Username is required"),
   password: yup
     .string()
     .min(8, "Passwords must be at least 8 characters long")
@@ -18,6 +17,7 @@ const userUpdateSchema = yup.object({
     .string()
     .email("Please provide a valid email")
     .required("Email is required"),
+  subscribed: yup.boolean(),
 });
 
 export default userUpdateSchema;
