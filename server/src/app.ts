@@ -32,7 +32,7 @@ app.use(() => {
 });
 
 /** Generic error handler; anything unhandled goes here. */
-const genericErrorHandler: ErrorRequestHandler = (err, req, res) => {
+const genericErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (process.env.NODE_ENV !== "test") {
     console.error(err);
   }
