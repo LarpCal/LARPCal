@@ -135,6 +135,24 @@ export class NewsletterManager {
     }
   }
 
+  public async deleteList() {
+    if (!this.orgId) {
+      throw new Error("Organization ID is required to delete list");
+    }
+    const org = await prisma.organization.findUniqueOrThrow({
+      where: { id: this.orgId },
+    });
+
+    if (!org.listId) {
+      return;
+    }
+
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
+
+    await instance.deleteList(toValidId(org.listId));
+  }
+
   public async subscribeUser(userId: number) {
     const user = await prisma.user.findUniqueOrThrow({
       where: { id: userId },

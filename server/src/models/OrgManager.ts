@@ -198,6 +198,10 @@ class OrgManager {
         where: { orgId: id },
       });
 
+      // Delete the newsletter list
+      const instance = new NewsletterManager(id);
+      await instance.deleteList();
+
       const org = await prisma.organization.delete({
         where: {
           id: id,
