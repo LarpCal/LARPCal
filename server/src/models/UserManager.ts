@@ -158,7 +158,10 @@ class UserManager {
         where: {
           username,
         },
-        data: omitKeys(userData, "subscribed"),
+        data: {
+          ...omitKeys(userData, "subscribed"),
+          newsletterSubscribed: userData.subscribed,
+        },
         include: USER_INCLUDE_OBJ,
       });
       return userToPublicUser(updatedUser);

@@ -16,10 +16,13 @@ export default function MyProfilePage() {
   }
   const user = maybeNullUser as PublicUser;
 
-  async function handleSubmit(formData: UserForUpdate) {
+  async function handleSubmit(
+    formData: UserForUpdate & { confirmPassword?: string },
+  ) {
     if (loading) {
       return;
     }
+    delete formData.confirmPassword;
     const userData = formData.password
       ? formData
       : { ...formData, password: undefined };
@@ -42,6 +45,7 @@ export default function MyProfilePage() {
         email: user.email,
         subscribed: user.subscribed,
         password: "",
+        confirmPassword: "",
       }}
       validationSchema={userUpdateSchema}
       onSubmit={handleSubmit}
