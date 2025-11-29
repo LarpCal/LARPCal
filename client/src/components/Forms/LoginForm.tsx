@@ -99,19 +99,17 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
           Log In
         </Button>
         {!hideRegistrationLink && (
-          <>
-            <Button component={RouterLink} to="/register" variant="outlined">
-              <Typography component="p" variant="body1" align="center">
-                Register a new account
-              </Typography>
-            </Button>
-            <Link onClick={() => setShowPasswordRecoveryModal(true)}>
-              <Typography component="p" variant="caption" align="center">
-                Forgot my password
-              </Typography>
-            </Link>
-          </>
+          <Button component={RouterLink} to="/auth/register" variant="outlined">
+            <Typography component="p" variant="body1" align="center">
+              Register a new account
+            </Typography>
+          </Button>
         )}
+        <Link onClick={() => setShowPasswordRecoveryModal(true)}>
+          <Typography component="p" variant="caption" align="center">
+            Forgot my password
+          </Typography>
+        </Link>
       </Stack>
     </>
   );
