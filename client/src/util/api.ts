@@ -276,7 +276,7 @@ class LarpAPI {
 
   static async followOrg(
     orgId: number,
-    subscribe: boolean,
+    subscribe = true,
   ): Promise<{ followed: true; subscribe: boolean }> {
     const response = await this.request(
       `orgs/${orgId}/follow`,
