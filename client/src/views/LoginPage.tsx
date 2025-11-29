@@ -1,12 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material";
 import LoginForm from "../components/Forms/LoginForm";
-import { UserLoginData } from "../types";
+import { useUser } from "../hooks/useUser";
 
-type LoginPageProps = {
-  login: (credentials: UserLoginData) => Promise<void>;
-};
-
-function LoginPage({ login }: LoginPageProps) {
+export default function LoginPage() {
+  const { login } = useUser();
   return (
     <Stack
       justifyContent={"center"}
@@ -29,5 +26,3 @@ function LoginPage({ login }: LoginPageProps) {
     </Stack>
   );
 }
-
-export default LoginPage;

@@ -2,22 +2,16 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { Box, Typography } from "@mui/material";
+import { useUser } from "../hooks/useUser";
 
-type props = {
-  logOut: () => void;
-};
-
-function LogOutPage({ logOut }: props) {
+export default function LogOutPage() {
+  const { logout } = useUser();
   const navigate = useNavigate();
 
-  useEffect(
-    function NavigateOnMount() {
-      console.log("logging out");
-      logOut();
-      navigate("/");
-    },
-    [logOut, navigate],
-  );
+  useEffect(() => {
+    logout();
+    navigate("/");
+  }, [logout, navigate]);
 
   return (
     <Box>
@@ -26,5 +20,3 @@ function LogOutPage({ logOut }: props) {
     </Box>
   );
 }
-
-export default LogOutPage;
