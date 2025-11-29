@@ -94,12 +94,17 @@ class UserManager {
    */
   static async getUser(username: string): Promise<PublicUser> {
     try {
-      const user: User = await prisma.user.findUniqueOrThrow({
+      const user = await prisma.user.findUniqueOrThrow({
         where: { username },
         include: USER_INCLUDE_OBJ,
       });
-      const publicUser = omitKeys(user, "password");
-      return publicUser;
+      const publicUser = omitKeys(
+        user,
+        "password",
+        "newsletterRemoteId",
+        "newsletterSubscribed",
+      );
+      return { ...publicUser, subscribed: user.newsletterSubscribed };
     } catch {
       throw new NotFoundError("User not found");
     }
@@ -118,7 +123,10 @@ class UserManager {
           },
         },
       });
-      return userFollows.map((follow) => follow.org);
+      return userFollows.map((follow) => ({
+        email: follow.emails,
+        ...follow.org,
+      }));
     } catch {
       throw new NotFoundError("User not found");
     }

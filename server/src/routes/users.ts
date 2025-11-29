@@ -60,7 +60,7 @@ router.get("/", ensureAdmin, async function (req: Request, res: Response) {
 router.get("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
   const user = await UserManager.getUser(req.params.username);
   const following = await UserManager.getUserFollows(req.params.username);
-  return res.json({
+  res.json({
     user: {
       ...user,
       following,

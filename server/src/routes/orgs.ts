@@ -53,15 +53,18 @@ router.post(
  * @auth none
  */
 router.get("/:id", async function (req: Request, res: Response) {
-  const { followers, ...org } = await OrgManager.getOrgById(+req.params.id);
+  const orgId = toValidId(req.params.id);
+  const { followers, ...org } = await OrgManager.getOrgById(orgId);
   const username = res.locals.user?.username;
+  const follower = username
+    ? (followers.find((f) => f.user.username === username) ?? null)
+    : null;
   return res.json({
     org: {
       ...org,
       followerCount: followers.length,
-      isFollowedByUser: username
-        ? followers.some((f) => f.user.username === username)
-        : false,
+      isFollowedByUser: !!follower,
+      isSubscribedByUser: follower?.emails ?? false,
     },
   });
 });
@@ -169,11 +172,21 @@ router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
   const user = await UserManager.getUser(username);
   const orgId = toValidId(req.params.id);
 
-  const subscribe = !!req.query.subscribe;
+  const subscribe = !!req.body.subscribe;
 
-  const following = await OrgManager.follow(orgId, user.id, subscribe);
+  await OrgManager.follow(orgId, user.id, subscribe);
 
-  res.json({ following });
+  res.json({ following: true, subscribe });
+});
+
+router.put("/:id/unfollow", ensureLoggedIn, async (req, res) => {
+  const username = toValidUsername(res);
+  const user = await UserManager.getUser(username);
+  const orgId = toValidId(req.params.id);
+
+  await OrgManager.unfollow(orgId, user.id);
+
+  res.json({ following: false });
 });
 
 /** Newsletters */

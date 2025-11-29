@@ -63,6 +63,7 @@ class OrgManager {
           ...ORG_INCLUDE_OBJ,
           followers: {
             select: {
+              emails: true,
               user: {
                 select: {
                   username: true,
@@ -162,21 +163,21 @@ class OrgManager {
   }
 
   static async follow(id: number, userId: number, emails: boolean) {
-    try {
-      await prisma.userFollow.delete({
-        where: { userId_orgId: { orgId: id, userId } },
-      });
-      return false;
-    } catch {
-      await prisma.userFollow.create({
-        data: {
-          orgId: id,
-          userId: userId,
-          emails,
-        },
-      });
-      return true;
-    }
+    await prisma.userFollow.upsert({
+      where: { userId_orgId: { orgId: id, userId } },
+      create: {
+        orgId: id,
+        userId,
+        emails,
+      },
+      update: { emails },
+    });
+  }
+
+  static async unfollow(id: number, userId: number) {
+    await prisma.userFollow.delete({
+      where: { userId_orgId: { orgId: id, userId } },
+    });
   }
 
   static async deleteOrgById(id: number): Promise<Organization> {
