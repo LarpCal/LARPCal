@@ -3,8 +3,6 @@ import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import CategoryBar from "../Events/CategoryBar";
 import "./OrgDetails.scss";
-import { useContext } from "react";
-import { userContext } from "../../context/userContext";
 import { DateTime } from "luxon";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import LarpAPI from "../../util/api";
@@ -14,20 +12,28 @@ import {
   faBullhorn,
 } from "@fortawesome/free-solid-svg-icons";
 import { LinkIconButton } from "../FormComponents/LinkIconButton";
+import { useUser } from "../../hooks/useUser";
 
 type OrgDetailsProps = {
   org: Organization;
 };
 
 function OrgDetails({ org }: OrgDetailsProps) {
-  const { user } = useContext(userContext);
+  const { user, refetch } = useUser();
   const { username, isAdmin } = user;
 
   const queryClient = useQueryClient();
   const { mutate: followMutate } = useMutation({
-    mutationFn: () => LarpAPI.followOrg(org.id),
+    async mutationFn() {
+      if (org.isFollowedByUser) {
+        await LarpAPI.unfollowOrg(org.id);
+      } else {
+        await LarpAPI.followOrg(org.id);
+      }
+    },
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: ["org", org.id] });
+      await refetch();
     },
   });
 

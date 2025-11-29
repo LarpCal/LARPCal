@@ -60,7 +60,7 @@ router.get("/", ensureAdmin, async function (req: Request, res: Response) {
 router.get("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
   const user = await UserManager.getUser(req.params.username);
   const following = await UserManager.getUserFollows(req.params.username);
-  return res.json({
+  res.json({
     user: {
       ...user,
       following,
@@ -78,22 +78,16 @@ router.get("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch(
-  "/:username",
-  ensureCorrectUserOrAdmin,
-  async function (req: Request, res: Response) {
-    const validator = jsonschema.validate(req.body, userUpdateSchema, {
-      required: true,
-    });
-    if (!validator.valid) {
-      const errs = validator.errors.map((e: Error) => e.stack);
-      throw new BadRequestError(errs.join(", "));
-    }
+router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
+  const validator = jsonschema.validate(req.body, userUpdateSchema);
+  if (!validator.valid) {
+    const errs = validator.errors.map((e: Error) => e.stack);
+    throw new BadRequestError(errs.join(", "));
+  }
 
-    const user = await UserManager.updateUser(req.params.username, req.body);
-    return res.json({ user });
-  },
-);
+  const user = await UserManager.updateUser(req.params.username, req.body);
+  return res.json({ user });
+});
 
 /** DELETE /[username]  =>  { deleted: username }
  *

@@ -20,9 +20,11 @@ import { JsonToLarp } from "./typeConverters";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3001/";
 
-type APIError = {
-  message: string | string[];
-};
+export interface APIError {
+  message: string;
+  status: number;
+  errors?: Record<string, string[]>;
+}
 
 class LarpAPI {
   //This token will be changed dynamically on login
@@ -37,8 +39,7 @@ class LarpAPI {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       const error = err as AxiosError<{ error: APIError }>;
-      const message = error.response!.data.error.message;
-      throw Array.isArray(message) ? message : [message];
+      throw error.response!.data.error;
     }
   }
 
@@ -58,8 +59,7 @@ class LarpAPI {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       const error = err as AxiosError<{ error: APIError }>;
-      const message = error.response!.data.error.message;
-      throw Array.isArray(message) ? message : [message];
+      throw error.response!.data.error;
     }
   }
 
@@ -131,7 +131,7 @@ class LarpAPI {
   /** GET */
 
   //get full user data
-  static async getUser(username: string) {
+  static async getUser(username: string): Promise<PublicUser> {
     const response = await this.request(`users/${username}`);
     return response.user;
   }
@@ -274,9 +274,21 @@ class LarpAPI {
     return response.org;
   }
 
-  static async followOrg(orgId: number): Promise<{ followed: boolean }> {
+  static async followOrg(
+    orgId: number,
+    subscribe = true,
+  ): Promise<{ followed: true; subscribe: boolean }> {
     const response = await this.request(
       `orgs/${orgId}/follow`,
+      { subscribe },
+      "put",
+    );
+    return response;
+  }
+
+  static async unfollowOrg(orgId: number): Promise<{ following: false }> {
+    const response = await this.request(
+      `orgs/${orgId}/unfollow`,
       undefined,
       "put",
     );

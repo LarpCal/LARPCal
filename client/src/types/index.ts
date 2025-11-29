@@ -88,24 +88,28 @@ export type UserLoginData = {
 export type UserForCreate = {
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
   email: string;
+  subscribed: boolean;
+};
+
+export type FollowingOrg = Pick<Organization, "id" | "orgName"> & {
+  email: boolean;
 };
 
 export type User = UserForCreate & {
-  isAdmin: boolean;
   id: number;
+  firstName: string;
+  lastName: string;
+  isAdmin: boolean;
   organization: Organization | null;
-  following: Pick<Organization, "id" | "orgName">[];
+  following: FollowingOrg[];
 };
 
 export type PublicUser = Omit<User, "password">;
 
-export type UserForUpdate = PartialWithRequired<
-  Omit<User, "organization">,
-  "id" | "username"
->;
+export type UserForUpdate = Omit<UserForCreate, "username" | "password"> & {
+  password?: string;
+};
 
 /*************************** ORGANIZATIONS */
 
@@ -125,6 +129,7 @@ export type Organization = OrganizationForCreate & {
   larps: Larp[];
   followerCount: number;
   isFollowedByUser?: boolean;
+  isSubscribedByUser?: boolean;
 };
 
 export type OrganizationForUpdate = Omit<

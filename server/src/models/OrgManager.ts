@@ -8,6 +8,7 @@ import { BadRequestError, NotFoundError } from "../utils/expressError";
 import ImageHandler from "../utils/imageHandler";
 import { deleteMultiple } from "../api/s3";
 import { Prisma } from "@prisma/client";
+import { NewsletterManager } from "./NewsletterManager";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -48,10 +49,14 @@ class OrgManager {
     return org;
   }
 
-  static async getAllOrgs(): Promise<Organization[]> {
-    return await prisma.organization.findMany({
+  static async getAllOrgs() {
+    return prisma.organization.findMany({
       orderBy: { id: "asc" },
-      include: ORG_INCLUDE_OBJ,
+      include: {
+        _count: {
+          select: { followers: true },
+        },
+      },
     });
   }
 
@@ -63,6 +68,7 @@ class OrgManager {
           ...ORG_INCLUDE_OBJ,
           followers: {
             select: {
+              emails: true,
               user: {
                 select: {
                   username: true,
@@ -161,22 +167,28 @@ class OrgManager {
     return org;
   }
 
-  static async follow(id: number, userId: number) {
-    try {
-      await prisma.userFollow.delete({
-        where: { userId_orgId: { orgId: id, userId } },
-      });
-      return false;
-    } catch {
-      await prisma.userFollow.create({
-        data: {
-          orgId: id,
-          userId: userId,
-          emails: true,
-        },
-      });
-      return true;
+  static async follow(id: number, userId: number, emails: boolean) {
+    if (emails) {
+      const instance = new NewsletterManager(id);
+      await instance.subscribeUser(userId);
     }
+    await prisma.userFollow.upsert({
+      where: { userId_orgId: { orgId: id, userId } },
+      create: {
+        orgId: id,
+        userId,
+        emails,
+      },
+      update: { emails },
+    });
+  }
+
+  static async unfollow(id: number, userId: number) {
+    const instance = new NewsletterManager(id);
+    await instance.unsubscribeUser(userId);
+    await prisma.userFollow.delete({
+      where: { userId_orgId: { orgId: id, userId } },
+    });
   }
 
   static async deleteOrgById(id: number): Promise<Organization> {
@@ -189,6 +201,10 @@ class OrgManager {
       await prisma.larp.deleteMany({
         where: { orgId: id },
       });
+
+      // Delete the newsletter list
+      const instance = new NewsletterManager(id);
+      await instance.deleteList();
 
       const org = await prisma.organization.delete({
         where: {

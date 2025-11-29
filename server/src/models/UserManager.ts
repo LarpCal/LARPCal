@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
+import { Prisma } from "@prisma/client";
+
 import { prisma } from "../prismaSingleton";
 import { BCRYPT_WORK_FACTOR } from "../config";
-import { PublicUser, User, UserForCreate, UserForUpdate } from "../types";
-
-import bcrypt from "bcrypt";
+import { PublicUser, UserForCreate, UserForUpdate } from "../types";
 
 import {
   BadRequestError,
@@ -10,6 +11,7 @@ import {
   UnauthorizedError,
 } from "../utils/expressError";
 import { omitKeys } from "../utils/helpers";
+import { NewsletterManager } from "./NewsletterManager";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -36,9 +38,7 @@ class UserManager {
     if (fullUserData) {
       const isValid = await bcrypt.compare(password, fullUserData.password);
       if (isValid === true) {
-        const publicUserData = omitKeys(fullUserData, "password");
-        const user: PublicUser = publicUserData;
-        return user;
+        return userToPublicUser(fullUserData);
       }
     }
     throw new UnauthorizedError("Invalid username/password");
@@ -49,13 +49,12 @@ class UserManager {
    * Throws BadRequestError on duplicates
    */
   static async register(userData: UserForCreate): Promise<PublicUser> {
-    //duplicate check
     const user = await prisma.user.findUnique({
       where: { username: userData.username },
     });
-
-    if (user)
+    if (user) {
       throw new BadRequestError(`Username ${user.username} already exists`);
+    }
     const email = await prisma.user.findUnique({
       where: { email: userData.email },
     });
@@ -71,11 +70,22 @@ class UserManager {
     userData.password = hashedPassword;
 
     const savedUser = await prisma.user.create({
-      data: userData,
+      data: {
+        firstName: "",
+        lastName: "",
+        ...omitKeys(userData, "subscribed"),
+        newsletterSubscribed: userData.subscribed,
+        isAdmin: userData.isAdmin ?? false,
+      },
       include: USER_INCLUDE_OBJ,
     });
-    const publicUser = omitKeys(savedUser, "password");
-    return publicUser;
+
+    if (userData.subscribed) {
+      const newsletterManager = new NewsletterManager();
+      await newsletterManager.subscribeUser(savedUser.id);
+    }
+
+    return userToPublicUser(savedUser);
   }
 
   /** Returns a list of userData without passwords */
@@ -83,9 +93,7 @@ class UserManager {
     const users = await prisma.user.findMany({
       include: USER_INCLUDE_OBJ,
     });
-    const response = users.map((user: User) => omitKeys(user, "password"));
-
-    return response;
+    return users.map(userToPublicUser);
   }
 
   /** Fetches a User by username.
@@ -94,12 +102,11 @@ class UserManager {
    */
   static async getUser(username: string): Promise<PublicUser> {
     try {
-      const user: User = await prisma.user.findUniqueOrThrow({
+      const user = await prisma.user.findUniqueOrThrow({
         where: { username },
         include: USER_INCLUDE_OBJ,
       });
-      const publicUser = omitKeys(user, "password");
-      return publicUser;
+      return userToPublicUser(user);
     } catch {
       throw new NotFoundError("User not found");
     }
@@ -118,7 +125,10 @@ class UserManager {
           },
         },
       });
-      return userFollows.map((follow) => follow.org);
+      return userFollows.map((follow) => ({
+        email: follow.emails,
+        ...follow.org,
+      }));
     } catch {
       throw new NotFoundError("User not found");
     }
@@ -156,15 +166,37 @@ class UserManager {
     }
 
     try {
+      // If we're setting user's subscription status, handle that first
+      if (userData.subscribed !== undefined) {
+        const user = await prisma.user.findUniqueOrThrow({
+          where: { username },
+        });
+
+        // Only act if subscription status is changing
+        if (userData.subscribed !== user.newsletterSubscribed) {
+          const newsletterManager = new NewsletterManager();
+          console.log(
+            `Setting user ${user.username} subscription to`,
+            userData.subscribed,
+          );
+
+          if (userData.subscribed) {
+            await newsletterManager.subscribeUser(user.id);
+          } else {
+            await newsletterManager.unsubscribeUser(user.id);
+          }
+        }
+      }
+
       const updatedUser = await prisma.user.update({
-        where: {
-          username: username,
+        where: { username },
+        data: {
+          ...omitKeys(userData, "subscribed"),
+          newsletterSubscribed: userData.subscribed,
         },
-        data: userData,
         include: USER_INCLUDE_OBJ,
       });
-      const publicUser = omitKeys(updatedUser, "password");
-      return publicUser;
+      return userToPublicUser(updatedUser);
     } catch (err) {
       console.log(err);
       throw new NotFoundError("User not found");
@@ -184,6 +216,17 @@ class UserManager {
   }
 
   // end class
+}
+
+function userToPublicUser(
+  user: Prisma.UserGetPayload<{
+    include: { organization: { include: { imgUrl: true } } };
+  }>,
+): PublicUser {
+  return {
+    ...omitKeys(user, "password", "newsletterRemoteId", "newsletterSubscribed"),
+    subscribed: user.newsletterSubscribed,
+  };
 }
 
 export default UserManager;

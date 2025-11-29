@@ -47,11 +47,14 @@ export default function UserProvider({ children }: PropsWithChildren) {
   }, []);
 
   const { mutateAsync: update, isPending } = useMutation({
-    mutationFn: (userInfo: UserForUpdate) => {
+    mutationFn(userInfo: UserForUpdate) {
       if (!username) {
         throw new Error("Not logged in");
       }
       return LarpAPI.updateUser(userInfo, username);
+    },
+    async onSuccess() {
+      await refetch();
     },
   });
 

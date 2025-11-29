@@ -1,3 +1,6 @@
+import { Response } from "express";
+import { BadRequestError } from "./expressError";
+
 export function omitKeys<T extends object, K extends keyof T>(
   obj: T,
   ...keys: K[]
@@ -11,13 +14,21 @@ export function omitKeys<T extends object, K extends keyof T>(
 
 export function toValidId(id: string | undefined) {
   if (!id) {
-    throw new Error("ID is undefined");
+    throw new BadRequestError("ID is undefined");
   }
   const parsedId = Number.parseInt(id);
   if (isNaN(parsedId) || parsedId <= 0) {
-    throw new Error("Invalid ID");
+    throw new BadRequestError("Invalid ID");
   }
   return parsedId;
+}
+
+export function toValidUsername(res: Response): string {
+  const username = res.locals.user?.username;
+  if (!username || typeof username !== "string") {
+    throw new BadRequestError("Invalid username");
+  }
+  return username;
 }
 
 export function isStringArray(array: unknown): array is string[] {

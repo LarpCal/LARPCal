@@ -11,16 +11,18 @@ import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
+  InputValidationError,
 } from "../utils/expressError";
 import { createToken } from "../utils/tokens";
 
 import UserManager from "../models/UserManager";
-import { PasswordResetRequest, UserForCreate } from "../types";
+import { PasswordResetRequest } from "../types";
 import AuthManager from "../models/AuthManager";
 import * as jwt from "jsonwebtoken";
 import { CORS_URL, SECRET_KEY } from "../config";
 import { sendPasswordResetEmail } from "../utils/emailHandler";
 import { ensureLoggedIn } from "../middleware/auth";
+import { toValidUsername } from "../utils/helpers";
 
 router.post("/error", async () => {
   throw new BadRequestError("test error");
@@ -38,8 +40,7 @@ router.post("/token", async function (req: Request, res: Response) {
     required: true,
   });
   if (!validator.valid) {
-    const errs = validator.errors.map((e: Error) => e.stack);
-    throw new BadRequestError(errs.join(", "));
+    throw new InputValidationError(validator.errors);
   }
 
   const { username, password } = req.body;
@@ -55,16 +56,12 @@ router.post("/token", async function (req: Request, res: Response) {
  * Authorization required: Logged in
  */
 
-router.post(
-  "/token/refresh",
-  ensureLoggedIn,
-  async function (req: Request, res: Response) {
-    const { username } = res.locals.user;
-    const user = await UserManager.getUser(username);
-    const token = createToken(user);
-    return res.json({ token });
-  },
-);
+router.post("/token/refresh", ensureLoggedIn, async (req, res) => {
+  const username = toValidUsername(res);
+  const user = await UserManager.getUser(username);
+  const token = createToken(user);
+  return res.json({ token });
+});
 
 /** POST /auth/register:   { user } => { token }
  *
@@ -80,14 +77,10 @@ router.post("/register", async function (req: Request, res: Response) {
     required: true,
   });
   if (!validator.valid) {
-    const errs = validator.errors.map((e: Error) => e.stack);
-    throw new BadRequestError(errs.join(", "));
+    throw new InputValidationError(validator.errors);
   }
 
-  const newUser = await UserManager.register({
-    ...(req.body as Omit<UserForCreate, "isAdmin">),
-    isAdmin: false,
-  });
+  const newUser = await UserManager.register(req.body);
   const token = createToken(newUser);
   return res.status(201).json({ token });
 });
@@ -165,8 +158,7 @@ router.patch(
       required: true,
     });
     if (!validator.valid) {
-      const errs = validator.errors.map((e: Error) => e.stack);
-      throw new BadRequestError(errs.join(", "));
+      throw new InputValidationError(validator.errors);
     }
 
     //process form and cleanup

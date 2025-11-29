@@ -1,4 +1,3 @@
-import { Link as RouterLink, useParams } from "react-router-dom";
 import { useFetchOrg } from "../hooks/useFetchOrg";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import OrgDetails from "../components/Orgs/OrgDetails";
@@ -7,14 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "@mui/material";
 import ToastMessage from "../components/ui/ToastMessage";
+import { useIdParam } from "../hooks/useIdParam";
 
 function OrgDetailPage() {
-  const { id } = useParams();
-  if (!id) {
-    throw new Error("Id is required to view details page for an organization");
-  }
-
-  const { org, error, loading } = useFetchOrg(+id);
+  const id = useIdParam();
+  const { org, error, loading } = useFetchOrg(id);
 
   if (org)
     return loading ? (
@@ -30,7 +26,7 @@ function OrgDetailPage() {
             Your application is currently being reviewed by our admin team. Once
             your application has been approved you will be able to publish
             LARPs. Send questions to{" "}
-            <Link component={RouterLink} to="mailto:info@larpcalendar.com">
+            <Link href="mailto:info@larpcalendar.com">
               info@larpcalendar.com
             </Link>
           </Alert>

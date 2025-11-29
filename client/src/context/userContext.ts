@@ -1,29 +1,25 @@
 import React from "react";
 import {
-  Organization,
+  PublicUser,
   UserForCreate,
   UserForUpdate,
   UserLoginData,
 } from "../types";
 
 export const ANON_USER: NullableUser = {
+  id: null,
   username: null,
   firstName: null,
   lastName: null,
   email: null,
+  subscribed: false,
   isAdmin: null,
   organization: null,
   following: [],
 };
 
 export type NullableUser = {
-  username: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
-  isAdmin: boolean | null;
-  organization: Organization | null;
-  following: Pick<Organization, "id" | "orgName">[];
+  [K in keyof PublicUser]: PublicUser[K] | null;
 };
 
 type UserContextType = {

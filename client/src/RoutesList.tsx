@@ -1,6 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { useContext } from "react";
-import { userContext } from "./context/userContext";
 
 import HomePage from "./views/HomePage";
 import NewLarpPage from "./views/CreateLarpPage";
@@ -23,19 +21,17 @@ import FollowedOrgs from "./views/FollowedOrgs";
 import OrgNewslettersPage from "./views/OrgNewslettersPage";
 import NewsletterEditPage from "./views/NewsletterEditPage";
 import NewsletterPreviewPage from "./views/NewsletterPreview";
+import { useUser } from "./hooks/useUser";
 
 function RoutesList() {
-  const { user, login, register, logout } = useContext(userContext);
+  const { user } = useUser();
 
   const { username, isAdmin, organization } = user;
 
   const anonRoutes = (
     <>
-      <Route path="/auth/login" element={<LoginPage login={login} />} />
-      <Route
-        path="/auth/register"
-        element={<RegisterPage register={register} />}
-      />
+      <Route path="/auth/login" element={<LoginPage />} />
+      <Route path="/auth/register" element={<RegisterPage />} />
       <Route
         path="/auth/password-reset/confirm"
         element={<ChangePasswordForm />}
@@ -57,7 +53,7 @@ function RoutesList() {
         path="/orgs/:id/newsletters/:newsletterId"
         element={<NewsletterEditPage />}
       />
-      <Route path="/auth/logout" element={<LogOutPage logOut={logout} />} />
+      <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/following" element={<FollowedOrgs />} />
     </>
@@ -82,8 +78,8 @@ function RoutesList() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         {username ? loginRoutes : anonRoutes}
-        {organization ? organizerRoutes : ""}
-        {isAdmin ? adminRoutes : ""}
+        {organization ? organizerRoutes : null}
+        {isAdmin ? adminRoutes : null}
         {/* <Route path='/events/create' element={<NewEventPage />} /> */}
         <Route path="/orgs/:id" element={<OrgDetailPage />} />
         <Route path="/events" element={<LarpListPage />} />

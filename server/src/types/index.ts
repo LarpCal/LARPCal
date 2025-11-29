@@ -11,6 +11,12 @@ export type ImageSet = {
   lg: string;
 };
 
+export interface UserToken {
+  username: string;
+  isOrganizer: boolean;
+  isAdmin: boolean;
+}
+
 /*************************** LARPS */
 
 export type TicketStatus = "AVAILABLE" | "LIMITED" | "SOLD_OUT" | "SOON";
@@ -72,15 +78,17 @@ export type LarpQuery = {
 export type UserForCreate = {
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  isAdmin: boolean;
+  subscribed: boolean;
+  isAdmin?: boolean;
 };
 
 export type User = UserForCreate & {
   id: number;
   organization: Organization | null;
+  subscribed: boolean;
 };
 
 export type PublicUser = Omit<User, "password">;

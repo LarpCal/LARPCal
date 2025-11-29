@@ -1,12 +1,12 @@
-"use strict";
-
-export {};
 import { NextFunction, Request, Response } from "express";
-import { SECRET_KEY } from "../config";
 import jwt from "jsonwebtoken";
-import { NotFoundError, UnauthorizedError } from "../utils/expressError";
+
+import { SECRET_KEY } from "../config";
 import LarpManager from "../models/LarpManager";
 import OrgManager from "../models/OrgManager";
+import { NotFoundError, UnauthorizedError } from "../utils/expressError";
+import { toValidId, toValidUsername } from "../utils/helpers";
+import { isValidToken } from "../utils/tokens";
 
 /** Middleware: Authenticate user.
  *
@@ -16,13 +16,22 @@ import OrgManager from "../models/OrgManager";
  * It's not an error if no token was provided or if the token is not valid.
  */
 
-function authenticateJWT(req: Request, res: Response, next: NextFunction) {
+export function authenticateJWT(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const authHeader = req.headers?.authorization;
   if (authHeader) {
     const token = authHeader.replace(/^[Bb]earer /, "").trim();
 
     try {
-      res.locals.user = jwt.verify(token, SECRET_KEY);
+      const payload = jwt.verify(token, SECRET_KEY);
+      if (!isValidToken(payload)) {
+        return next();
+      }
+
+      res.locals.user = payload;
     } catch {
       /* ignore invalid tokens (but don't store user!) */
     }
@@ -34,8 +43,11 @@ function authenticateJWT(req: Request, res: Response, next: NextFunction) {
  *
  * If not, raises Unauthorized.
  */
-
-function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
+export function ensureLoggedIn(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (res.locals.user?.username) return next();
   throw new UnauthorizedError();
 }
@@ -44,8 +56,11 @@ function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
  *
  *  If not, raises Unauthorized.
  */
-
-function ensureOrganizer(req: Request, res: Response, next: NextFunction) {
+export function ensureOrganizer(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (res.locals.user?.username && res.locals.user?.isOrganizer === true) {
     return next();
   }
@@ -59,8 +74,7 @@ function ensureOrganizer(req: Request, res: Response, next: NextFunction) {
  *
  *  If not, raises Unauthorized.
  */
-
-function ensureAdmin(req: Request, res: Response, next: NextFunction) {
+export function ensureAdmin(req: Request, res: Response, next: NextFunction) {
   if (res.locals.user?.username && res.locals.user?.isAdmin === true) {
     return next();
   }
@@ -73,19 +87,17 @@ function ensureAdmin(req: Request, res: Response, next: NextFunction) {
  *
  *  If not, raises Unauthorized.
  */
-
-function ensureCorrectUserOrAdmin(
+export function ensureCorrectUserOrAdmin(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const user = res.locals.user;
-  const username = res.locals.user?.username;
-  if (username && (username === req.params.username || user.isAdmin === true)) {
+  const isAdmin = res.locals.user?.isAdmin;
+  const username = toValidUsername(res);
+  if (username === req.params.username || isAdmin) {
     return next();
   }
 
-  console.log("unauth");
   throw new UnauthorizedError();
 }
 
@@ -94,22 +106,19 @@ function ensureCorrectUserOrAdmin(
  *
  *  If not, raises Unauthorized.
  */
-async function ensureOwnerOrAdmin(
+export async function ensureOwnerOrAdmin(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const user = res.locals.user;
-  const username = res.locals.user?.username;
-  const larp = await LarpManager.getLarpById(+req.params.id);
-  if (
-    username &&
-    (username === larp.organization?.username || user.isAdmin === true)
-  ) {
+  const isAdmin = res.locals.user?.isAdmin;
+  const username = toValidUsername(res);
+  const larpId = toValidId(req.params.id);
+  const larp = await LarpManager.getLarpById(larpId);
+  if (username === larp.organization?.username || isAdmin) {
     return next();
   }
 
-  console.log("unauth");
   throw new UnauthorizedError();
 }
 
@@ -118,23 +127,20 @@ async function ensureOwnerOrAdmin(
  *
  *  If unpublished and user is not an owner or admin, returns 404.
  */
-async function protectUnpublished(
+export async function protectUnpublished(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const user = res.locals.user;
-  const username = res.locals.user?.username;
-  const larp = await LarpManager.getLarpById(+req.params.id);
+  const isAdmin = res.locals.user?.isAdmin;
+  const username = toValidUsername(res);
+  const larpId = toValidId(req.params.id);
+  const larp = await LarpManager.getLarpById(larpId);
   if (larp.isPublished === true) return next();
-  if (
-    username &&
-    (username === larp.organization?.username || user.isAdmin === true)
-  ) {
+  if (username === larp.organization?.username || isAdmin) {
     return next();
   }
 
-  console.log("unauth");
   throw new NotFoundError();
 }
 
@@ -143,7 +149,7 @@ async function protectUnpublished(
  *
  *  If not, raises Unauthorized.
  */
-async function ensureMatchingOrganizerOrAdmin(
+export async function ensureMatchingOrganizerOrAdmin(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -155,17 +161,5 @@ async function ensureMatchingOrganizerOrAdmin(
     return next();
   }
 
-  console.log("unauth");
   throw new UnauthorizedError();
 }
-
-export {
-  authenticateJWT,
-  ensureLoggedIn,
-  ensureAdmin,
-  ensureOrganizer,
-  protectUnpublished,
-  ensureCorrectUserOrAdmin,
-  ensureOwnerOrAdmin,
-  ensureMatchingOrganizerOrAdmin,
-};

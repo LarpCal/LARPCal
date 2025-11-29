@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { UserLoginData } from "../../types";
 
 import Link from "@mui/material/Link";
@@ -9,8 +9,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Modal } from "@mui/material";
 import PasswordResetRequestPage from "../../views/PasswordResetRequestModal";
-
-// import './loginForm.scss';
 
 const DEFAULT_FORM_DATA: UserLoginData = {
   username: "",
@@ -27,7 +25,6 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
   const [showPasswordRecoveryModal, setShowPasswordRecoveryModal] =
     useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   function handleChange(evt: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
@@ -45,7 +42,6 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
     e.preventDefault();
     try {
       await login(formData);
-      navigate(`/users/${formData.username}`);
     } catch {
       setError("Invalid username/password");
     }
@@ -86,9 +82,7 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
           <Typography variant="subtitle1" color="primary">
             {error}
           </Typography>
-        ) : (
-          <></>
-        )}
+        ) : null}
         <Button
           variant="contained"
           type="submit"
@@ -99,19 +93,17 @@ function LoginForm({ login, hideRegistrationLink = false }: props) {
           Log In
         </Button>
         {!hideRegistrationLink && (
-          <>
-            <Button component={RouterLink} to="/register" variant="outlined">
-              <Typography component="p" variant="body1" align="center">
-                Register a new account
-              </Typography>
-            </Button>
-            <Link onClick={() => setShowPasswordRecoveryModal(true)}>
-              <Typography component="p" variant="caption" align="center">
-                Forgot my password
-              </Typography>
-            </Link>
-          </>
+          <Button component={RouterLink} to="/auth/register" variant="outlined">
+            <Typography component="p" variant="body1" align="center">
+              Register a new account
+            </Typography>
+          </Button>
         )}
+        <Typography component="p" variant="caption" align="center">
+          <Link onClick={() => setShowPasswordRecoveryModal(true)}>
+            Forgot my password
+          </Link>
+        </Typography>
       </Stack>
     </>
   );
