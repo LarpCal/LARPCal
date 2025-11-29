@@ -135,22 +135,15 @@ export class NewsletterManager {
     }
   }
 
-  public async syncUserSubscriptions(userId: number) {
+  public async subscribeUser(userId: number) {
     const user = await prisma.user.findUniqueOrThrow({
       where: { id: userId },
-      include: {
-        following: {
-          include: {
-            org: true,
-          },
-        },
-      },
     });
 
-    const listIds = await Promise.all(
-      user.following.map((follow) => this.orgListId(follow.orgId)),
-    );
-    if (user.newsletterSubscribed) {
+    const listIds: number[] = [];
+    if (this.orgId) {
+      listIds.push(await this.orgListId());
+    } else {
       listIds.push(BREVO_ADMIN_LIST_ID);
     }
 
@@ -160,7 +153,6 @@ export class NewsletterManager {
     if (!user.newsletterRemoteId) {
       const { body } = await instance.createContact({
         email: user.email,
-        extId: user.id.toString(),
         listIds,
       });
       if (!body.id) {
@@ -178,21 +170,27 @@ export class NewsletterManager {
     }
   }
 
-  public async createContact(userId: number, email: string) {
+  public async unsubscribeUser(userId: number) {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (!user.newsletterRemoteId) {
+      return;
+    }
+
     const instance = new Brevo.ContactsApi();
     instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
-    const { body } = await instance.createContact({
-      email,
-      listIds: [],
-    });
-    if (!body.id) {
-      throw new Error("Failed to create contact in Brevo");
+    const listIds: number[] = [];
+    if (this.orgId) {
+      listIds.push(await this.orgListId());
+    } else {
+      listIds.push(BREVO_ADMIN_LIST_ID);
     }
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: { newsletterRemoteId: body.id.toString() },
+    await instance.updateContact(user.newsletterRemoteId, {
+      unlinkListIds: listIds,
     });
   }
 

@@ -8,6 +8,7 @@ import { BadRequestError, NotFoundError } from "../utils/expressError";
 import ImageHandler from "../utils/imageHandler";
 import { deleteMultiple } from "../api/s3";
 import { Prisma } from "@prisma/client";
+import { NewsletterManager } from "./NewsletterManager";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -163,6 +164,10 @@ class OrgManager {
   }
 
   static async follow(id: number, userId: number, emails: boolean) {
+    if (emails) {
+      const instance = new NewsletterManager(id);
+      await instance.subscribeUser(userId);
+    }
     await prisma.userFollow.upsert({
       where: { userId_orgId: { orgId: id, userId } },
       create: {
@@ -175,6 +180,8 @@ class OrgManager {
   }
 
   static async unfollow(id: number, userId: number) {
+    const instance = new NewsletterManager(id);
+    await instance.unsubscribeUser(userId);
     await prisma.userFollow.delete({
       where: { userId_orgId: { orgId: id, userId } },
     });

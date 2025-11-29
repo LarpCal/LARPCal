@@ -11,6 +11,7 @@ import {
   UnauthorizedError,
 } from "../utils/expressError";
 import { omitKeys } from "../utils/helpers";
+import { NewsletterManager } from "./NewsletterManager";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -78,6 +79,12 @@ class UserManager {
       },
       include: USER_INCLUDE_OBJ,
     });
+
+    if (userData.subscribed) {
+      const newsletterManager = new NewsletterManager();
+      await newsletterManager.subscribeUser(savedUser.id);
+    }
+
     return userToPublicUser(savedUser);
   }
 
@@ -159,10 +166,30 @@ class UserManager {
     }
 
     try {
+      // If we're setting user's subscription status, handle that first
+      if (userData.subscribed !== undefined) {
+        const user = await prisma.user.findUniqueOrThrow({
+          where: { username },
+        });
+
+        // Only act if subscription status is changing
+        if (userData.subscribed !== user.newsletterSubscribed) {
+          const newsletterManager = new NewsletterManager();
+          console.log(
+            `Setting user ${user.username} subscription to`,
+            userData.subscribed,
+          );
+
+          if (userData.subscribed) {
+            await newsletterManager.subscribeUser(user.id);
+          } else {
+            await newsletterManager.unsubscribeUser(user.id);
+          }
+        }
+      }
+
       const updatedUser = await prisma.user.update({
-        where: {
-          username,
-        },
+        where: { username },
         data: {
           ...omitKeys(userData, "subscribed"),
           newsletterSubscribed: userData.subscribed,
