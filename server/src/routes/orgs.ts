@@ -15,7 +15,7 @@ import orgApprovalSchema from "../schemas/orgApproval.json";
 import OrgManager from "../models/OrgManager";
 import UserManager from "../models/UserManager";
 import { NewsletterManager } from "../models/NewsletterManager";
-import { toValidId } from "../utils/helpers";
+import { isEmailArray, toValidId } from "../utils/helpers";
 
 const router = express.Router();
 
@@ -253,6 +253,23 @@ router.get(
 
       await manager.deleteNewsletter(newsletterId);
       res.json({ deleted: newsletterId });
+    },
+  ),
+
+  router.post(
+    "/:id/newsletters/:newsletterId/test",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+      const { testEmails } = req.body;
+      if (!isEmailArray(testEmails)) {
+        throw new BadRequestError("Invalid test email addresses");
+      }
+      const manager = new NewsletterManager(orgId);
+      await manager.sendTestNewsletter(newsletterId, testEmails);
+
+      res.json({ sent: true });
     },
   ),
 

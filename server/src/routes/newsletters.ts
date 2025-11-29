@@ -1,7 +1,7 @@
 import express from "express";
 import { NewsletterManager } from "../models/NewsletterManager";
 import { ensureAdmin } from "../middleware/auth";
-import { toValidId } from "../utils/helpers";
+import { isEmailArray, toValidId } from "../utils/helpers";
 import OrgManager from "../models/OrgManager";
 import { UnauthorizedError } from "../utils/expressError";
 
@@ -60,6 +60,16 @@ router.delete("/:id", ensureAdmin, async (req, res) => {
   const newsletterId = toValidId(req.params.id);
   const deleted = await manager.deleteNewsletter(newsletterId);
   res.json({ deleted });
+});
+
+router.post("/:id/test", ensureAdmin, async (req, res) => {
+  const newsletterId = toValidId(req.params.id);
+  const { testEmails } = req.body;
+  if (!isEmailArray(testEmails)) {
+    throw new UnauthorizedError("Invalid test email addresses");
+  }
+  const result = await manager.sendTestNewsletter(newsletterId, testEmails);
+  res.json({ result });
 });
 
 router.post("/:id/send", ensureAdmin, async (req, res) => {
