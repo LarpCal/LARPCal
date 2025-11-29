@@ -48,13 +48,12 @@ class UserManager {
    * Throws BadRequestError on duplicates
    */
   static async register(userData: UserForCreate): Promise<PublicUser> {
-    //duplicate check
     const user = await prisma.user.findUnique({
       where: { username: userData.username },
     });
-
-    if (user)
+    if (user) {
       throw new BadRequestError(`Username ${user.username} already exists`);
+    }
     const email = await prisma.user.findUnique({
       where: { email: userData.email },
     });
@@ -70,7 +69,13 @@ class UserManager {
     userData.password = hashedPassword;
 
     const savedUser = await prisma.user.create({
-      data: userData,
+      data: {
+        firstName: "",
+        lastName: "",
+        ...omitKeys(userData, "subscribed"),
+        newsletterSubscribed: userData.subscribed,
+        isAdmin: userData.isAdmin ?? false,
+      },
       include: USER_INCLUDE_OBJ,
     });
     return userToPublicUser(savedUser);

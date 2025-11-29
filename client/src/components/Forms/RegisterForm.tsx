@@ -1,23 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useCallback } from "react";
 import { UserForCreate } from "../../types";
 
 import FormikMuiTextField from "../FormComponents/FormikMuiTextField";
-import { FastField, Form, Formik } from "formik";
+import { FastField, Form, Formik, FormikHelpers } from "formik";
 
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import userRegistrationSchema from "./userRegistrationSchema";
-// import "./userRegistrationForm.scss";
+import FormikCheckbox from "../FormComponents/FormikCheckbox";
 
 type UserRegistrationData = {
   email: string;
   username: string;
   password: string;
   confirmPassword: string;
+  subscribed: boolean;
 };
 
 const DEFAULT_FORM_DATA: UserRegistrationData = {
@@ -25,39 +26,46 @@ const DEFAULT_FORM_DATA: UserRegistrationData = {
   username: "",
   password: "",
   confirmPassword: "",
+  subscribed: true,
 };
 
-type props = {
+type RegisterProps = {
   register: (userInfo: UserForCreate) => Promise<void>;
 };
 
-function UserRegistrationForm({ register }: props) {
+function UserRegistrationForm({ register }: RegisterProps) {
   const navigate = useNavigate();
-  const [_error, setError] = useState<string | null>(null);
 
-  async function registerUser(values: UserRegistrationData) {
-    try {
-      await register({
-        username: values.username,
-        password: values.password,
-        email: values.email,
-        firstName: "",
-        lastName: "",
-      });
-      setError(null);
-      navigate("/welcome");
-    } catch (errs: unknown) {
-      if (Array.isArray(errs)) {
-        setError(errs[0]);
+  const handleRegister = useCallback(
+    async (
+      values: UserRegistrationData,
+      helpers: FormikHelpers<UserRegistrationData>,
+    ) => {
+      try {
+        await register({
+          username: values.username,
+          password: values.password,
+          email: values.email,
+          subscribed: values.subscribed,
+        });
+        navigate("/welcome");
+      } catch (errs: unknown) {
+        if (errs && typeof errs === "object" && "errors" in errs) {
+          const apiErrors = (errs as { errors: Record<string, string[]> })
+            .errors;
+          for (const key in apiErrors) {
+            helpers.setFieldError(key, apiErrors[key].join(", "));
+          }
+        }
       }
-      console.log("errors:", errs);
-    }
-  }
+    },
+    [register, navigate],
+  );
 
   return (
     <Formik
       initialValues={DEFAULT_FORM_DATA}
-      onSubmit={async (values) => await registerUser(values)}
+      onSubmit={handleRegister}
       validationSchema={userRegistrationSchema}
     >
       {({ isValid }) => (
@@ -67,35 +75,41 @@ function UserRegistrationForm({ register }: props) {
               component={FormikMuiTextField}
               variant="outlined"
               size="small"
-              id={`username`}
-              label="username"
-              name={`username`}
+              id="username"
+              label="User name"
+              name="username"
             />
             <FastField
               component={FormikMuiTextField}
               variant="outlined"
               size="small"
               type="password"
-              id={`password`}
-              label="password"
-              name={`password`}
+              id="password"
+              label="Password"
+              name="password"
             />
             <FastField
               component={FormikMuiTextField}
               variant="outlined"
               size="small"
               type="password"
-              id={`confirmPassword`}
-              label="confirm password"
-              name={`confirmPassword`}
+              id="confirmPassword"
+              label="Confirm password"
+              name="confirmPassword"
             />
             <FastField
               component={FormikMuiTextField}
               variant="outlined"
               size="small"
-              id={`email`}
-              label="email"
-              name={`email`}
+              id="email"
+              label="Email"
+              name="email"
+            />
+            <FastField
+              component={FormikCheckbox}
+              label="Subscribe to LARPCal announcements"
+              name="subscribed"
+              id="subscribed"
             />
             <Button
               type="submit"

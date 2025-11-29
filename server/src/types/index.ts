@@ -78,10 +78,11 @@ export type LarpQuery = {
 export type UserForCreate = {
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  isAdmin: boolean;
+  subscribed: boolean;
+  isAdmin?: boolean;
 };
 
 export type User = UserForCreate & {

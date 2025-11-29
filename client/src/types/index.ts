@@ -88,8 +88,6 @@ export type UserLoginData = {
 export type UserForCreate = {
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
   email: string;
   subscribed: boolean;
 };
@@ -99,8 +97,10 @@ export type FollowingOrg = Pick<Organization, "id" | "orgName"> & {
 };
 
 export type User = UserForCreate & {
-  isAdmin: boolean;
   id: number;
+  firstName: string;
+  lastName: string;
+  isAdmin: boolean;
   organization: Organization | null;
   following: FollowingOrg[];
 };
