@@ -65,6 +65,7 @@ model User {
   PasswordResetRequest PasswordResetRequest[]
   following            UserFollow[]
   newsletterSubscribed Boolean                @default(false)
+  newsletterRemoteId   String?
 
   @@map("users")
 }
@@ -83,6 +84,7 @@ model Organization {
   larps       Larp[]
   followers   UserFollow[]
   newsletters Newsletter[]
+  listId      String?
 
   @@map("organizations")
 }
@@ -110,6 +112,7 @@ model UserFollow {
   user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   orgId  Int
   org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  emails Boolean      @default(true)
 
   @@id([userId, orgId])
 }

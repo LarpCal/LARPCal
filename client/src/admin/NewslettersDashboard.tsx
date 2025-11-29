@@ -45,6 +45,7 @@ const columns: GridColDef<Newsletter>[] = [
     field: "id",
     headerName: "ID",
     type: "number",
+    width: 50,
   },
   {
     field: "orgName",
@@ -71,7 +72,7 @@ const columns: GridColDef<Newsletter>[] = [
   {
     field: "status",
     headerName: "Status",
-    width: 150,
+    width: 160,
     renderCell(params) {
       if (params.row.sentAt) {
         return (

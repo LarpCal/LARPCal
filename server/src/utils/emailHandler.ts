@@ -29,8 +29,12 @@ async function sendMail(to: string, subject: string, html: string) {
   });
 }
 
-function sendPasswordResetEmail(to: string, username: string, link: string) {
-  sendMail(
+export function sendPasswordResetEmail(
+  to: string,
+  username: string,
+  link: string,
+) {
+  return sendMail(
     to,
     "Password reset request for you Larp Calendar account",
     `
@@ -104,5 +108,3 @@ function sendPasswordResetEmail(to: string, username: string, link: string) {
 `,
   );
 }
-
-export { sendPasswordResetEmail };

@@ -19,3 +19,18 @@ export function toValidId(id: string | undefined) {
   }
   return parsedId;
 }
+
+export function isStringArray(array: unknown): array is string[] {
+  return (
+    Array.isArray(array) &&
+    array.length > 0 &&
+    array.every((item) => typeof item === "string")
+  );
+}
+
+export function isEmailArray(array: unknown): array is string[] {
+  if (!isStringArray(array)) {
+    return false;
+  }
+  return array.every((item) => item.includes("@") && item.includes("."));
+}
