@@ -75,6 +75,9 @@
       "type": "string",
       "maxLength": 100
     },
+    "orgId": {
+      "type": "integer"
+    },
     "description": {
       "type": "string"
     },
