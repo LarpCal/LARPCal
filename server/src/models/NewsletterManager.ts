@@ -219,6 +219,33 @@ export class NewsletterManager {
     });
   }
 
+  public async deleteUser(username: string) {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { username },
+    });
+
+    if (!user.newsletterRemoteId) {
+      return;
+    }
+
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
+
+    try {
+      await instance.deleteContact(user.newsletterRemoteId);
+      await prisma.user.update({
+        where: { username },
+        data: { newsletterRemoteId: null },
+      });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 404) {
+        // Contact not found, ignore
+        return;
+      }
+      console.error("Error deleting contact from Brevo:", error);
+    }
+  }
+
   private async loadNewsletter(
     newsletterId: number,
     verify = true,

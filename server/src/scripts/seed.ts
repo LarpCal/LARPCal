@@ -45,10 +45,7 @@ async function main() {
     email: orgUser.email,
   });
 
-  await OrgManager.updateOrg({
-    id: org.id,
-    isApproved: true,
-  });
+  await OrgManager.setApproved(org.id, true);
 
   // Insert initial LARP event.
   const larp = await LarpManager.createLarp({
@@ -65,11 +62,7 @@ async function main() {
     language: "English",
     eventUrl: "https://testlarporg.com/events/test-larp-event",
   });
-  await LarpManager.updateLarp({
-    id: larp.id,
-    isPublished: true,
-    isFeatured: true,
-  });
+  await LarpManager.publishLarp(larp.id);
 }
 
 main()

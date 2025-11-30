@@ -203,9 +203,13 @@ class UserManager {
     }
   }
 
-  /** Delete given user from database; returns undefined. */
+  /** Delete given user from database */
   static async deleteUser(username: string) {
     try {
+      // Remove user contact on deletion.
+      const newsletters = new NewsletterManager();
+      await newsletters.deleteUser(username);
+
       const deleted = await prisma.user.delete({
         where: { username },
       });
