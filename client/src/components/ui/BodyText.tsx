@@ -1,7 +1,8 @@
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { FC, useMemo } from "react";
 import Markdown, { Options } from "react-markdown";
-import { Link as RouterLink } from "react-router-dom";
+
+import { TextLink } from "./TextLink";
 
 export const BodyText: FC<{ text?: string }> = ({ text }) => {
   const options: Options = useMemo(
@@ -25,14 +26,9 @@ export const BodyText: FC<{ text?: string }> = ({ text }) => {
         p: ({ children }) => <Typography paragraph>{children}</Typography>,
         a: ({ children, href, ref, ...props }) =>
           href ? (
-            <Link
-              {...props}
-              component={RouterLink}
-              to={href}
-              rel="noopener noreferrer"
-            >
+            <TextLink {...props} to={href}>
               {children}
-            </Link>
+            </TextLink>
           ) : (
             <a {...props} ref={ref}>
               {children}

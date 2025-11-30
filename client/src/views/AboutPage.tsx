@@ -1,15 +1,8 @@
-import {
-  Box,
-  Button,
-  Link,
-  List,
-  ListItem,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, List, ListItem, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { Link as RouterLink } from "react-router-dom";
+import { TextLink } from "../components/ui/TextLink";
 
 function AboutPage() {
   return (
@@ -98,11 +91,9 @@ function AboutPage() {
             Want to add a LARP?
           </Typography>
           <Typography>
-            <Link component={RouterLink} to="/orgs/apply">
-              Fill out our form
-            </Link>{" "}
-            and get a user when you have the user you will be able to add and
-            edit your own LARPs!
+            <TextLink to="/orgs/apply">Fill out our form</TextLink> and get a
+            user when you have the user you will be able to add and edit your
+            own LARPs!
           </Typography>
 
           <Typography>
@@ -157,7 +148,7 @@ function AboutPage() {
 
           <Typography>
             The calendar was funded by Jacob Møller jensen and developed by
-            Stuart Fleisher
+            Stuart Fleisher and Echo
           </Typography>
         </Box>
       </Stack>

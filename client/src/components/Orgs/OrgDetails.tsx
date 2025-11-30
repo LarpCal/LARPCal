@@ -1,6 +1,5 @@
 import { Organization } from "../../types";
-import { Box, Button, Link, Stack, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import CategoryBar from "../Events/CategoryBar";
 import "./OrgDetails.scss";
 import { DateTime } from "luxon";
@@ -13,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { LinkIconButton } from "../FormComponents/LinkIconButton";
 import { useUser } from "../../hooks/useUser";
+import { TextLink } from "../ui/TextLink";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -73,9 +73,7 @@ function OrgDetails({ org }: OrgDetailsProps) {
         alignContent="center"
       >
         <Typography component="h1" variant="h1" className="title">
-          <Link component={RouterLink} to={`/orgs/${org.id}`}>
-            {org.orgName}
-          </Link>
+          <TextLink to={`/orgs/${org.id}`}>{org.orgName}</TextLink>
           <Button
             variant="outlined"
             sx={{ ml: "1rem" }}
@@ -91,9 +89,7 @@ function OrgDetails({ org }: OrgDetailsProps) {
             About this Organizer:
           </Typography>
           <Typography>
-            <Link component={RouterLink} to={org.orgUrl}>
-              {org.orgUrl}
-            </Link>
+            <TextLink to={org.orgUrl}>{org.orgUrl}</TextLink>
           </Typography>
           <Typography>{org.description}</Typography>
         </section>

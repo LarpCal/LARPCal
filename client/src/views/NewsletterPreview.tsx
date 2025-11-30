@@ -1,11 +1,11 @@
-import { Box, Divider, Link, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import ErrorDisplay from "../components/FormComponents/ErrorDisplay";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useIdParam } from "../hooks/useIdParam";
 import { useNewsletter } from "../hooks/useNewsletter";
 import { DateTimeFormat } from "../components/ui/DateTimeFormat";
-import { Link as RouterLink } from "react-router-dom";
 import { BodyText } from "../components/ui/BodyText";
+import { TextLink } from "../components/ui/TextLink";
 
 export default function NewsletterPreviewPage() {
   const newsletterId = useIdParam();
@@ -17,9 +17,7 @@ export default function NewsletterPreviewPage() {
 
   const from =
     newsletter?.orgName && newsletter?.orgId ? (
-      <Link to={`/orgs/${newsletter.orgId}`} component={RouterLink}>
-        {newsletter.orgName}
-      </Link>
+      <TextLink to={`/orgs/${newsletter.orgId}`}>{newsletter.orgName}</TextLink>
     ) : (
       "LARPcal Team"
     );

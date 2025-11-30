@@ -4,7 +4,6 @@ import LarpAPI from "../util/api";
 import { Newsletter } from "../types";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { useFetchOrg } from "../hooks/useFetchOrg";
-import { Link } from "react-router-dom";
 import { LinkIconButton } from "../components/FormComponents/LinkIconButton";
 import {
   faEye,
@@ -15,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import TooltipButton from "../components/FormComponents/TooltipButton";
 import { DateTimeFormat } from "../components/ui/DateTimeFormat";
+import { TextLink } from "../components/ui/TextLink";
 
 export function NewslettersDashboard() {
   const { data, isLoading } = useQuery({
@@ -63,9 +63,9 @@ const columns: GridColDef<Newsletter>[] = [
     flex: 1,
     renderCell(params) {
       return (
-        <Link to={`/admin/newsletters/${params.row.id}`}>
+        <TextLink to={`/admin/newsletters/${params.row.id}`}>
           {params.row.subject}
-        </Link>
+        </TextLink>
       );
     },
   },
@@ -119,7 +119,7 @@ function LarpOrgLink({ orgId }: { orgId: number }) {
   if (loading) {
     return <Skeleton width={100} variant="text" />;
   }
-  return <Link to={`/admin/orgs/${orgId}`}>{org?.orgName}</Link>;
+  return <TextLink to={`/admin/orgs/${orgId}`}>{org?.orgName}</TextLink>;
 }
 
 interface NewsletterButtonProps {

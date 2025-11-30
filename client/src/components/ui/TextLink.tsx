@@ -8,5 +8,15 @@ import {
 export const TextLink: FC<Omit<LinkProps, "component"> & RouterLinkProps> = (
   props,
 ) => {
+  const { to } = props;
+  if (
+    typeof to === "string" &&
+    to.startsWith("http") &&
+    !to.includes(window.location.host)
+  ) {
+    return (
+      <Link {...props} href={to} target="_blank" rel="noopener noreferrer" />
+    );
+  }
   return <Link component={RouterLink} {...props} />;
 };

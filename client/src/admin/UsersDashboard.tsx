@@ -3,13 +3,12 @@ import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
 import LarpAPI from "../util/api";
 import DeleteButton from "../components/FormComponents/DeleteButton";
-import { Link as RouterLink } from "react-router-dom";
-import { Link } from "@mui/material";
 import { useFetchUsers } from "../hooks/useFetchUsers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../components/ui/ToastMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { TextLink } from "../components/ui/TextLink";
 
 function UsersDashboard() {
   const { users, setUsers, loading, error } = useFetchUsers();
@@ -41,9 +40,9 @@ function UsersDashboard() {
       flex: 1,
       renderCell: (params) => {
         return (
-          <Link component={RouterLink} to={`mailto:${params.row.email}`}>
+          <TextLink to={`mailto:${params.row.email}`}>
             {params.row.email}
-          </Link>
+          </TextLink>
         );
       },
     },
@@ -53,12 +52,9 @@ function UsersDashboard() {
       flex: 1,
       renderCell: (params) => {
         return (
-          <Link
-            component={RouterLink}
-            to={`/admin/orgs/${params.row.organization?.id}`}
-          >
+          <TextLink to={`/admin/orgs/${params.row.organization?.id}`}>
             {params.row.organization?.orgName}
-          </Link>
+          </TextLink>
         );
       },
     },

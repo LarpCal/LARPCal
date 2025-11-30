@@ -7,12 +7,12 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpAPI from "../util/api";
 import { OrgFormProvider } from "../context/OrgFormProvider";
 import OrgForm from "../components/Forms/OrgForm";
-import { Alert, Box, Link, Modal } from "@mui/material";
+import { Alert, Box, Modal } from "@mui/material";
 import EditOrgSchema from "../components/Forms/EditOrgSchema";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../components/ui/ToastMessage";
-import { Link as RouterLink } from "react-router-dom";
+import { TextLink } from "../components/ui/TextLink";
 
 function EditOrgPage() {
   const { user } = useContext(userContext);
@@ -84,9 +84,9 @@ function EditOrgPage() {
           Your application is currently being reviewed by our admin team. Once
           your application has been approved you will be able to publish LARPs.
           Send questions to{" "}
-          <Link component={RouterLink} to="mailto:info@larpcalendar.com">
+          <TextLink to="mailto:info@larpcalendar.com">
             info@larpcalendar.com
-          </Link>
+          </TextLink>
         </Alert>
       )}
       <OrgFormProvider<OrganizationForUpdate>

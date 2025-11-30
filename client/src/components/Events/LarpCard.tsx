@@ -1,10 +1,8 @@
 import "./LarpCard.scss";
 import { Larp } from "../../types";
 
-import { Link as RouterLink } from "react-router-dom";
-
 import { useTheme } from "@mui/material/styles";
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,6 +16,7 @@ import { JSDateToLuxon } from "../../util/typeConverters";
 import { userContext } from "../../context/userContext";
 import { useContext } from "react";
 import LarpActions from "./LarpActions";
+import { TextLink } from "../ui/TextLink";
 
 type LarpCardProps = {
   larp: Larp;
@@ -40,8 +39,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
         width: "300px",
       }}
     >
-      <Link
-        component={RouterLink}
+      <TextLink
         to={`/events/${larp.id}`}
         sx={{ textDecoration: "none", color: "inherit" }}
       >
@@ -53,7 +51,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
             backgroundSize: "cover",
           }}
         ></Box>
-      </Link>
+      </TextLink>
       {(larp.organization.username === username || isAdmin === true) && (
         <LarpActions
           larpId={larp.id}
@@ -71,8 +69,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
         <Typography color={ticketColor} variant={"details2"}>
           Tickets: {larp.ticketStatus.replace(/_/g, " ")}
         </Typography>
-        <Link
-          component={RouterLink}
+        <TextLink
           to={`/events/${larp.id}`}
           sx={{ textDecoration: "none", color: "inherit" }}
         >
@@ -89,7 +86,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
           >
             {larp.title}
           </Typography>
-        </Link>
+        </TextLink>
 
         <Typography className=".dates" variant={"details1"}>
           {`${JSDateToLuxon(larp.start).toLocaleString({ weekday: "short", month: "short", day: "numeric" })}

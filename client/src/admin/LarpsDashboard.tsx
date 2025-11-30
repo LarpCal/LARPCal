@@ -6,13 +6,13 @@ import AvailabilityIcon from "./AvailabilityIcon";
 import LarpAPI from "../util/api";
 import DeleteButton from "../components/FormComponents/DeleteButton";
 import EditButton from "../components/FormComponents/EditButton";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";
 import { Larp } from "../types";
 import ToggleFeaturedButton from "../components/FormComponents/ToggleFeaturedButton";
 import { useMutation } from "@tanstack/react-query";
+import { TextLink } from "../components/ui/TextLink";
 
 function LarpsDashboard() {
   const { larps, loading, error, refetch } = useFetchLarps();
@@ -46,9 +46,9 @@ function LarpsDashboard() {
       flex: 1,
       renderCell: (params) => {
         return (
-          <Link component={RouterLink} to={`/admin/events/${params.row.id}`}>
+          <TextLink to={`/admin/events/${params.row.id}`}>
             {params.row.title}
-          </Link>
+          </TextLink>
         );
       },
     },
@@ -57,9 +57,9 @@ function LarpsDashboard() {
       headerName: "Organization",
       renderCell: (params) => {
         return (
-          <Link component={RouterLink} to={`/admin/orgs/${params.value.id}`}>
+          <TextLink to={`/admin/orgs/${params.value.id}`}>
             {params.value.orgName}
-          </Link>
+          </TextLink>
         );
       },
     },

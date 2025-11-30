@@ -6,15 +6,15 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useContext } from "react";
-import { Link as RouterLink } from "react-router-dom";
 
 import { Larp } from "../../types";
 import { JSDateToLuxon } from "../../util/typeConverters";
 import { userContext } from "../../context/userContext";
 import ToastMessage from "../ui/ToastMessage";
 import { BodyText } from "../ui/BodyText";
+import { TextLink } from "../ui/TextLink";
 
 import LarpActions from "./LarpActions";
 import TagCard from "./TagDisplay";
@@ -84,9 +84,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           })}
         </Typography>
         <Typography component="h1" variant="h1" className="title">
-          <Link component={RouterLink} to={`/events/${larp.id}`}>
-            {larp.title}
-          </Link>
+          <TextLink to={`/events/${larp.id}`}>{larp.title}</TextLink>
         </Typography>
 
         <Stack direction="row" spacing={1}>
@@ -98,9 +96,9 @@ function LarpDetails({ larp }: LarpDetailsProps) {
         <Box className="filled-light">
           <Typography>
             Hosted By:{" "}
-            <Link component={RouterLink} to={`/orgs/${larp.organization.id}`}>
+            <TextLink to={`/orgs/${larp.organization.id}`}>
               {larp.organization.orgName}
-            </Link>
+            </TextLink>
           </Typography>
           <Typography
             // color={ticketColor}
@@ -226,32 +224,23 @@ function LarpDetails({ larp }: LarpDetailsProps) {
                 <Typography>
                   <FontAwesomeIcon icon={faUser} />
                   &nbsp; &nbsp;
-                  <Link
-                    component={RouterLink}
-                    to={`/orgs/${larp.organization.id}`}
-                  >
+                  <TextLink to={`/orgs/${larp.organization.id}`}>
                     View Profile
-                  </Link>
+                  </TextLink>
                 </Typography>
                 <Typography>
                   <FontAwesomeIcon icon={faGlobe} />
                   &nbsp; &nbsp;
-                  <Link
-                    component={RouterLink}
-                    to={`${larp.organization.orgUrl}`}
-                  >
+                  <TextLink to={`${larp.organization.orgUrl}`}>
                     {larp.organization.orgUrl}
-                  </Link>
+                  </TextLink>
                 </Typography>
                 <Typography>
                   <FontAwesomeIcon icon={faEnvelope} />
                   &nbsp; &nbsp;
-                  <Link
-                    component={RouterLink}
-                    to={`mailto:${larp.organization.email}`}
-                  >
+                  <TextLink to={`mailto:${larp.organization.email}`}>
                     {larp.organization.email}
-                  </Link>
+                  </TextLink>
                 </Typography>
               </Box>
             </Stack>

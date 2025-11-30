@@ -1,8 +1,8 @@
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { Tag } from "../../types";
-import { Link as RouterLink } from "react-router-dom";
-import "./TagDisplay.scss";
 import { base64Encode } from "../../util/utilities";
+import { TextLink } from "../ui/TextLink";
+import "./TagDisplay.scss";
 
 type TagDisplayProps = {
   tag: Tag;
@@ -15,7 +15,7 @@ function TagDisplay({ tag, fontSize = 10 }: TagDisplayProps) {
   return (
     <Stack direction="column" justifyContent="center">
       <Box className="tagDisplay">
-        <Link component={RouterLink} to={`/events/?q=${query}`}>
+        <TextLink to={`/events/?q=${query}`}>
           <Typography
             // className="tagDisplay"
             key={tag.name}
@@ -26,7 +26,7 @@ function TagDisplay({ tag, fontSize = 10 }: TagDisplayProps) {
           >
             {tag.name}
           </Typography>
-        </Link>
+        </TextLink>
       </Box>
     </Stack>
   );
