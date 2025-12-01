@@ -7,11 +7,11 @@ import {
   faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon, Tooltip } from "@mui/material";
+import { formatTicketStatus } from "../util/utilities";
 
 type RenderIcon = {
   icon: JSX.Element;
   color: string;
-  tooltip: string;
 };
 
 type AvailabilityIconProps = {
@@ -25,25 +25,21 @@ function AvailabilityIcon({ status }: AvailabilityIconProps) {
     renderIcon = {
       icon: <FontAwesomeIcon icon={faCircleCheck} />,
       color: "green",
-      tooltip: "Available",
     };
   } else if (status === "LIMITED") {
     renderIcon = {
       icon: <FontAwesomeIcon icon={faCircleHalfStroke} />,
       color: "goldenrod",
-      tooltip: "Limited",
     };
   } else if (status === "SOLD_OUT") {
     renderIcon = {
       icon: <FontAwesomeIcon icon={faCircleXmark} />,
       color: "red",
-      tooltip: "Sold Out",
     };
   } else {
     renderIcon = {
       icon: <FontAwesomeIcon icon={faCircleDot} />,
       color: "blue",
-      tooltip: "Coming Soon",
     };
   }
 
@@ -54,7 +50,7 @@ function AvailabilityIcon({ status }: AvailabilityIconProps) {
         height: "100%",
       }}
     >
-      <Tooltip title={renderIcon.tooltip}>{renderIcon.icon}</Tooltip>
+      <Tooltip title={formatTicketStatus(status)}>{renderIcon.icon}</Tooltip>
     </Icon>
   );
 }

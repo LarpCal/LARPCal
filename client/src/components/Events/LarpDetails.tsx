@@ -20,6 +20,7 @@ import LarpActions from "./LarpActions";
 import TagCard from "./TagDisplay";
 
 import "./LarpDetails.scss";
+import { formatTicketStatus } from "../../util/utilities";
 
 type LarpDetailsProps = {
   larp: Larp;
@@ -104,7 +105,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
             // color={ticketColor}
             variant={"details2"}
           >
-            Tickets: {larp.ticketStatus.replace(/_/g, " ")}
+            Tickets: {formatTicketStatus(larp.ticketStatus)}
           </Typography>
         </Box>
 

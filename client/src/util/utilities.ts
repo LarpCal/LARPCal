@@ -1,3 +1,5 @@
+import { TicketStatus } from "../types";
+
 //Checks if a string is a valid url
 export function isURL(string?: string) {
   if (!string) return false;
@@ -45,6 +47,21 @@ export function shortenString(str: string, n: number) {
     return acc.length + i < n ? `${acc} ${curr}` : acc;
   })}`;
   return `${shortStr}...`;
+}
+
+export function formatTicketStatus(status: TicketStatus) {
+  switch (status) {
+    case "AVAILABLE":
+      return "Available";
+    case "LIMITED":
+      return "Few remaining";
+    case "SOLD_OUT":
+      return "Closed";
+    case "SOON":
+      return "Coming soon";
+    default:
+      return status;
+  }
 }
 
 //Encode a string to base64

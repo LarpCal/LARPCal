@@ -82,7 +82,7 @@ class UserManager {
 
     if (userData.subscribed) {
       const newsletterManager = new NewsletterManager();
-      await newsletterManager.subscribeUser(savedUser.id);
+      await newsletterManager.subscribeUser(savedUser);
     }
 
     return userToPublicUser(savedUser);
@@ -166,25 +166,26 @@ class UserManager {
     }
 
     try {
-      // If we're setting user's subscription status, handle that first
-      if (userData.subscribed !== undefined) {
-        const user = await prisma.user.findUniqueOrThrow({
-          where: { username },
-        });
+      // Get existing user data.
+      const oldUser = await prisma.user.findUniqueOrThrow({
+        where: { username },
+      });
 
-        // Only act if subscription status is changing
-        if (userData.subscribed !== user.newsletterSubscribed) {
-          const newsletterManager = new NewsletterManager();
-          console.log(
-            `Setting user ${user.username} subscription to`,
-            userData.subscribed,
-          );
+      // Only act if subscription status is changing.
+      const newsletterManager = new NewsletterManager();
+      if (
+        userData.subscribed !== undefined &&
+        userData.subscribed !== oldUser.newsletterSubscribed
+      ) {
+        console.log(
+          `Setting user ${oldUser.username} subscription to`,
+          userData.subscribed,
+        );
 
-          if (userData.subscribed) {
-            await newsletterManager.subscribeUser(user.id);
-          } else {
-            await newsletterManager.unsubscribeUser(user.id);
-          }
+        if (userData.subscribed) {
+          await newsletterManager.subscribeUser(oldUser);
+        } else {
+          await newsletterManager.unsubscribeUser(oldUser);
         }
       }
 
@@ -196,6 +197,12 @@ class UserManager {
         },
         include: USER_INCLUDE_OBJ,
       });
+
+      // Update the email in Brevo if it has changed.
+      if (oldUser.email !== updatedUser.email) {
+        await newsletterManager.updateUserEmail(updatedUser);
+      }
+
       return userToPublicUser(updatedUser);
     } catch (err) {
       console.log(err);

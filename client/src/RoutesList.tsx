@@ -1,4 +1,10 @@
-import { Route, Routes } from "react-router-dom";
+import {
+  Navigate,
+  NavigateProps,
+  Route,
+  Routes,
+  useSearchParams,
+} from "react-router-dom";
 
 import HomePage from "./views/HomePage";
 import NewLarpPage from "./views/CreateLarpPage";
@@ -22,6 +28,7 @@ import OrgNewslettersPage from "./views/OrgNewslettersPage";
 import NewsletterEditPage from "./views/NewsletterEditPage";
 import NewsletterPreviewPage from "./views/NewsletterPreview";
 import { useUser } from "./hooks/useUser";
+import { FC } from "react";
 
 function RoutesList() {
   const { user } = useUser();
@@ -56,6 +63,7 @@ function RoutesList() {
       <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/following" element={<FollowedOrgs />} />
+      <Route path="/auth/login" element={<RedirectToHome allowRedirect />} />
     </>
   );
 
@@ -78,19 +86,31 @@ function RoutesList() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         {username ? loginRoutes : anonRoutes}
-        {organization ? organizerRoutes : null}
-        {isAdmin ? adminRoutes : null}
-        {/* <Route path='/events/create' element={<NewEventPage />} /> */}
+        {organization && organizerRoutes}
+        {isAdmin && adminRoutes}
         <Route path="/orgs/:id" element={<OrgDetailPage />} />
         <Route path="/events" element={<LarpListPage />} />
         <Route path="/events/:id" element={<LarpDetailPage />} />
         <Route path="/newsletters/:id" element={<NewsletterPreviewPage />} />
-        {/* <Route path='/demo' element={<DemoHome login={login} />} /> */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </>
   );
 }
+
+const RedirectToHome: FC<
+  {
+    allowRedirect?: boolean;
+  } & Omit<NavigateProps, "to">
+> = ({ allowRedirect = false }) => {
+  const [params] = useSearchParams();
+  let to = "/";
+  const redirect = params.get("redirect");
+  if (allowRedirect && redirect?.startsWith("/") && !redirect.includes("..")) {
+    to = redirect;
+  }
+  return <Navigate to={to} replace />;
+};
 
 export default RoutesList;

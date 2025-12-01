@@ -1,5 +1,5 @@
 import { Form, useFormikContext } from "formik";
-import { Larp } from "../../types";
+import { Larp, TicketStatus } from "../../types";
 
 import { Box, Button, Stack, Typography } from "@mui/material";
 
@@ -10,9 +10,14 @@ import ErrorDisplay from "../FormComponents/ErrorDisplay";
 import { FastField, Field } from "formik";
 import { DateTime } from "luxon";
 import { MarkdownInfo } from "../FormComponents/MarkdownInfo";
+import { formatTicketStatus } from "../../util/utilities";
 
 // type EventFormProps = {
 // };
+
+const statusOptions = (
+  ["AVAILABLE", "LIMITED", "SOLD_OUT", "SOON"] satisfies TicketStatus[]
+).map((status) => ({ label: formatTicketStatus(status), value: status }));
 
 function EventForm() {
   const { isValid, errors } = useFormikContext<Larp>();
@@ -44,13 +49,7 @@ function EventForm() {
             />
             <Field
               component={FormikSelectInput}
-              options={[
-                { label: "Available", value: "AVAILABLE" },
-                { label: "Limited", value: "LIMITED" },
-                { label: "Sold Out", value: "SOLD_OUT" },
-                { label: "Coming Soon", value: "SOON" },
-              ]}
-              placeholder={"AVAILABLE"}
+              options={statusOptions}
               name="ticketStatus"
               id="larp-ticketStatus"
               label="Ticket Status"

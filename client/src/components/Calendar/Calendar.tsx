@@ -1,14 +1,16 @@
-import { Larp } from "../../types";
 import { Calendar as BigCalendar, luxonLocalizer } from "react-big-calendar";
 import { DateTime } from "luxon";
-
-import { Box, Modal } from "@mui/material";
-import { useState } from "react";
-import EventDetails from "../Events/LarpDetails";
 import { EventProps } from "react-big-calendar";
+import { Box, Modal } from "@mui/material";
+import { useCallback, useState } from "react";
 
-import "./Calendar.scss";
+import { Larp } from "../../types";
+import EventDetails from "../Events/LarpDetails";
+import { useFetchLarps } from "../../hooks/useFetchLarps";
+import ToastMessage from "../ui/ToastMessage";
+
 import CalendarEvent from "./CalendarEvent";
+import "./Calendar.scss";
 
 // Setup the localizer by providing the moment (or globalize, or Luxon) Object
 // to the correct localizer.
@@ -16,19 +18,29 @@ const localizer = luxonLocalizer(DateTime, {
   firstDayOfWeek: 1, //Start calendar on Monday
 }); // or globalizeLocalizer
 
-type CalendarProps = {
-  larps: Larp[];
-};
+function Calendar() {
+  const { larps, loading, error } = useFetchLarps({
+    isPublished: true,
+  });
 
-function Calendar({ larps }: CalendarProps) {
-  const [showDetails, setShowDetails] = useState<boolean>(false);
   const [selected, setSelected] = useState<Larp | null>(null);
+  const handleCloseDetails = useCallback(() => {
+    setSelected(null);
+  }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <Box className="Calendar" style={{ position: "relative" }}>
+      <ToastMessage
+        title="Sorry, there was a problem fetching records for this page"
+        messages={error?.message}
+      />
       <Modal
-        open={showDetails}
-        onClose={() => setShowDetails(false)}
+        open={selected !== null}
+        onClose={handleCloseDetails}
         style={{
           display: "flex",
           alignItems: "center",
@@ -49,10 +61,7 @@ function Calendar({ larps }: CalendarProps) {
         components={{
           event: (props: EventProps<Larp>) => <CalendarEvent {...props} />,
         }}
-        onSelectEvent={(larp) => {
-          setSelected(larp);
-          setShowDetails(true);
-        }}
+        onSelectEvent={setSelected}
       />
     </Box>
   );
