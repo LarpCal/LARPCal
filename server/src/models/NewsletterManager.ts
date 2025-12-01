@@ -1,5 +1,5 @@
 import * as Brevo from "@getbrevo/brevo";
-import { Newsletter } from "@prisma/client";
+import { Newsletter, User } from "@prisma/client";
 import { AxiosError } from "axios";
 import { marked } from "marked";
 
@@ -16,6 +16,8 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from "../utils/expressError";
+
+type AnyUserId = number | string | User;
 
 export class NewsletterManager {
   public constructor(private orgId: number | null = null) {}
@@ -153,76 +155,41 @@ export class NewsletterManager {
     await instance.deleteList(toValidId(org.listId));
   }
 
-  public async subscribeUser(userId: number) {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { id: userId },
+  public async subscribeUser(userId: AnyUserId) {
+    const user = await this.toUser(userId);
+
+    await this.createOrUpdateContact(user, {
+      listIds: [this.orgId ? await this.orgListId() : BREVO_ADMIN_LIST_ID],
     });
-
-    const listIds: number[] = [];
-    if (this.orgId) {
-      listIds.push(await this.orgListId());
-    } else {
-      listIds.push(BREVO_ADMIN_LIST_ID);
-    }
-
-    const instance = new Brevo.ContactsApi();
-    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
-
-    if (!user.newsletterRemoteId) {
-      let remoteId: string;
-      try {
-        const { body } = await instance.getContactInfo(user.email);
-        remoteId = body.id.toString();
-      } catch {
-        const { body } = await instance.createContact({
-          email: user.email,
-          listIds,
-        });
-        remoteId = body.id!.toString();
-      }
-      if (!remoteId) {
-        throw new Error("Failed to create contact in Brevo");
-      }
-
-      await prisma.user.update({
-        where: { id: userId },
-        data: { newsletterRemoteId: remoteId },
-      });
-    } else {
-      await instance.updateContact(user.newsletterRemoteId, {
-        listIds,
-      });
-    }
   }
 
-  public async unsubscribeUser(userId: number) {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
+  public async unsubscribeUser(userId: AnyUserId) {
+    const user = await this.toUser(userId);
 
     if (!user.newsletterRemoteId) {
       return;
     }
 
-    const instance = new Brevo.ContactsApi();
-    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
+    await this.createOrUpdateContact(user, {
+      unlinkListIds: [
+        this.orgId ? await this.orgListId() : BREVO_ADMIN_LIST_ID,
+      ],
+    });
+  }
 
-    const listIds: number[] = [];
-    if (this.orgId) {
-      listIds.push(await this.orgListId());
-    } else {
-      listIds.push(BREVO_ADMIN_LIST_ID);
-    }
+  public async updateUserEmail(userId: AnyUserId) {
+    const user = await this.toUser(userId);
 
-    await instance.updateContact(user.newsletterRemoteId, {
-      unlinkListIds: listIds,
+    await this.createOrUpdateContact(user, {
+      emailBlacklisted: false, // Unblock the email if it's being updated.
+      attributes: {
+        EMAIL: user.email,
+      },
     });
   }
 
   public async deleteUser(username: string) {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { username },
-    });
+    const user = await this.toUser(username);
 
     if (!user.newsletterRemoteId) {
       return;
@@ -364,5 +331,41 @@ export class NewsletterManager {
     });
 
     return list.id;
+  }
+
+  private async toUser(user: AnyUserId): Promise<User> {
+    if (typeof user === "number") {
+      return prisma.user.findUniqueOrThrow({
+        where: { id: user },
+      });
+    } else if (typeof user === "string") {
+      return prisma.user.findUniqueOrThrow({
+        where: { username: user },
+      });
+    }
+    return user;
+  }
+
+  private async createOrUpdateContact(user: User, data: Brevo.UpdateContact) {
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
+
+    if (!user.newsletterRemoteId) {
+      const { body } = await instance.createContact({
+        email: user.email,
+        extId: user.id.toString(),
+        ...data,
+      });
+      const remoteId = body.id;
+      if (!remoteId) {
+        throw new Error("Failed to create contact in Brevo");
+      }
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { newsletterRemoteId: remoteId.toString() },
+      });
+    } else {
+      await instance.updateContact(user.newsletterRemoteId, data);
+    }
   }
 }
