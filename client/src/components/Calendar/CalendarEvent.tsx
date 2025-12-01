@@ -2,23 +2,27 @@ import { Box, Card, Popper } from "@mui/material";
 import { Larp } from "../../types";
 import LarpCard from "../Events/LarpCard";
 import { EventProps } from "react-big-calendar";
-import { useRef, useState } from "react";
+import { MouseEventHandler, useCallback, useRef, useState } from "react";
 
 function CalendarEvent(props: EventProps<Larp>) {
   const { event } = props;
   const [showTooltip, setShowTooltip] = useState(false);
   const anchorEl = useRef(null);
-  //USE react-popper for a non mui solution
+
+  const handleShowTooltip: MouseEventHandler = useCallback(() => {
+    setShowTooltip(true);
+  }, []);
+  const handleHideTooltip: MouseEventHandler = useCallback(() => {
+    setShowTooltip(false);
+  }, []);
 
   return (
     <Box
-      onMouseOver={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
+      onMouseOver={handleShowTooltip}
+      onMouseLeave={handleHideTooltip}
       ref={anchorEl}
-      style={{
-        height: "100%",
-        width: "100%",
-      }}
+      height="100%"
+      width="100%"
     >
       {event.title}
 
@@ -44,7 +48,7 @@ function CalendarEvent(props: EventProps<Larp>) {
         ]}
         open={showTooltip}
         anchorEl={anchorEl.current}
-        style={{
+        sx={{
           zIndex: 1000,
           padding: "0 .5rem",
           width: "250px",
@@ -53,7 +57,6 @@ function CalendarEvent(props: EventProps<Larp>) {
         <Card
           sx={{
             minWidth: "300px",
-            // margin:'1rem'
           }}
         >
           <LarpCard larp={event} />
