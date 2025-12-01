@@ -1,7 +1,6 @@
 import "./LarpCard.scss";
 import { Larp } from "../../types";
 
-import { useTheme } from "@mui/material/styles";
 import { Box, Stack, Typography } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,19 +16,19 @@ import { userContext } from "../../context/userContext";
 import { useContext } from "react";
 import LarpActions from "./LarpActions";
 import { TextLink } from "../ui/TextLink";
+import { formatTicketStatus } from "../../util/utilities";
 
 type LarpCardProps = {
   larp: Larp;
 };
 
 export default function LarpCard({ larp }: LarpCardProps) {
-  const theme = useTheme();
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
 
-  let ticketColor = theme.palette.success.main;
-  if (larp.ticketStatus === "LIMITED") ticketColor = theme.palette.warning.main;
-  if (larp.ticketStatus === "SOLD_OUT") ticketColor = theme.palette.error.main;
+  let ticketColor = "success.main";
+  if (larp.ticketStatus === "LIMITED") ticketColor = "warning.main";
+  if (larp.ticketStatus === "SOLD_OUT") ticketColor = "error.main";
 
   return (
     <Stack
@@ -67,7 +66,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
         flexBasis={1}
       >
         <Typography color={ticketColor} variant={"details2"}>
-          Tickets: {larp.ticketStatus.replace(/_/g, " ")}
+          Tickets: {formatTicketStatus(larp.ticketStatus)}
         </Typography>
         <TextLink
           to={`/events/${larp.id}`}
