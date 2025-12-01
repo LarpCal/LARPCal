@@ -268,18 +268,17 @@ export class NewsletterManager {
       params.name = `${org.orgName} - ${newsletter.subject} (${newsletter.id})`;
       params.recipients!.listIds = [await this.orgListId()];
 
-      markdown += `\n\nSent for ${org.orgName} via LARPCal.`;
+      markdown += `\n\nSent for ${org.orgName} via LARPCal. `;
     } else {
       params.name = `LARPCal - ${newsletter.subject} (${newsletter.id})`;
       params.subject = `${newsletter.subject} - LARPCal`;
       params.recipients!.listIds = [BREVO_ADMIN_LIST_ID];
 
-      markdown += `\n\nSent by LARPCal.`;
+      markdown += `\n\nSent by LARPCal. `;
     }
 
-    markdown += ` View this email online by [clicking here](${CORS_URL}/newsletters/${newsletter.id}).
-
-    Manage your [newsletter subscriptions here](${CORS_URL}/auth/login?redirect=/following).`;
+    markdown += `View this email online by [clicking here](${CORS_URL}/newsletters/${newsletter.id}).\n\n`;
+    markdown += `Manage your [newsletter subscriptions here](${CORS_URL}/auth/login?redirect=/following).`;
 
     params.htmlContent = await marked.parse(markdown, { async: true });
 
