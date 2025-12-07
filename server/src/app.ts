@@ -12,9 +12,19 @@ import newslettersRoutes from "./routes/newsletters";
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CORS_URL,
-  optionSuccessStatus: 200,
-};
+  origin(origin, callback) {
+    if (
+      origin === process.env.CORS_URL ||
+      (origin?.endsWith("larpcal.netlify.app") &&
+        process.env.CONTEXT === "deploy-preview")
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  optionsSuccessStatus: 200,
+} satisfies cors.CorsOptions;
 
 app.use(cors(corsOptions));
 app.use(express.json());
