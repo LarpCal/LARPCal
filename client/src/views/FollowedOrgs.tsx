@@ -24,29 +24,27 @@ export default function FollowedOrgs() {
   return (
     <Stack spacing={2} alignContent="center" m="2rem">
       <Typography variant="h2">Followed organizations</Typography>
-      {user.following.length > 0 && (
-        <List sx={{ maxWidth: 500, width: "100%", alignSelf: "center" }}>
-          {user.following.map((org) => (
-            <ListItem
-              key={org.id}
-              secondaryAction={
-                <FollowedOrgActions
-                  orgId={org.id}
-                  subscribed={org.email}
-                  onChange={refetch}
-                />
-              }
-            >
-              <ListItemText>
-                <TextLink to={`/orgs/${org.id}`}>{org.orgName}</TextLink>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-      )}
-      {user.following.length === 0 && (
-        <Typography>You are not following any organizations.</Typography>
-      )}
+      <List sx={{ maxWidth: 500, width: "100%", alignSelf: "center" }}>
+        <ListItem secondaryAction={<LARPCalNewsActions />}>
+          LarpCAL News
+        </ListItem>
+        {user.following.map((org) => (
+          <ListItem
+            key={org.id}
+            secondaryAction={
+              <FollowedOrgActions
+                orgId={org.id}
+                subscribed={org.email}
+                onChange={refetch}
+              />
+            }
+          >
+            <ListItemText>
+              <TextLink to={`/orgs/${org.id}`}>{org.orgName}</TextLink>
+            </ListItemText>
+          </ListItem>
+        ))}
+      </List>
     </Stack>
   );
 }
@@ -93,5 +91,26 @@ function FollowedOrgActions({
         Unfollow
       </Button>
     </ButtonGroup>
+  );
+}
+
+function LARPCalNewsActions() {
+  const { user, update, refetch } = useUser();
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () =>
+      update({ email: user.email ?? "", subscribed: !user.subscribed }),
+    onSuccess: refetch,
+  });
+  const handleSubscriptionToggle = useCallback(() => {
+    mutate();
+  }, [mutate]);
+  return (
+    <Button
+      variant="outlined"
+      onClick={handleSubscriptionToggle}
+      disabled={isPending}
+    >
+      {user.subscribed ? "Unsubscribe" : "Subscribe"}
+    </Button>
   );
 }
