@@ -14,7 +14,6 @@
     "dev:server": "npm -w server run dev",
     "dev:client": "npm -w client run dev",
     "dev": "concurrently --names server,client -c auto npm:dev:server npm:dev:client",
-    "prepare": "husky",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
     "test": "npm -w server run test",
