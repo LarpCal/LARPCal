@@ -6,4 +6,4 @@ const testImgSet: ImageSet = {
   lg: "https://testImageSet.com/lg",
 };
 
-export {testImgSet};
+export { testImgSet };

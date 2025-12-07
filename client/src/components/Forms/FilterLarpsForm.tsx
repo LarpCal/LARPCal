@@ -15,39 +15,45 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
   const queryParam = searchParams.get("q") || null;
   const navigate = useNavigate();
 
-  const setFilters = useCallback((filterFormData: LarpQuery) => {
+  const setFilters = useCallback(
+    (filterFormData: LarpQuery) => {
+      //remove empty entries
+      const reducedFormData: LarpQuery = {};
+      Object.keys(filterFormData).forEach((key) => {
+        const typedKey = key as keyof LarpQuery;
+        const value = filterFormData[typedKey];
 
-    //remove empty entries
-    const reducedFormData: LarpQuery = {};
-    Object.keys(filterFormData).forEach((key) => {
-      const typedKey = key as keyof LarpQuery;
-      const value = filterFormData[typedKey];
-
-      if (typedKey === 'isFeatured' ||
-        typedKey === 'isPublished'
-      ) {
-        if (typeof value === 'boolean') reducedFormData[typedKey] = value;
-      } else if (typedKey === 'ticketStatus') {
-        if (value === "AVAILABLE" ||
-          value === "LIMITED" ||
-          value === "SOLD_OUT" ||
-          value === ""
-        ) {
-          reducedFormData[typedKey] = value as LarpQuery[typeof typedKey];
+        if (typedKey === "isFeatured" || typedKey === "isPublished") {
+          reducedFormData[typedKey] = !!value;
+        } else if (typedKey === "ticketStatus") {
+          if (
+            value === "AVAILABLE" ||
+            value === "LIMITED" ||
+            value === "SOLD_OUT" ||
+            value === ""
+          ) {
+            reducedFormData[typedKey] = value;
+          }
+        } else if (typedKey === "orgId") {
+          if (value && typeof value === "number") {
+            reducedFormData[typedKey] = value;
+          }
+        } else if (typeof value === "string" && value.trim() !== "") {
+          reducedFormData[typedKey] = value;
         }
-      } else if (
-        value !== null && value !== undefined && value !== "") {
-        reducedFormData[typedKey] = value as LarpQuery[typeof typedKey];
-      }
-    });
+      });
 
-    //encode values for query
-    const query = base64Encode(JSON.stringify(reducedFormData));
-    navigate(`/events/?q=${query}`);
-  }, [navigate]);
+      //encode values for query
+      const query = base64Encode(JSON.stringify(reducedFormData));
+      navigate(`/events/?q=${query}`);
+    },
+    [navigate],
+  );
 
-  const initialFormValues: LarpQuery = useMemo((() => {
-    const queryObj: LarpQuery = queryParam ? JSON.parse(base64Decode(queryParam)) : {};
+  const initialFormValues: LarpQuery = useMemo(() => {
+    const queryObj: LarpQuery = queryParam
+      ? JSON.parse(base64Decode(queryParam))
+      : {};
     return {
       term: queryObj.term || "",
       title: queryObj.title || "",
@@ -62,7 +68,7 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
       language: queryObj.language || "",
       org: queryObj.org || "",
     };
-  }), [queryParam]);
+  }, [queryParam]);
 
   return (
     <>
@@ -78,8 +84,6 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
       </Formik>
     </>
   );
-
 }
-
 
 export default FilterLarpsForm;

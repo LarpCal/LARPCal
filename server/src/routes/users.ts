@@ -1,16 +1,14 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from "express";
 const router = express.Router();
 
-import jsonschema from 'jsonschema';
-import userForCreateSchema from "../schemas/userForCreate.json"
-import userUpdateSchema from "../schemas/userUpdate.json"
+import jsonschema from "jsonschema";
+import userForCreateSchema from "../schemas/userForCreate.json";
+import userUpdateSchema from "../schemas/userUpdate.json";
 
-import { BadRequestError } from '../utils/expressError';
+import { BadRequestError } from "../utils/expressError";
 import { createToken } from "../utils/tokens";
-import { ensureCorrectUserOrAdmin, ensureAdmin, ensureLoggedIn } from "../middleware/auth";
-import UserManager from '../models/UserManager';
-
-
+import { ensureAdmin, ensureCorrectUserOrAdmin } from "../middleware/auth";
+import UserManager from "../models/UserManager";
 
 /** POST / { user }  => { user, token }
  *
@@ -24,22 +22,13 @@ import UserManager from '../models/UserManager';
  * Authorization required: admin
  **/
 
-router.post(
-  "/",
-  ensureAdmin,
-  async function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const validator = jsonschema.validate(
-    req.body,
-    userForCreateSchema,
-    { required: true },
-  );
+router.post("/", ensureAdmin, async function (req: Request, res: Response) {
+  const validator = jsonschema.validate(req.body, userForCreateSchema, {
+    required: true,
+  });
   if (!validator.valid) {
     const errs = validator.errors.map((e: Error) => e.stack);
-    console.log("validation failed", errs.join(", "))
+    console.log("validation failed", errs.join(", "));
     throw new BadRequestError(errs.join(", "));
   }
 
@@ -48,7 +37,6 @@ router.post(
   return res.status(201).json({ user, token });
 });
 
-
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
  *
  * Returns list of all users.
@@ -56,17 +44,10 @@ router.post(
  * Authorization required: admin
  **/
 
-router.get("/",
-  ensureAdmin,
-  async function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+router.get("/", ensureAdmin, async function (req: Request, res: Response) {
   const users = await UserManager.findAll();
   return res.json({ users });
 });
-
 
 /** GET /[username] => { user }
  *
@@ -76,17 +57,16 @@ router.get("/",
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/:username",
-  // ensureCorrectUserOrAdmin,
-  async function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+router.get("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
   const user = await UserManager.getUser(req.params.username);
-  return res.json({ user });
+  const following = await UserManager.getUserFollows(req.params.username);
+  res.json({
+    user: {
+      ...user,
+      following,
+    },
+  });
 });
-
 
 /** PATCH /[username] { user } => { user }
  *
@@ -98,20 +78,10 @@ router.get("/:username",
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch("/:username",
-  ensureCorrectUserOrAdmin,
-  async function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const validator = jsonschema.validate(
-    req.body,
-    userUpdateSchema,
-    { required: true },
-  );
+router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res) => {
+  const validator = jsonschema.validate(req.body, userUpdateSchema);
   if (!validator.valid) {
-    const errs = validator.errors.map((e:Error) => e.stack);
+    const errs = validator.errors.map((e: Error) => e.stack);
     throw new BadRequestError(errs.join(", "));
   }
 
@@ -119,21 +89,18 @@ router.patch("/:username",
   return res.json({ user });
 });
 
-
 /** DELETE /[username]  =>  { deleted: username }
  *
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete("/:username",
+router.delete(
+  "/:username",
   ensureCorrectUserOrAdmin,
-  async function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const deletedUser = await UserManager.deleteUser(req.params.username);
-  return res.json({ deleted: deletedUser });
-});
+  async function (req: Request, res: Response) {
+    const deletedUser = await UserManager.deleteUser(req.params.username);
+    return res.json({ deleted: deletedUser });
+  },
+);
 
 export default router;

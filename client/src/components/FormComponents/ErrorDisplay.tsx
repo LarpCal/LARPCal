@@ -5,19 +5,17 @@ import Slide from "@mui/material/Slide";
 // import "./ErrorDisplay.scss";
 
 type props = {
-    message: string;
+  message: string;
 };
 
 function ErrorDisplay({ message }: props) {
-    return (
-        <Slide direction="up" in>
-            <Box >
-                <Alert severity="error">
-                    {message}
-                </Alert>
-            </Box >
-        </Slide >
-    );
+  return (
+    <Slide direction="up" in>
+      <Box>
+        <Alert severity="error">{message}</Alert>
+      </Box>
+    </Slide>
+  );
 }
 
 export default ErrorDisplay;

@@ -1,18 +1,15 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://example.com/example.json",
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "integer"
-        },
-        "isApproved": {
-            "type": "boolean"
-        }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
     },
-    "additionalProperties": false,
-    "required": [
-        "id",
-        "isApproved"
-    ]
+    "isApproved": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["id", "isApproved"]
 }

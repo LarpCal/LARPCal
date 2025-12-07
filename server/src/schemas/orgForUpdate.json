@@ -1,59 +1,57 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://example.com/example.json",
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "integer"
-        },
-        "userId": {
-            "type": "integer"
-        },
-        "orgName": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100
-        },
-        "imgUrl": {
-            "type": "object",
-            "properties": {
-                "sm": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "md": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "lg": {
-                    "type": "string",
-                    "format": "url"
-                }
-            }
-        },
-        "imgSetId": {
-            "type": "integer"
-        },
-        "orgUrl": {
-            "type": "string",
-            "format": "url",
-            "maxLength": 500
-        },
-        "description": {
-            "type": "string"
-        },
-        "email": {
-            "type": "string",
-            "maxLength": 100,
-            "format": "email"
-        },
-        "username": {
-            "type": "string",
-            "maxLength": 100
-        }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
     },
-    "additionalProperties": false,
-    "required": [
-        "id"
-    ]
+    "userId": {
+      "type": "integer"
+    },
+    "orgName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "imgUrl": {
+      "type": "object",
+      "properties": {
+        "sm": {
+          "type": "string",
+          "format": "url"
+        },
+        "md": {
+          "type": "string",
+          "format": "url"
+        },
+        "lg": {
+          "type": "string",
+          "format": "url"
+        }
+      }
+    },
+    "imgSetId": {
+      "type": "integer"
+    },
+    "orgUrl": {
+      "type": "string",
+      "format": "url",
+      "maxLength": 500
+    },
+    "description": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "maxLength": 100,
+      "format": "email"
+    },
+    "username": {
+      "type": "string",
+      "maxLength": 100
+    }
+  },
+  "additionalProperties": false,
+  "required": ["id"]
 }

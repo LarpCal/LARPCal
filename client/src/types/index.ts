@@ -1,6 +1,5 @@
-
-
-type PartialWithRequired<T,K extends keyof T> = Partial<Omit<T, K>> & Pick<T, K>;
+type PartialWithRequired<T, K extends keyof T> = Partial<Omit<T, K>> &
+  Pick<T, K>;
 
 export type Tag = {
   id: number;
@@ -8,106 +7,109 @@ export type Tag = {
 };
 
 export type ImageSet = {
-  sm:string;
-  md:string;
-  lg:string;
-}
-
+  sm: string;
+  md: string;
+  lg: string;
+};
 
 /*************************** LARPS */
-export type TicketStatus =  "AVAILABLE" |  "LIMITED" |  "SOLD_OUT" | "SOON";
+export type TicketStatus = "AVAILABLE" | "LIMITED" | "SOLD_OUT" | "SOON";
 
 export type LarpForCreate = {
-  title: string,
-  ticketStatus: TicketStatus,
-  tags: Tag[],
-  start: Date,
-  end: Date,
-  allDay:boolean,
-  city: string,
-  country: string,
-  language: string,
-  description: string,
-  orgId: number,
-  eventUrl: string,
-}
+  title: string;
+  ticketStatus: TicketStatus;
+  tags: Tag[];
+  start: Date;
+  end: Date;
+  allDay: boolean;
+  city: string;
+  country: string;
+  language: string;
+  description: string;
+  orgId: number;
+  eventUrl: string;
+};
 
 export type Larp = LarpForCreate & {
   id: number;
-  imgUrl: ImageSet,
-  imgSetId: number,
-  organization: Organization,
-  isFeatured: boolean,
-  createdTime: Date,
-  isPublished: boolean,
-}
+  imgUrl: ImageSet;
+  imgSetId: number;
+  organization: Organization;
+  isFeatured: boolean;
+  createdTime: Date;
+  isPublished: boolean;
+};
 
 export type LarpForUpdate = Omit<
-PartialWithRequired<Larp, 'id'>,
-'organization'
->
+  PartialWithRequired<Larp, "id">,
+  "organization"
+>;
 
 export type LarpAsJSON = LarpForCreate & {
-  id?:number,
-  start: string,
-  end: string,
-  imgUrl: ImageSet,
-  imgSetId: number,
-  organization: Organization,
-  isFeatured: boolean,
-  createdTime: string,
-  isPublished: boolean,
-}
+  id?: number;
+  start: string;
+  end: string;
+  imgUrl: ImageSet;
+  imgSetId: number;
+  organization: Organization;
+  isFeatured: boolean;
+  createdTime: string;
+  isPublished: boolean;
+};
 
 /*************************** LARP QUERY */
 export type LarpQuery = {
   term?: string;
   title?: string;
-  ticketStatus?: TicketStatus | "";
-  tags?: string
+  ticketStatus?: TicketStatus | TicketStatus[] | "";
+  tags?: string;
   startBefore?: string;
-  startAfter?:string;
-  endBefore?:string;
-  endAfter?:string;
+  startAfter?: string;
+  endBefore?: string;
+  endAfter?: string;
   city?: string;
   country?: string;
   language?: string;
   org?: string;
+  orgId?: number;
   isFeatured?: boolean;
-  createdBefore?:string;
-  createdAfter?:string;
-  isPublished?:boolean;
-}
+  createdBefore?: string;
+  createdAfter?: string;
+  isPublished?: boolean;
+};
 
 /*************************** USERS */
 
 export type UserLoginData = {
-  username: string,
-  password: string,
+  username: string;
+  password: string;
 };
 
 export type UserForCreate = {
-  username: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  email: string,
+  username: string;
+  password: string;
+  email: string;
+  subscribed: boolean;
+};
+
+export type FollowingOrg = Pick<Organization, "id" | "orgName"> & {
+  email: boolean;
 };
 
 export type User = UserForCreate & {
-  isAdmin: boolean,
   id: number;
-  organization:Organization | null;
+  firstName: string;
+  lastName: string;
+  isAdmin: boolean;
+  organization: Organization | null;
+  following: FollowingOrg[];
 };
 
-export type PublicUser = Omit<User,'password'>
+export type PublicUser = Omit<User, "password">;
 
-export type UserForUpdate = Partial<
-    Omit<
-      UserForCreate,
-      'username'
-    >
-  >;
+export type UserForUpdate = Omit<UserForCreate, "username" | "password"> & {
+  password?: string;
+};
 
 /*************************** ORGANIZATIONS */
 
@@ -125,18 +127,36 @@ export type Organization = OrganizationForCreate & {
   imgUrl: ImageSet;
   imgSetId: number;
   larps: Larp[];
+  followerCount: number;
+  isFollowedByUser?: boolean;
+  isSubscribedByUser?: boolean;
 };
 
 export type OrganizationForUpdate = Omit<
-  PartialWithRequired<Organization, 'id'>,
-  'larps'
+  PartialWithRequired<Organization, "id">,
+  "larps"
 >;
+
+/** NEWSLETTERS */
+
+export interface NewsletterForCreate {
+  subject: string;
+  text: string;
+}
+
+export interface Newsletter extends NewsletterForCreate {
+  id: number;
+  createdAt: string;
+  sentAt: string | null;
+  orgId: number | null;
+  orgName?: string;
+}
 
 /*************************** AUTH */
 
 export type PasswordResetRequest = {
   id: number;
   username: string;
-  user: {email:string};
+  user: { email: string };
   createdAt: Date;
-}
+};

@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: larpcal
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: larpcal
+    ports:
+      - "5555:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  mail:
+    image: rnwood/smtp4dev
+    ports:
+      - "127.0.0.1:5111:80"
+      - "25:25"
+    volumes:
+      - mail_data:/smtp4dev
+
+volumes:
+  db_data:
+  mail_data:

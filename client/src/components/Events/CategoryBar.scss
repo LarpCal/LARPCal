@@ -1,24 +1,23 @@
 @import "../../styles/colors";
 
-
 .CategoryBar {
+  padding: 1rem;
+  margin: 1rem auto;
+  color: $dark;
+  background-color: $pale-blue;
 
-    padding:1rem;
-    margin: 1rem auto;
-    color: $dark;
-    background-color: $pale-blue;
+  .CategoryBar-itemContainer {
+    margin: auto;
+    background-color: white;
+    height: fit-content;
+    width: 95%;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 1rem;
 
-    .CategoryBar-itemContainer {
-        margin: auto;
-        background-color: white;
-        height:fit-content;
-        width:95%;
-        overflow-x: scroll;
-        overflow-y: visible;
-        padding:1rem;
-
-        & > *:hover, & *:focus{
-            box-shadow: 0 0 5px rgba(0,0,0,10%);
-        }
+    & > *:hover,
+    & *:focus {
+      box-shadow: 0 0 5px rgba(0, 0, 0, 10%);
     }
+  }
 }

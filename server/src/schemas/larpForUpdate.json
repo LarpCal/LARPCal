@@ -13,12 +13,7 @@
     },
     "ticketStatus": {
       "type": "string",
-      "enum": [
-        "AVAILABLE",
-        "LIMITED",
-        "SOLD_OUT",
-        "SOON"
-      ]
+      "enum": ["AVAILABLE", "LIMITED", "SOLD_OUT", "SOON"]
     },
     "tags": {
       "type": "array",
@@ -65,8 +60,8 @@
         }
       }
     },
-    "imgSetId":{
-      "type":"integer"
+    "imgSetId": {
+      "type": "integer"
     },
     "city": {
       "type": "string",
@@ -80,15 +75,15 @@
       "type": "string",
       "maxLength": 100
     },
+    "orgId": {
+      "type": "integer"
+    },
     "description": {
       "type": "string"
     },
     "eventUrl": {
       "type": "string",
       "format": "url"
-    },
-    "orgId": {
-      "type": "number"
     },
     "isFeatured": {
       "type": "boolean"

@@ -1,23 +1,26 @@
-import { Tooltip, IconButton } from "@mui/material";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 type TooltipButtonProps = {
-    handleClick:(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    title: string;
-    icon: IconDefinition;
-}
+  tooltip: string;
+  icon: IconDefinition;
+};
 
-function TooltipButton({handleClick, icon, title}:TooltipButtonProps) {
-    return (
-      <Tooltip title={title}>
-        <IconButton
-          onClick={handleClick}
-        >
+function TooltipButton({
+  icon,
+  tooltip,
+  ...rest
+}: TooltipButtonProps & IconButtonProps) {
+  return (
+    <Tooltip title={tooltip}>
+      <span>
+        <IconButton {...rest}>
           <FontAwesomeIcon icon={icon} />
         </IconButton>
-      </Tooltip>
-    );
-  }
+      </span>
+    </Tooltip>
+  );
+}
 
-  export default TooltipButton
+export default TooltipButton;

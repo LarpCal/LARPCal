@@ -6,7 +6,7 @@ const START = new Date();
 const END = new Date(START.getTime() + 1 * 24 * 60 * 60 * 1000);
 
 const testTag: Tag = {
-  name: "testTag"
+  name: "testTag",
 };
 
 const testLarpForCreate: LarpForCreate = {
@@ -43,7 +43,7 @@ const testLarp: Larp = {
   eventUrl: "https://testLarp.com",
   isFeatured: false,
   createdTime: START,
-  isPublished:true,
+  isPublished: true,
 };
 
 export { testTag, testLarpForCreate, testLarp };

@@ -1,14 +1,15 @@
-
 /** ExpressError extends normal JS error so we can
  *  add a status when we make an instance of it.
  *
  *  The error-handling middleware will return this.
  */
 
-class ExpressError extends Error {
+import { ValidationError } from "jsonschema";
+
+export class ExpressError extends Error {
   status: number;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status = 500) {
     super();
     this.message = message;
     this.status = status;
@@ -17,16 +18,15 @@ class ExpressError extends Error {
 
 /** 404 NOT FOUND error. */
 
-class NotFoundError extends ExpressError {
+export class NotFoundError extends ExpressError {
   constructor(message = "Not Found") {
     super(message, 404);
   }
 }
 
-
 /** 401 UNAUTHORIZED error. */
 
-class UnauthorizedError extends ExpressError {
+export class UnauthorizedError extends ExpressError {
   constructor(message = "Unauthorized") {
     super(message, 401);
   }
@@ -34,25 +34,31 @@ class UnauthorizedError extends ExpressError {
 
 /** 400 BAD REQUEST error. */
 
-class BadRequestError extends ExpressError {
+export class BadRequestError extends ExpressError {
   constructor(message = "Bad Request") {
     super(message, 400);
   }
 }
 
+export class InputValidationError extends ExpressError {
+  errors: Record<string, string[]>;
+
+  constructor(errors: ValidationError[], message = "Validation Error") {
+    super(message, 400);
+    this.errors = errors.reduce(
+      (acc, err) => ({
+        ...acc,
+        [err.argument]: [...(acc[err.argument] ?? []), err.message],
+      }),
+      {} as Record<string, string[]>,
+    );
+  }
+}
+
 /** 403 FORBIDDEN error. */
 
-class ForbiddenError extends ExpressError {
+export class ForbiddenError extends ExpressError {
   constructor(message = "Forbidden") {
     super(message, 403);
   }
 }
-
-export {
-  ExpressError,
-  NotFoundError,
-  UnauthorizedError,
-  BadRequestError,
-  ForbiddenError,
-};
-

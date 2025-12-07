@@ -1,10 +1,14 @@
-import { prisma } from '../prismaSingleton';
-import { OrganizationForCreate, Organization, OrganizationForUpdate } from '../types';
-import { BadRequestError, NotFoundError } from '../utils/expressError';
-import ImageHandler from '../utils/imageHandler';
-import { Larp } from '../types';
-import { deleteMultiple } from '../api/s3';
-
+import { prisma } from "../prismaSingleton";
+import {
+  Organization,
+  OrganizationForCreate,
+  OrganizationForUpdate,
+} from "../types";
+import { BadRequestError, NotFoundError } from "../utils/expressError";
+import ImageHandler from "../utils/imageHandler";
+import { deleteMultiple } from "../api/s3";
+import { Prisma } from "@prisma/client";
+import { NewsletterManager } from "./NewsletterManager";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,
@@ -12,18 +16,16 @@ const ORG_INCLUDE_OBJ = {
     include: {
       tags: true,
       imgUrl: true,
-    }
-  }
-};
+    },
+  },
+} satisfies Prisma.OrganizationInclude;
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const DEFAULT_IMG_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default`;
 class OrgManager {
-
   static async createOrg(
-    orgData: OrganizationForCreate
+    orgData: OrganizationForCreate,
   ): Promise<Organization> {
-
     const { username, ...data } = orgData;
 
     const org: Organization = await prisma.organization.create({
@@ -47,41 +49,52 @@ class OrgManager {
     return org;
   }
 
-  static async getAllOrgs(): Promise<Organization[]> {
-    return await prisma.organization.findMany(
-      {
-        orderBy: { id: 'asc' },
-        include: ORG_INCLUDE_OBJ,
-      }
-    );
+  static async getAllOrgs() {
+    return prisma.organization.findMany({
+      orderBy: { id: "asc" },
+      include: {
+        _count: {
+          select: { followers: true },
+        },
+      },
+    });
   }
 
-
-  static async getOrgById(id: number): Promise<Organization> {
+  static async getOrgById(id: number) {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
-        where: {
-          id: id
+        where: { id },
+        include: {
+          ...ORG_INCLUDE_OBJ,
+          followers: {
+            select: {
+              emails: true,
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
         },
-        include: ORG_INCLUDE_OBJ
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
-  };
+  }
 
   static async getOrgByOrgName(orgName: string): Promise<Organization> {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
         where: {
-          orgName: orgName
+          orgName: orgName,
         },
-        include: ORG_INCLUDE_OBJ
+        include: ORG_INCLUDE_OBJ,
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
@@ -91,23 +104,23 @@ class OrgManager {
     try {
       const org = await prisma.organization.findUniqueOrThrow({
         where: {
-          username: username
+          username: username,
         },
-        include: ORG_INCLUDE_OBJ
+        include: ORG_INCLUDE_OBJ,
       });
       return org;
-    } catch (err) {
+    } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
     }
   }
 
   static async updateOrg(newOrg: OrganizationForUpdate): Promise<Organization> {
-    console.log(newOrg.username);
-    const currentOrg: Organization = await prisma.organization.findUniqueOrThrow({
-      where: { id: newOrg.id },
-      include: ORG_INCLUDE_OBJ,
-    });
+    const currentOrg: Organization =
+      await prisma.organization.findUniqueOrThrow({
+        where: { id: newOrg.id },
+        include: ORG_INCLUDE_OBJ,
+      });
 
     const org: Organization = await prisma.organization.update({
       where: { id: newOrg.id },
@@ -123,33 +136,60 @@ class OrgManager {
               md: newOrg.imgUrl?.md || currentOrg.imgUrl.md,
               lg: newOrg.imgUrl?.lg || currentOrg.imgUrl.lg,
             },
-            where: { id: newOrg.imgSetId }
-          }
+            where: { id: newOrg.imgSetId },
+          },
         },
       },
-      include: ORG_INCLUDE_OBJ
+      include: ORG_INCLUDE_OBJ,
     });
 
     return org;
   }
 
-  static async setApproved(id: number, isApproved: boolean): Promise<Organization> {
+  static async setApproved(
+    id: number,
+    isApproved: boolean,
+  ): Promise<Organization> {
     const org: Organization = await prisma.organization.update({
       where: { id },
       data: {
         isApproved,
-        larps: { //automatically publish/unpublish events for this user
+        larps: {
+          //automatically publish/unpublish events for this user
           updateMany: {
             where: {},
-            data: { isPublished: isApproved }
-          }
-        }
+            data: { isPublished: isApproved },
+          },
+        },
       },
       include: ORG_INCLUDE_OBJ,
     });
     return org;
   }
 
+  static async follow(id: number, userId: number, emails: boolean) {
+    if (emails) {
+      const instance = new NewsletterManager(id);
+      await instance.subscribeUser(userId);
+    }
+    await prisma.userFollow.upsert({
+      where: { userId_orgId: { orgId: id, userId } },
+      create: {
+        orgId: id,
+        userId,
+        emails,
+      },
+      update: { emails },
+    });
+  }
+
+  static async unfollow(id: number, userId: number) {
+    const instance = new NewsletterManager(id);
+    await instance.unsubscribeUser(userId);
+    await prisma.userFollow.delete({
+      where: { userId_orgId: { orgId: id, userId } },
+    });
+  }
 
   static async deleteOrgById(id: number): Promise<Organization> {
     // try { await this.deleteRecipeImage(id); }
@@ -158,36 +198,38 @@ class OrgManager {
     // }
 
     try {
-      const deletedLarps = await prisma.larp.deleteMany({
-        where: { orgId: id }
+      await prisma.larp.deleteMany({
+        where: { orgId: id },
       });
+
+      // Delete the newsletter list
+      const instance = new NewsletterManager(id);
+      await instance.deleteList();
 
       const org = await prisma.organization.delete({
         where: {
-          id: id
+          id: id,
         },
-        include: ORG_INCLUDE_OBJ
-      }
-      );
+        include: ORG_INCLUDE_OBJ,
+      });
       return org;
     } catch (err) {
       //use our custom error instead
       console.log(err);
       throw new NotFoundError("Record not found");
     }
-  };
+  }
 
   /**************************** IMAGES ***************************************/
 
   /**Uploads a file to s3 and stores the resulting uri in the imageUrl property
-     *
-     * @param file: the file to upload
-     * @param id: the id for the record to update
-     *
-     * @returns the updated org
-     */
+   *
+   * @param file: the file to upload
+   * @param id: the id for the record to update
+   *
+   * @returns the updated org
+   */
   static async updateOrgImage(file: Express.Multer.File, id: number) {
-
     const org = await OrgManager.getOrgById(+id);
     const s3Path = `orgImage/org-${id}`;
     const basePath = `https://${BUCKET_NAME}.s3.amazonaws.com/${s3Path}`;
@@ -195,7 +237,10 @@ class OrgManager {
 
     try {
       await ImageHandler.uploadAllSizes(file.buffer, s3Path, uuid);
-      if (org.imgUrl.sm !== `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default-sm`) {
+      if (
+        org.imgUrl.sm !==
+        `https://${BUCKET_NAME}.s3.amazonaws.com/orgImage/default-sm`
+      ) {
         await deleteMultiple([
           org.imgUrl.sm.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
           org.imgUrl.md.replace(`https://${BUCKET_NAME}.s3.amazonaws.com/`, ""),
@@ -203,18 +248,19 @@ class OrgManager {
         ]);
       }
     } catch (e) {
-      throw new BadRequestError(`There was a problem updating this image: ${e}`);
+      throw new BadRequestError(
+        `There was a problem updating this image: ${e}`,
+      );
     }
 
     org.imgUrl = {
+      id: org.imgUrl.id,
       sm: `${basePath}-sm-${uuid}`,
       md: `${basePath}-md-${uuid}`,
       lg: `${basePath}-lg-${uuid}`,
     };
     return await OrgManager.updateOrg(org);
-
   }
-
 
   //end class
 }

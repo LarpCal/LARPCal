@@ -1,95 +1,109 @@
-import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import express from "express";
+import { Request, Response } from "express";
 import {
   ensureAdmin,
   ensureLoggedIn,
-  ensureOrganizer,
   ensureMatchingOrganizerOrAdmin,
-  ensureOwnerOrAdmin
-} from '../middleware/auth';
-import readMultipart from '../middleware/multer';
+} from "../middleware/auth";
+import readMultipart from "../middleware/multer";
+import { BadRequestError } from "../utils/expressError";
+
+import jsonschema from "jsonschema";
+import orgForCreateSchema from "../schemas/orgForCreate.json";
+import orgForUpdateSchema from "../schemas/orgForUpdate.json";
+import orgApprovalSchema from "../schemas/orgApproval.json";
+import OrgManager from "../models/OrgManager";
+import UserManager from "../models/UserManager";
+import { NewsletterManager } from "../models/NewsletterManager";
+import {
+  isEmailArray,
+  omitKeys,
+  toValidId,
+  toValidUsername,
+} from "../utils/helpers";
+
 const router = express.Router();
 
-import { BadRequestError } from '../utils/expressError';
-
-import LarpManager from '../models/LarpManager';
-
-import jsonschema from 'jsonschema';
-import orgForCreateSchema from '../schemas/orgForCreate.json'
-import orgForUpdateSchema from '../schemas/orgForUpdate.json'
-import orgApprovalSchema from '../schemas/orgApproval.json'
-import OrgManager from '../models/OrgManager';
-
-
 /** POST /
-  *  Creates and returns a new org record
-  *
-  * @returns orgs: [Org,...]
-  * @auth admin
-  */
+ *  Creates and returns a new org record
+ *
+ * @returns orgs: [Org,...]
+ * @auth admin
+ */
 router.post(
   "/",
   ensureLoggedIn,
   // readMultipart("image"),
 
-  async function (req: Request, res: Response, next: NextFunction) {
-    const validator = jsonschema.validate(
-      req.body,
-      orgForCreateSchema,
-      { required: true }
-    );
+  async function (req, res) {
+    const validator = jsonschema.validate(req.body, orgForCreateSchema, {
+      required: true,
+    });
     if (!validator.valid) {
-      const errs: (string | undefined)[] = validator.errors.map((e: Error) => e.stack);
+      const errs: (string | undefined)[] = validator.errors.map(
+        (e: Error) => e.stack,
+      );
       throw new BadRequestError(errs.join(", "));
     }
 
-    const org = await OrgManager.createOrg(req.body)
-    return res.status(201).json({org})
-  }
+    const org = await OrgManager.createOrg(req.body);
+    return res.status(201).json({ org });
+  },
 );
 
 /** GET /id
-  *  Returns a the org with the given id
-  *
-  * @returns org: Organization
-  * @auth none
-  */
-router.get(
-  "/:id",
-  async function (req: Request, res: Response, next: NextFunction) {
-    const org = await OrgManager.getOrgById(+req.params.id);
-    return res.json({ org });
-  }
-);
+ *  Returns a the org with the given id
+ *
+ * @returns org: Organization
+ * @auth none
+ */
+router.get("/:id", async function (req: Request, res: Response) {
+  const orgId = toValidId(req.params.id);
+  const { followers, ...org } = await OrgManager.getOrgById(orgId);
+  const username = res.locals.user?.username;
+  const follower = username
+    ? (followers.find((f) => f.user.username === username) ?? null)
+    : null;
+  return res.json({
+    org: {
+      ...org,
+      followerCount: followers.length,
+      isFollowedByUser: !!follower,
+      isSubscribedByUser: follower?.emails ?? false,
+    },
+  });
+});
 
 /** GET /
-  *  Returns a list of all orgs without submodel data
-  *
-  * @returns orgs: [Organization,...]
-  */
+ *  Returns a list of all orgs without submodel data
+ *
+ * @returns orgs: [Organization,...]
+ */
 
-router.get(
-  "/",
-  async function (req: Request, res: Response, next: NextFunction) {
-      const orgs = await OrgManager.getAllOrgs();
-      return res.json({ orgs });
-  }
-);
+router.get("/", async function (req: Request, res: Response) {
+  const orgs = await OrgManager.getAllOrgs();
+  return res.json({
+    orgs: orgs.map((org) => ({
+      ...omitKeys(org, "imgSetId", "_count"),
+      followers: org._count.followers,
+    })),
+  });
+});
 
 /** DELETE /[id]
  *  Deletes an org
  *
  * @returns {deleted: Organization}
  *
-*/
+ */
 
 router.delete(
   "/:id",
   ensureMatchingOrganizerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
+  async function (req: Request, res: Response) {
     const deleted = await OrgManager.deleteOrgById(+req.params.id);
     return res.json({ deleted });
-  }
+  },
 );
 
 /** PATCH /[id]
@@ -101,22 +115,20 @@ router.patch(
   "/:id",
   ensureLoggedIn,
   ensureMatchingOrganizerOrAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
-
-    const validator = jsonschema.validate(
-      req.body,
-      orgForUpdateSchema,
-      { required: true }
-    );
+  async function (req: Request, res: Response) {
+    const validator = jsonschema.validate(req.body, orgForUpdateSchema, {
+      required: true,
+    });
     if (!validator.valid) {
-      const errs: (string | undefined)[] = validator.errors.map((e: Error) => e.stack);
+      const errs: (string | undefined)[] = validator.errors.map(
+        (e: Error) => e.stack,
+      );
       throw new BadRequestError(errs.join(", "));
     }
     const org = await OrgManager.updateOrg(req.body);
     return res.json({ org });
-  }
+  },
 );
-
 
 /** PATCH /[id]/approval
  *  Sets the isApproval property for an organization.  Used by admins to set
@@ -128,20 +140,19 @@ router.patch(
   "/:id/approval",
   ensureLoggedIn,
   ensureAdmin,
-  async function (req: Request, res: Response, next: NextFunction) {
-
-    const validator = jsonschema.validate(
-      req.body,
-      orgApprovalSchema,
-      { required: true }
-    );
+  async function (req: Request, res: Response) {
+    const validator = jsonschema.validate(req.body, orgApprovalSchema, {
+      required: true,
+    });
     if (!validator.valid) {
-      const errs: (string | undefined)[] = validator.errors.map((e: Error) => e.stack);
+      const errs: (string | undefined)[] = validator.errors.map(
+        (e: Error) => e.stack,
+      );
       throw new BadRequestError(errs.join(", "));
     }
     const org = await OrgManager.setApproved(req.body.id, req.body.isApproved);
     return res.json({ org });
-  }
+  },
 );
 
 /** PUT /[id]/image
@@ -153,18 +164,154 @@ router.patch(
 router.put(
   "/:id/image",
   ensureMatchingOrganizerOrAdmin,
-  readMultipart('image'),
-  async function (req: Request, res: Response, next: NextFunction) {
+  readMultipart("image"),
+  async function (req: Request, res: Response) {
     //TODO: test middleware
 
-    if (!req.file) { throw new BadRequestError('Please attach an image'); }
-    const larp = await OrgManager.updateOrgImage(
-      req.file,
-      +req.params.id
-    );
+    if (!req.file) {
+      throw new BadRequestError("Please attach an image");
+    }
+    const larp = await OrgManager.updateOrgImage(req.file, +req.params.id);
 
     return res.json(larp);
-  }
+  },
+);
+
+router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
+  const username = toValidUsername(res);
+  const user = await UserManager.getUser(username);
+  const orgId = toValidId(req.params.id);
+
+  const subscribe = !!req.body.subscribe;
+
+  await OrgManager.follow(orgId, user.id, subscribe);
+
+  res.json({ following: true, subscribe });
+});
+
+router.put("/:id/unfollow", ensureLoggedIn, async (req, res) => {
+  const username = toValidUsername(res);
+  const user = await UserManager.getUser(username);
+  const orgId = toValidId(req.params.id);
+
+  await OrgManager.unfollow(orgId, user.id);
+
+  res.json({ following: false });
+});
+
+/** Newsletters */
+
+router.get(
+  "/:id/newsletters",
+  ensureMatchingOrganizerOrAdmin,
+  async (req, res) => {
+    const orgId = toValidId(req.params.id);
+
+    const manager = new NewsletterManager(orgId);
+    const newsletters = await manager.getNewsletters();
+
+    res.json({ newsletters });
+  },
+
+  router.post(
+    "/:id/newsletters",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+
+      const { subject, text } = req.body;
+      if (!subject || !text) {
+        throw new BadRequestError("Missing subject or text");
+      }
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.createNewsletter(subject, text);
+
+      res.status(201).json({ newsletter });
+    },
+  ),
+
+  router.get(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.getNewsletter(newsletterId);
+
+      res.json({ newsletter });
+    },
+  ),
+
+  router.put(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const { subject, text } = req.body;
+      if (!subject || !text) {
+        throw new BadRequestError("Missing subject or text");
+      }
+
+      const manager = new NewsletterManager(orgId);
+      const newsletter = await manager.updateNewsletter(
+        newsletterId,
+        subject,
+        text,
+      );
+
+      res.json({ newsletter });
+    },
+  ),
+
+  router.delete(
+    "/:id/newsletters/:newsletterId",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+
+      await manager.deleteNewsletter(newsletterId);
+      res.json({ deleted: newsletterId });
+    },
+  ),
+
+  router.post(
+    "/:id/newsletters/:newsletterId/test",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+      const { testEmails } = req.body;
+      if (!isEmailArray(testEmails)) {
+        throw new BadRequestError("Invalid test email addresses");
+      }
+      const manager = new NewsletterManager(orgId);
+      await manager.sendTestNewsletter(newsletterId, testEmails);
+
+      res.json({ sent: true });
+    },
+  ),
+
+  router.post(
+    "/:id/newsletters/:newsletterId/send",
+    ensureMatchingOrganizerOrAdmin,
+    async (req, res) => {
+      const orgId = toValidId(req.params.id);
+      const newsletterId = toValidId(req.params.newsletterId);
+
+      const manager = new NewsletterManager(orgId);
+      await manager.sendNewsletter(newsletterId);
+
+      res.json({ sent: true });
+    },
+  ),
 );
 
 export default router;

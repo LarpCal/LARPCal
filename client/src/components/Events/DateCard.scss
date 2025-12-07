@@ -1,35 +1,35 @@
-.DateCard{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
+.DateCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
 
-    height:2rem;
-    aspect-ratio: 1;
-    border-radius: 0px;
+  height: 2rem;
+  aspect-ratio: 1;
+  border-radius: 0px;
 
-    .month{
-        font-size: .5rem;
-        font-weight:500
-    }
+  .month {
+    font-size: 0.5rem;
+    font-weight: 500;
+  }
 
-    .day {
-        line-height: .75;
-        font-size: 1rem;
-        font-weight:900;
-    }
+  .day {
+    line-height: 0.75;
+    font-size: 1rem;
+    font-weight: 900;
+  }
 }
 
-@media(min-width:600px){
-    .DateCard{
-        height:3.25rem;
+@media (min-width: 600px) {
+  .DateCard {
+    height: 3.25rem;
 
-        .month{
-            font-size: 1rem;
-        }
-        .day{
-            font-size: 1.5rem;
-        }
+    .month {
+      font-size: 1rem;
     }
+    .day {
+      font-size: 1.5rem;
+    }
+  }
 }

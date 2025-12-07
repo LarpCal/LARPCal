@@ -1,5 +1,5 @@
-import * as yup from 'yup';
-import { TicketStatus } from '../../types';
+import * as yup from "yup";
+import { TicketStatus } from "../../types";
 
 const LarpFormSchema = yup.object({
   id: yup.number(),
@@ -7,21 +7,30 @@ const LarpFormSchema = yup.object({
   ticketStatus: yup
     .mixed<TicketStatus>()
     .oneOf(["AVAILABLE", "LIMITED", "SOLD_OUT", "SOON"])
-    .required('Ticket Status is required'),
+    .required("Ticket Status is required"),
   tags: yup.string(),
   start: yup
     .date()
     .required("Start date is required")
-    .test('is before end', 'Start date must be before end date', function (value) {
-      const { end } = this.parent;
-      return end ? value <= end : true;
-    }),
+    .test(
+      "is before end",
+      "Start date must be before end date",
+      function (value) {
+        const { end } = this.parent;
+        return end ? value <= end : true;
+      },
+    ),
   end: yup
     .date()
-    .required("Start date is required").test('is before end', 'Start date must be before end date', function (value) {
-      const { start } = this.parent;
-      return start ? value >= start : true;
-    }),
+    .required("Start date is required")
+    .test(
+      "is before end",
+      "Start date must be before end date",
+      function (value) {
+        const { start } = this.parent;
+        return start ? value >= start : true;
+      },
+    ),
   allDay: yup.boolean(),
   city: yup.string().required("Please specify a city").max(100),
   country: yup.string().required("Please specify a country").max(100),

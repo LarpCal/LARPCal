@@ -2,19 +2,15 @@ import { Larp, Organization } from "../../types";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
-
 type ImageFormProps<T> = {
-  submitCallback: (image: Blob,id: number) => Promise<void>;
-  model:T;
+  submitCallback: (image: Blob, id: number) => Promise<void>;
+  model: T;
 };
 
-
-function ImageForm<T extends Organization | Larp>(
-  {
-    submitCallback,
-    model
-  }: ImageFormProps<T>) {
-
+function ImageForm<T extends Organization | Larp>({
+  submitCallback,
+  model,
+}: ImageFormProps<T>) {
   const [image, setImage] = useState<Blob | null>(null);
   const [fileName, setFileName] = useState("No File Selected");
 
@@ -23,8 +19,6 @@ function ImageForm<T extends Organization | Larp>(
     const file = e.target.files![0];
     setFileName(e.target.files![0].name);
     setImage(file);
-
-
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -37,27 +31,32 @@ function ImageForm<T extends Organization | Larp>(
     }
   }
 
-
   return (
     <>
-      {model &&
+      {model && (
         <Box
           className="banner"
           sx={{
-            width: '80%',
-            aspectRatio: '7/3',
-            backgroundImage: image ? `url(${URL.createObjectURL(image)})` : `url(${model.imgUrl.lg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            width: "80%",
+            aspectRatio: "7/3",
+            backgroundImage: image
+              ? `url(${URL.createObjectURL(image)})`
+              : `url(${model.imgUrl.lg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             display: "relative",
-            borderRadius: '1rem'
+            borderRadius: "1rem",
           }}
-        >
-        </Box>
-      }
+        ></Box>
+      )}
       <form onSubmit={async (e) => handleSubmit(e)} className="ImageForm">
         <Stack justifyContent="center" alignItems="center" spacing={1}>
-          <Stack direction="row" alignItems="center" justifyContent="space-evenly" spacing={2}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-evenly"
+            spacing={2}
+          >
             <Button
               className="ImageForm-uploadButton"
               variant="contained"

@@ -63,22 +63,28 @@ model User {
   isAdmin              Boolean
   organization         Organization?
   PasswordResetRequest PasswordResetRequest[]
+  following            UserFollow[]
+  newsletterSubscribed Boolean                @default(false)
+  newsletterRemoteId   String?
 
   @@map("users")
 }
 
 model Organization {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
-  username    String   @unique
-  orgName     String   @unique @db.VarChar(100)
-  orgUrl      String   @default("") @map("org_url") @db.VarChar(500)
-  imgUrl      ImageSet @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
-  imgSetId    Int      @unique @map("img_set_id")
+  id          Int          @id @default(autoincrement())
+  user        User         @relation(fields: [username], references: [username], onDelete: Cascade)
+  username    String       @unique
+  orgName     String       @unique @db.VarChar(100)
+  orgUrl      String       @default("") @map("org_url") @db.VarChar(500)
+  imgUrl      ImageSet     @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
+  imgSetId    Int          @unique @map("img_set_id")
   description String
-  email       String   @unique @db.VarChar(100)
+  email       String       @unique @db.VarChar(100)
   isApproved  Boolean
   larps       Larp[]
+  followers   UserFollow[]
+  newsletters Newsletter[]
+  listId      String?
 
   @@map("organizations")
 }
@@ -99,4 +105,25 @@ model PasswordResetRequest {
   user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
   username  String
   createdAt DateTime @default(now())
+}
+
+model UserFollow {
+  userId Int
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orgId  Int
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  emails Boolean      @default(true)
+
+  @@id([userId, orgId])
+}
+
+model Newsletter {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  sentAt    DateTime?
+  subject   String
+  text      String
+  orgId     Int?
+  org       Organization? @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  forceSend Boolean       @default(false)
 }

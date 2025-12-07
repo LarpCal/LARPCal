@@ -1,24 +1,22 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
+import assert from "node:assert";
+import { toValidId } from "./utils/helpers";
 
-if (process.env.NODE_ENV === 'test') {
-  dotenv.config({ path: '.env.test' });
+if (process.env.NODE_ENV === "test") {
+  dotenv.config({ path: ".env.test" });
 } else {
   dotenv.config();
 }
 
-const OPENAI_API_KEY:string = process.env.API_KEY as string;
-const SECRET_KEY:string = process.env.SECRET_KEY as string;
-const DATABASE_URL:string = process.env.DATABASE_URL as string;
-const CORS_URL:string = process.env.CORS_URL as string;
+assert(process.env.SECRET_KEY, "SECRET_KEY must be set");
+export const SECRET_KEY = process.env.SECRET_KEY!;
 
-const BCRYPT_WORK_FACTOR:number = process.env.NODE_ENV === "test" ? 1 : 13;
-const PORT:number = +(process.env.PORT || 3001);
+export const DATABASE_URL = process.env.DATABASE_URL;
+export const CORS_URL = process.env.CORS_URL;
 
-export {
-  DATABASE_URL,
-  OPENAI_API_KEY,
-  SECRET_KEY,
-  BCRYPT_WORK_FACTOR,
-  PORT,
-  CORS_URL,
-};
+export const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 13;
+export const PORT = process.env.PORT ? Number.parseInt(process.env.PORT) : 3001;
+
+export const BREVO_API_KEY = process.env.BREVO_API_KEY;
+export const BREVO_ADMIN_LIST_ID = toValidId(process.env.BREVO_ADMIN_LIST_ID);
+export const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;

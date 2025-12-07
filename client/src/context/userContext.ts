@@ -1,47 +1,40 @@
 import React from "react";
-import { Organization, UserForUpdate } from "../types";
-import { UserLoginData, UserForCreate } from "../types";
+import {
+  PublicUser,
+  UserForCreate,
+  UserForUpdate,
+  UserLoginData,
+} from "../types";
 
-const ANON_USER: NullableUser = {
+export const ANON_USER: NullableUser = {
+  id: null,
   username: null,
   firstName: null,
   lastName: null,
   email: null,
+  subscribed: false,
   isAdmin: null,
   organization: null,
+  following: [],
 };
 
 export type NullableUser = {
-  username: string | null,
-  firstName: string | null,
-  lastName: string | null,
-  email: string | null,
-  isAdmin: boolean | null,
-  organization: Organization | null,
-}
+  [K in keyof PublicUser]: PublicUser[K] | null;
+};
 
 type UserContextType = {
   user: NullableUser;
-  setUser: React.Dispatch<React.SetStateAction<NullableUser>>;
-  token: string | null;
-  setToken: React.Dispatch<React.SetStateAction<string | null>>;
-  login:(credentials: UserLoginData) => Promise<void>;
+  login: (credentials: UserLoginData) => Promise<void>;
   logout: () => void;
   register: (userInfo: UserForCreate) => Promise<void>;
   update: (userInfo: UserForUpdate) => Promise<void>;
+  refetch: () => Promise<void>;
   loading: boolean;
   error: string[] | null;
-}
+};
 
-const userContext = React.createContext<UserContextType>({
-  user:ANON_USER,
-  setUser: () => {
-    throw new Error("setUser function not provided");
-  },
-  token: null,
-  setToken: () => {
-    throw new Error("setToken function not provided");
-  },
+export const userContext = React.createContext<UserContextType>({
+  user: ANON_USER,
   login: async () => {
     throw new Error("login function not provided");
   },
@@ -54,10 +47,9 @@ const userContext = React.createContext<UserContextType>({
   update: async () => {
     throw new Error("update function not provided");
   },
-  error:null,
-  loading:false,
+  refetch: async () => {
+    throw new Error("refetch function not provided");
+  },
+  error: null,
+  loading: false,
 });
-
-
-
-export {userContext, ANON_USER}

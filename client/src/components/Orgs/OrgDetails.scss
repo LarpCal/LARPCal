@@ -1,56 +1,53 @@
 @import "../../styles/colors";
 
 .OrgDetails {
-    width:100%;
-    margin:0;
-    color: $dark;
+  width: 100%;
+  margin: 0;
+  color: $dark;
 
+  .banner {
+    width: 100%;
+    aspect-ratio: 7/3;
+    position: relative;
+    background-color: #e7e7e7;
 
-    .banner {
-        width:100%;
-        aspect-ratio: 7/3;
-        position:relative;
-        background-color: #e7e7e7;
+    .organizerControls {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      border-radius: 5px;
+      background-color: #070707;
 
-        .organizerControls {
-            position:absolute;
-            bottom:1rem;
-            right: 1rem;
-            border-radius: 5px ;
-            transition:  background-color .2s;
-            background-color: #070707ff;
+      a {
+        color: #e7e7e7;
+        margin: 0 0.5rem;
+        font-size: 2rem;
+        transition: color 0.3s ease;
 
-            button{
-                color:white;
-                margin: 0 .5rem;
-                font-size: 2rem;
-            }
+        &:hover {
+          color: white;
         }
-
-        .organizerControls:hover {
-            transition:  background-color .2s;
-            background-color: #07070777;
-        }
+      }
     }
+  }
 
-    section {
-        padding: 1rem .5rem;
+  section {
+    padding: 1rem 0.5rem;
+  }
+
+  .OrgDetails-content {
+    margin: 1rem;
+  }
+
+  .headlineDate {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .title {
+    a {
+      text-decoration: none;
+      color: $dark;
     }
-
-    .OrgDetails-content {
-        margin:1rem;
-    }
-
-    .headlineDate {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .title {
-        a {
-            text-decoration: none;
-            color:$dark;
-        }
-    }
-
+  }
 }

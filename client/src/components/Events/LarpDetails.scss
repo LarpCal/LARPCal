@@ -1,60 +1,39 @@
 @import "../../styles/colors";
 
 .LarpDetails {
-    width:100%;
-    margin:0;
-    color: $dark;
+  width: 100%;
+  margin: 0;
+  color: $dark;
 
-    .banner {
-        width:100%;
-        aspect-ratio: 7/3;
-        position:relative;
+  .banner {
+    width: 100%;
+    aspect-ratio: 7/3;
+    position: relative;
 
-        .DurationDisplay {
-            position:absolute;
-            right:1rem;
-            top:1rem;
-        }
-
-        .larpControls {
-            position:absolute;
-            bottom:1rem;
-            right: 1rem;
-            border-radius: 5px ;
-            transition:  background-color .2s;
-            background-color: #070707ff;
-
-            button{
-                color:white;
-                margin: 0 .5rem;
-                font-size: 2rem;
-            }
-        }
-
-        .larpControls:hover {
-            transition:  background-color .2s;
-            background-color: #07070777;
-        }
+    .DurationDisplay {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
     }
+  }
 
-    section {
-        padding: 1rem .5rem;
+  section {
+    padding: 1rem 0.5rem;
+  }
+
+  .LarpDetails-content {
+    margin: 1rem;
+  }
+
+  .headlineDate {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .title {
+    a {
+      text-decoration: none;
+      color: $dark;
     }
-
-    .LarpDetails-content {
-        margin:1rem;
-
-    }
-
-    .headlineDate {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .title {
-        a {
-            text-decoration: none;
-            color:$dark;
-        }
-    }
+  }
 }

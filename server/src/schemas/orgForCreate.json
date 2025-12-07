@@ -1,53 +1,47 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://example.com/example.json",
-    "type": "object",
-    "properties": {
-        "username": {
-            "type": "string"
-        },
-        "orgName": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100
-        },
-        "orgUrl": {
-            "type": "string",
-            "format": "url",
-            "maxLength": 500
-        },
-        "imgUrl": {
-            "type": "object",
-            "properties": {
-                "sm": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "md": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "lg": {
-                    "type": "string",
-                    "format": "url"
-                }
-            }
-        },
-        "description": {
-            "type": "string"
-        },
-        "email": {
-            "type": "string",
-            "maxLength": 100,
-            "format": "email"
-        }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string"
     },
-    "additionalProperties": false,
-    "required": [
-        "username",
-        "orgName",
-        "orgUrl",
-        "description",
-        "email"
-    ]
+    "orgName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "orgUrl": {
+      "type": "string",
+      "format": "url",
+      "maxLength": 500
+    },
+    "imgUrl": {
+      "type": "object",
+      "properties": {
+        "sm": {
+          "type": "string",
+          "format": "url"
+        },
+        "md": {
+          "type": "string",
+          "format": "url"
+        },
+        "lg": {
+          "type": "string",
+          "format": "url"
+        }
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "maxLength": 100,
+      "format": "email"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["username", "orgName", "orgUrl", "description", "email"]
 }
