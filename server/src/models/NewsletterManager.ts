@@ -1,7 +1,7 @@
 import * as Brevo from "@getbrevo/brevo";
 import { Newsletter, User } from "@prisma/client";
 import { AxiosError } from "axios";
-import { marked } from "marked";
+import markdownit from "markdown-it";
 
 import {
   BREVO_ADMIN_LIST_ID,
@@ -18,6 +18,8 @@ import {
 } from "../utils/expressError";
 
 type AnyUserId = number | string | User;
+
+const md = markdownit();
 
 export class NewsletterManager {
   public constructor(private orgId: number | null = null) {}
@@ -39,7 +41,7 @@ export class NewsletterManager {
     text: string,
     forceSend = false,
   ) {
-    await marked.parse(text, { async: true });
+    md.render(text);
     return this.cleanOutput(
       prisma.newsletter.create({
         data: {
@@ -58,7 +60,7 @@ export class NewsletterManager {
     text: string,
   ) {
     await this.loadNewsletter(newsletterId);
-    await marked.parse(text, { async: true });
+    md.render(text);
     return this.cleanOutput(
       prisma.newsletter.update({
         where: { id: newsletterId },
@@ -280,7 +282,7 @@ export class NewsletterManager {
     markdown += `View this email online by [clicking here](${CORS_URL}/newsletters/${newsletter.id}).\n\n`;
     markdown += `Manage your [newsletter subscriptions here](${CORS_URL}/auth/login?redirect=/following).`;
 
-    params.htmlContent = await marked.parse(markdown, { async: true });
+    params.htmlContent = md.render(markdown);
 
     return params;
   }
