@@ -132,9 +132,9 @@ export type Organization = OrganizationForCreate & {
   isSubscribedByUser?: boolean;
 };
 
-export type OrganizationForUpdate = Omit<
+export type OrganizationForUpdate = Pick<
   PartialWithRequired<Organization, "id">,
-  "larps"
+  "id" | "orgName" | "orgUrl" | "description" | "email" | "imgSetId" | "imgUrl"
 >;
 
 /** NEWSLETTERS */

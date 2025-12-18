@@ -19,7 +19,9 @@
     "test": "npm -w server run test",
     "typecheck": "concurrently --raw npm:typecheck:server npm:typecheck:client",
     "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
-    "typecheck:client": "tsc --project client/tsconfig.json --noEmit"
+    "typecheck:client": "tsc --project client/tsconfig.json --noEmit",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
   },
   "workspaces": [
     "server",

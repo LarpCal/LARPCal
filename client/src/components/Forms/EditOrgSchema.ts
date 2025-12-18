@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 const EditOrgSchema = yup.object({
   id: yup.number(),
-  username: yup.string().required("Username is required"),
+  username: yup.string(),
   orgName: yup.string().required("Name is required").max(200),
   isApproved: yup.boolean(),
   imageUrl: yup.string().url(),
