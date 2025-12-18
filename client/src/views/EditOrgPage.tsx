@@ -1,4 +1,4 @@
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { userContext } from "../context/userContext";
 import { useFetchOrg } from "../hooks/useFetchOrg";
@@ -13,18 +13,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../components/ui/ToastMessage";
 import { TextLink } from "../components/ui/TextLink";
+import { useIdParam } from "../hooks/useIdParam";
 
 function EditOrgPage() {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
-  const { id } = useParams();
-  if (!id) {
-    throw new Error("Id is required to view details page for an organization");
-  }
-  const { org, error, loading } = useFetchOrg(+id);
+  const id = useIdParam();
+  const { org, error, loading } = useFetchOrg(id);
   const [saving, setSaving] = useState(false);
   const [saveErrs, setSaveErrs] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  if (loading || !org) {
+    return <LoadingSpinner />;
+  }
+
+  const orgForUpdate = {
+    id: org.id,
+    orgName: org.orgName,
+    orgUrl: org.orgUrl,
+    description: org.description,
+    email: org.email,
+    imgSetId: org.imgSetId,
+    imgUrl: org.imgUrl,
+  } satisfies OrganizationForUpdate;
 
   /** Auth check --> Is this the user's Organization
    * Note that this check allows edits to organizer data prior to
@@ -33,16 +45,6 @@ function EditOrgPage() {
   if (org && username !== org?.username && !isAdmin) {
     return <Navigate to={`/orgs/${id}`} />;
   }
-
-  /** Convert data to maintain type safety */
-  function orgToOrgForUpdate(): OrganizationForUpdate | null {
-    if (org) {
-      const { larps: _larps, isApproved: _isApproved, ...orgForUpdate } = org;
-      return orgForUpdate;
-    }
-    return null;
-  }
-  const orgForUpdate = orgToOrgForUpdate();
 
   async function saveOrg(formData: OrganizationForUpdate) {
     try {
@@ -60,9 +62,7 @@ function EditOrgPage() {
     }
   }
 
-  return loading ? (
-    <LoadingSpinner />
-  ) : (
+  return (
     <>
       <ToastMessage
         title="Sorry, there was a problem loading your data"
@@ -91,7 +91,7 @@ function EditOrgPage() {
       )}
       <OrgFormProvider<OrganizationForUpdate>
         onSubmitCallback={saveOrg}
-        org={orgForUpdate!}
+        org={orgForUpdate}
         schema={EditOrgSchema}
       >
         <OrgForm />

@@ -66,7 +66,7 @@ router.get("/:id", async function (req: Request, res: Response) {
     : null;
   return res.json({
     org: {
-      ...org,
+      ...omitKeys(org, "imgSetId", "listId"),
       followerCount: followers.length,
       isFollowedByUser: !!follower,
       isSubscribedByUser: follower?.emails ?? false,
