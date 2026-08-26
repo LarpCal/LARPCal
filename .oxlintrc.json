@@ -1,22 +1,14 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "typescript",
-    "unicorn"
-  ],
-  "jsPlugins": [
-    "@tanstack/eslint-plugin-query"
-  ],
+  "plugins": ["typescript", "unicorn"],
+  "jsPlugins": ["@tanstack/eslint-plugin-query"],
   "categories": {
     "correctness": "off"
   },
   "env": {
     "builtin": true
   },
-  "ignorePatterns": [
-    "server/dist",
-    "client/dist"
-  ],
+  "ignorePatterns": ["server/dist", "client/dist"],
   "rules": {
     "constructor-super": "error",
     "for-direction": "error",
@@ -110,12 +102,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "rules": {
         "constructor-super": "off",
         "getter-return": "off",
@@ -140,9 +127,7 @@
       }
     },
     {
-      "files": [
-        "client/**/*.{ts,tsx}"
-      ],
+      "files": ["client/**/*.{ts,tsx}"],
       "globals": {
         "AudioWorkletGlobalScope": "readonly",
         "AudioWorkletProcessor": "readonly",
@@ -157,9 +142,7 @@
       }
     },
     {
-      "files": [
-        "client/**/*.tsx"
-      ],
+      "files": ["client/**/*.tsx"],
       "rules": {
         "react/only-export-components": [
           "warn",
@@ -168,14 +151,10 @@
           }
         ]
       },
-      "plugins": [
-        "react"
-      ]
+      "plugins": ["react"]
     },
     {
-      "files": [
-        "server/**/*.{ts,mjs}"
-      ],
+      "files": ["server/**/*.{ts,mjs}"],
       "env": {
         "node": true
       }

@@ -15,7 +15,7 @@
     "dev:client": "npm -w client run dev",
     "dev": "concurrently --names server,client -c auto npm:dev:server npm:dev:client",
     "lint": "oxlint",
-    "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
+    "format": "oxfmt",
     "test": "npm -w server run test",
     "typecheck": "concurrently --raw npm:typecheck:server npm:typecheck:client",
     "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
@@ -33,13 +33,13 @@
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
+    "oxfmt": "^0.65.0",
     "oxlint": "^1.80.0",
-    "prettier": "^3.6.2",
     "typescript": "^5.9.2"
   },
   "lint-staged": {
-    "{server,client}/**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}": "prettier --write",
-    "**/*.{js,mjs,ts,tsx}": "eslint"
+    "{server,client}/**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}": "oxfmt",
+    "**/*.{js,mjs,ts,tsx}": "oxlint"
   },
   "prettier": {
     "semi": true,
