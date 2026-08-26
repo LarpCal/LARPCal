@@ -136,7 +136,7 @@ router.patch(
     try {
       jwt.verify(token as string, SECRET_KEY);
     } catch (err) {
-      if (err.message === "jwt expired") {
+      if (err instanceof Error && err.message === "jwt expired") {
         throw new BadRequestError("Sorry - this link has expired.");
       } else {
         throw err;
