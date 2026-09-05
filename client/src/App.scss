@@ -1,4 +1,4 @@
-@import "./styles/colors";
+@use "styles/colors";
 
 *,
 *::before,
@@ -13,16 +13,16 @@
   max-width: 1280px;
   margin: auto;
   background-color: white;
-  color: $dark;
+  color: colors.$dark;
   min-height: 100dvh;
 }
 
 p {
-  color: $dark;
+  color: colors.$dark;
 }
 
 a {
-  color: $primary;
+  color: colors.$primary;
   text-decoration: none;
 }
 
@@ -35,10 +35,10 @@ a {
 
 .filled-light {
   @extend .filled;
-  background-color: $pale-blue;
+  background-color: colors.$pale-blue;
 }
 
 .filled-secondary {
   @extend .filled;
-  background-color: $secondary-light;
+  background-color: colors.$secondary-light;
 }
