@@ -132,12 +132,13 @@ export async function protectUnpublished(
   res: Response,
   next: NextFunction,
 ) {
-  const isAdmin = res.locals.user?.isAdmin;
-  const username = toValidUsername(res);
   const larpId = toValidId(req.params.id);
   const larp = await LarpManager.getLarpById(larpId);
   if (larp.isPublished === true) return next();
-  if (username === larp.organization?.username || isAdmin) {
+
+  const isAdmin = res.locals.user?.isAdmin;
+  const username = res.locals.user?.username;
+  if (username && (username === larp.organization?.username || isAdmin)) {
     return next();
   }
 

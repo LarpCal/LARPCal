@@ -16,7 +16,8 @@ const corsOptions = {
     if (
       origin === process.env.CORS_URL ||
       (origin?.endsWith("larpcal.netlify.app") &&
-        process.env.CONTEXT === "deploy-preview")
+        process.env.CONTEXT === "deploy-preview") ||
+      process.env.NODE_ENV === "test"
     ) {
       callback(null, true);
     } else {

@@ -1,4 +1,3 @@
-import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../app";
 
@@ -6,11 +5,12 @@ import LarpManager from "../../models/LarpManager";
 import { testLarp, testLarpForCreate } from "../../test/testLarpData";
 import { organizerToken } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
+import { vi } from "vitest";
 
 /************************** GET ALL **********************/
 describe("GET events/", function () {
   test("OK", async function () {
-    const mockedGetAllLarps = jest.spyOn(LarpManager, "getAllLarps");
+    const mockedGetAllLarps = vi.spyOn(LarpManager, "getAllLarps");
     mockedGetAllLarps.mockResolvedValueOnce([testLarp]);
 
     const resp = await request(app).get("/events");
@@ -33,7 +33,7 @@ describe("GET events/", function () {
 /************************** GET BY ID **********************/
 describe("GET events/:id", function () {
   test("OK", async function () {
-    const mockedGetLarpById = jest.spyOn(LarpManager, "getLarpById");
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
     mockedGetLarpById.mockResolvedValue(testLarp);
 
     const resp = await request(app).get("/events/1");
@@ -55,10 +55,10 @@ describe("GET events/:id", function () {
 describe("POST events/:id", function () {
   test("OK", async function () {
     //mock lookup for auth middleware
-    const mockedGetLarpById = jest.spyOn(LarpManager, "getLarpById");
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
     mockedGetLarpById.mockResolvedValueOnce(testLarp);
     //mock create
-    const mockedCreateLarp = jest.spyOn(LarpManager, "createLarp");
+    const mockedCreateLarp = vi.spyOn(LarpManager, "createLarp");
     mockedCreateLarp.mockResolvedValueOnce(testLarp);
     const { ...createData } = testLarpForCreate;
 
@@ -84,10 +84,10 @@ describe("POST events/:id", function () {
 describe("PUT events/:id", function () {
   test("OK", async function () {
     //mock lookup for auth middleware
-    const mockedGetLarpById = jest.spyOn(LarpManager, "getLarpById");
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
     mockedGetLarpById.mockResolvedValueOnce(testLarp);
     //mock update
-    const mockedUpdateLarp = jest.spyOn(LarpManager, "updateLarp");
+    const mockedUpdateLarp = vi.spyOn(LarpManager, "updateLarp");
     const testLarpForUpdate = omitKeys(testLarp, "organization");
     const updateData = {
       ...testLarpForUpdate,
@@ -121,10 +121,10 @@ describe("PUT events/:id", function () {
 describe("DELETE events/:id", function () {
   test("OK", async function () {
     //mock lookup for auth middleware
-    const mockedGetLarpById = jest.spyOn(LarpManager, "getLarpById");
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
     mockedGetLarpById.mockResolvedValueOnce(testLarp);
     //mock delete
-    const mockedDeleteLarp = jest.spyOn(LarpManager, "deleteLarpById");
+    const mockedDeleteLarp = vi.spyOn(LarpManager, "deleteLarpById");
     mockedDeleteLarp.mockResolvedValueOnce(testLarp);
 
     const resp = await request(app)
