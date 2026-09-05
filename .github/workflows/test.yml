@@ -18,9 +18,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Prisma types
+        run: npm -w server run build
+
       - name: Run tests
         run: npm test
 
 env:
   SECRET_KEY: secret
   BREVO_ADMIN_LIST_ID: 1
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/larpcal
