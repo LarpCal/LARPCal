@@ -58,7 +58,6 @@
     "prettier": "^3.6.2",
     "prisma": "^5.21.0",
     "supertest": "^7.0.0",
-    "tsx": "^4.20.6",
     "typescript": "^7.0.2",
     "vitest": "^4.1.11",
     "vitest-mock-extended": "^5.1.1"
