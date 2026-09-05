@@ -31,6 +31,7 @@
     "react-big-calendar": "^1.11.6",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.18.3",
     "yup": "^1.4.0"
   },
   "devDependencies": {
@@ -41,12 +42,9 @@
     "@types/react-big-calendar": "^1.8.9",
     "@types/react-dom": "^18.2.22",
     "@types/yup": "^0.32.0",
-    "react-router-dom": "^7.18.3",
+    "@vitejs/plugin-react": "^6.1.1",
     "sass": "^1.75.0",
     "typescript": "^7.0.2",
     "vite": "^8.2.2"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "*"
   }
 }
