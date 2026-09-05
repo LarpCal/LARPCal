@@ -1,5 +1,5 @@
 import * as Brevo from "@getbrevo/brevo";
-import { Newsletter, User } from "@prisma/client";
+import type { Newsletter, User } from "@prisma/client";
 import { AxiosError } from "axios";
 import markdownit from "markdown-it";
 
@@ -8,21 +8,25 @@ import {
   BREVO_API_KEY,
   BREVO_SENDER_EMAIL,
   CORS_URL,
-} from "../config";
-import { prisma } from "../prismaSingleton";
-import { omitKeys, toValidId } from "../utils/helpers";
+} from "../config.ts";
+import { prisma } from "../prismaSingleton.ts";
+import { omitKeys, toValidId } from "../utils/helpers.ts";
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
-} from "../utils/expressError";
+} from "../utils/expressError.ts";
 
 type AnyUserId = number | string | User;
 
 const md = markdownit();
 
 export class NewsletterManager {
-  public constructor(private orgId: number | null = null) {}
+  private orgId: number | null;
+
+  public constructor(orgId: number | null = null) {
+    this.orgId = orgId;
+  }
 
   public async getNewsletters() {
     const newsletters = await prisma.newsletter.findMany({

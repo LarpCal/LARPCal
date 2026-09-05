@@ -1,14 +1,14 @@
-import { prisma } from "../prismaSingleton";
-import {
+import { prisma } from "../prismaSingleton.ts";
+import type {
   Organization,
   OrganizationForCreate,
   OrganizationForUpdate,
-} from "../types";
-import { BadRequestError, NotFoundError } from "../utils/expressError";
-import ImageHandler from "../utils/imageHandler";
-import { deleteMultiple } from "../api/s3";
+} from "../types/index.ts";
+import { BadRequestError, NotFoundError } from "../utils/expressError.ts";
+import ImageHandler from "../utils/imageHandler.ts";
+import { deleteMultiple } from "../api/s3.ts";
 import { Prisma } from "@prisma/client";
-import { NewsletterManager } from "./NewsletterManager";
+import { NewsletterManager } from "./NewsletterManager.ts";
 
 const ORG_INCLUDE_OBJ = {
   imgUrl: true,

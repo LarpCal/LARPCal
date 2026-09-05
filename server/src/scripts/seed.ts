@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import UserManager from "../models/UserManager";
-import OrgManager from "../models/OrgManager";
-import LarpManager from "../models/LarpManager";
+import UserManager from "../models/UserManager.ts";
+import OrgManager from "../models/OrgManager.ts";
+import LarpManager from "../models/LarpManager.ts";
 
 const prisma = new PrismaClient();
 

@@ -1,21 +1,21 @@
 import express from "express";
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import {
   ensureLoggedIn,
   ensureOrganizer,
   ensureOwnerOrAdmin,
   protectUnpublished,
-} from "../middleware/auth";
-import readMultipart from "../middleware/multer";
+} from "../middleware/auth.ts";
+import readMultipart from "../middleware/multer.ts";
 const router = express.Router();
 
-import { BadRequestError, ExpressError } from "../utils/expressError";
+import { BadRequestError, ExpressError } from "../utils/expressError.ts";
 
-import LarpManager from "../models/LarpManager";
+import LarpManager from "../models/LarpManager.ts";
 
 import jsonschema from "jsonschema";
-import larpForCreateSchema from "../schemas/larpForCreate.json";
-import larpForUpdateSchema from "../schemas/larpForUpdate.json";
+import larpForCreateSchema from "../schemas/larpForCreate.json" with { type: "json" };
+import larpForUpdateSchema from "../schemas/larpForUpdate.json" with { type: "json" };
 
 /** POST /
  *  Creates and returns a new larp record

@@ -1,13 +1,13 @@
-import express, { ErrorRequestHandler } from "express";
+import express, { type ErrorRequestHandler } from "express";
 import cors from "cors";
-import { InputValidationError, NotFoundError } from "./utils/expressError";
+import { InputValidationError, NotFoundError } from "./utils/expressError.ts";
 
-import { authenticateJWT } from "./middleware/auth";
-import larpRoutes from "./routes/larps";
-import usersRoutes from "./routes/users";
-import authRoutes from "./routes/auth";
-import orgsRoutes from "./routes/orgs";
-import newslettersRoutes from "./routes/newsletters";
+import { authenticateJWT } from "./middleware/auth.ts";
+import larpRoutes from "./routes/larps.ts";
+import usersRoutes from "./routes/users.ts";
+import authRoutes from "./routes/auth.ts";
+import orgsRoutes from "./routes/orgs.ts";
+import newslettersRoutes from "./routes/newsletters.ts";
 
 const app = express();
 

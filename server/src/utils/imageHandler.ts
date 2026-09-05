@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { uploadMultiple } from "../api/s3";
+import { uploadMultiple } from "../api/s3.ts";
 
 type ResizedImages = {
   sm: Buffer;

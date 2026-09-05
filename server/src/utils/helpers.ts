@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { BadRequestError } from "./expressError";
+import { type Response } from "express";
+import { BadRequestError } from "./expressError.ts";
 
 export function omitKeys<T extends object, K extends keyof T>(
   obj: T,

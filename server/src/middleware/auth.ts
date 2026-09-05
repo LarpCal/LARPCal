@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 
-import { SECRET_KEY } from "../config";
-import LarpManager from "../models/LarpManager";
-import OrgManager from "../models/OrgManager";
-import { NotFoundError, UnauthorizedError } from "../utils/expressError";
-import { toValidId, toValidUsername } from "../utils/helpers";
-import { isValidToken } from "../utils/tokens";
+import { SECRET_KEY } from "../config.ts";
+import LarpManager from "../models/LarpManager.ts";
+import OrgManager from "../models/OrgManager.ts";
+import { NotFoundError, UnauthorizedError } from "../utils/expressError.ts";
+import { toValidId, toValidUsername } from "../utils/helpers.ts";
+import { isValidToken } from "../utils/tokens.ts";
 
 /** Middleware: Authenticate user.
  *
@@ -107,7 +107,7 @@ export function ensureCorrectUserOrAdmin(
  *  If not, raises Unauthorized.
  */
 export async function ensureOwnerOrAdmin(
-  req: Request,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
@@ -128,7 +128,7 @@ export async function ensureOwnerOrAdmin(
  *  If unpublished and user is not an owner or admin, returns 404.
  */
 export async function protectUnpublished(
-  req: Request,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
