@@ -22,4 +22,5 @@ jobs:
         run: npm test
 
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5432/larpcal
+  SECRET_KEY: secret
+  BREVO_ADMIN_LIST_ID: 1
