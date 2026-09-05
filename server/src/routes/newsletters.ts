@@ -1,9 +1,9 @@
-import express from "express";
-import { NewsletterManager } from "../models/NewsletterManager";
-import { ensureAdmin } from "../middleware/auth";
-import { isEmailArray, toValidId } from "../utils/helpers";
-import OrgManager from "../models/OrgManager";
-import { UnauthorizedError } from "../utils/expressError";
+import express, { type Request } from "express";
+import { NewsletterManager } from "../models/NewsletterManager.ts";
+import { ensureAdmin } from "../middleware/auth.ts";
+import { isEmailArray, toValidId } from "../utils/helpers.ts";
+import OrgManager from "../models/OrgManager.ts";
+import { UnauthorizedError } from "../utils/expressError.ts";
 
 const router = express.Router();
 
@@ -45,7 +45,7 @@ router.get("/:id", async (req, res) => {
   res.json(ret);
 });
 
-router.put("/:id", ensureAdmin, async (req, res) => {
+router.put("/:id", ensureAdmin, async (req: Request<{ id: string }>, res) => {
   const newsletterId = toValidId(req.params.id);
   const { subject, text } = req.body;
   const newsletter = await manager.updateNewsletter(
@@ -56,26 +56,38 @@ router.put("/:id", ensureAdmin, async (req, res) => {
   res.json({ newsletter });
 });
 
-router.delete("/:id", ensureAdmin, async (req, res) => {
-  const newsletterId = toValidId(req.params.id);
-  const deleted = await manager.deleteNewsletter(newsletterId);
-  res.json({ deleted });
-});
+router.delete(
+  "/:id",
+  ensureAdmin,
+  async (req: Request<{ id: string }>, res) => {
+    const newsletterId = toValidId(req.params.id);
+    const deleted = await manager.deleteNewsletter(newsletterId);
+    res.json({ deleted });
+  },
+);
 
-router.post("/:id/test", ensureAdmin, async (req, res) => {
-  const newsletterId = toValidId(req.params.id);
-  const { testEmails } = req.body;
-  if (!isEmailArray(testEmails)) {
-    throw new UnauthorizedError("Invalid test email addresses");
-  }
-  const result = await manager.sendTestNewsletter(newsletterId, testEmails);
-  res.json({ result });
-});
+router.post(
+  "/:id/test",
+  ensureAdmin,
+  async (req: Request<{ id: string }>, res) => {
+    const newsletterId = toValidId(req.params.id);
+    const { testEmails } = req.body;
+    if (!isEmailArray(testEmails)) {
+      throw new UnauthorizedError("Invalid test email addresses");
+    }
+    const result = await manager.sendTestNewsletter(newsletterId, testEmails);
+    res.json({ result });
+  },
+);
 
-router.post("/:id/send", ensureAdmin, async (req, res) => {
-  const newsletterId = toValidId(req.params.id);
-  const result = await manager.sendNewsletter(newsletterId);
-  res.json({ result });
-});
+router.post(
+  "/:id/send",
+  ensureAdmin,
+  async (req: Request<{ id: string }>, res) => {
+    const newsletterId = toValidId(req.params.id);
+    const result = await manager.sendNewsletter(newsletterId);
+    res.json({ result });
+  },
+);
 
 export default router;

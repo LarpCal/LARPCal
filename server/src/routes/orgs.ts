@@ -1,26 +1,26 @@
 import express from "express";
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import {
   ensureAdmin,
   ensureLoggedIn,
   ensureMatchingOrganizerOrAdmin,
-} from "../middleware/auth";
-import readMultipart from "../middleware/multer";
-import { BadRequestError } from "../utils/expressError";
+} from "../middleware/auth.ts";
+import readMultipart from "../middleware/multer.ts";
+import { BadRequestError } from "../utils/expressError.ts";
 
 import jsonschema from "jsonschema";
-import orgForCreateSchema from "../schemas/orgForCreate.json";
-import orgForUpdateSchema from "../schemas/orgForUpdate.json";
-import orgApprovalSchema from "../schemas/orgApproval.json";
-import OrgManager from "../models/OrgManager";
-import UserManager from "../models/UserManager";
-import { NewsletterManager } from "../models/NewsletterManager";
+import orgForCreateSchema from "../schemas/orgForCreate.json" with { type: "json" };
+import orgForUpdateSchema from "../schemas/orgForUpdate.json" with { type: "json" };
+import orgApprovalSchema from "../schemas/orgApproval.json" with { type: "json" };
+import OrgManager from "../models/OrgManager.ts";
+import UserManager from "../models/UserManager.ts";
+import { NewsletterManager } from "../models/NewsletterManager.ts";
 import {
   isEmailArray,
   omitKeys,
   toValidId,
   toValidUsername,
-} from "../utils/helpers";
+} from "../utils/helpers.ts";
 
 const router = express.Router();
 
@@ -57,22 +57,25 @@ router.post(
  * @returns org: Organization
  * @auth none
  */
-router.get("/:id", async function (req: Request, res: Response) {
-  const orgId = toValidId(req.params.id);
-  const { followers, ...org } = await OrgManager.getOrgById(orgId);
-  const username = res.locals.user?.username;
-  const follower = username
-    ? (followers.find((f) => f.user.username === username) ?? null)
-    : null;
-  return res.json({
-    org: {
-      ...omitKeys(org, "imgSetId", "listId"),
-      followerCount: followers.length,
-      isFollowedByUser: !!follower,
-      isSubscribedByUser: follower?.emails ?? false,
-    },
-  });
-});
+router.get(
+  "/:id",
+  async function (req: Request<{ id: string }>, res: Response) {
+    const orgId = toValidId(req.params.id);
+    const { followers, ...org } = await OrgManager.getOrgById(orgId);
+    const username = res.locals.user?.username;
+    const follower = username
+      ? (followers.find((f) => f.user.username === username) ?? null)
+      : null;
+    return res.json({
+      org: {
+        ...omitKeys(org, "imgSetId", "listId"),
+        followerCount: followers.length,
+        isFollowedByUser: !!follower,
+        isSubscribedByUser: follower?.emails ?? false,
+      },
+    });
+  },
+);
 
 /** GET /
  *  Returns a list of all orgs without submodel data
@@ -177,34 +180,42 @@ router.put(
   },
 );
 
-router.put("/:id/follow", ensureLoggedIn, async (req, res) => {
-  const username = toValidUsername(res);
-  const user = await UserManager.getUser(username);
-  const orgId = toValidId(req.params.id);
+router.put(
+  "/:id/follow",
+  ensureLoggedIn,
+  async (req: Request<{ id: string }>, res) => {
+    const username = toValidUsername(res);
+    const user = await UserManager.getUser(username);
+    const orgId = toValidId(req.params.id);
 
-  const subscribe = !!req.body.subscribe;
+    const subscribe = !!req.body.subscribe;
 
-  await OrgManager.follow(orgId, user.id, subscribe);
+    await OrgManager.follow(orgId, user.id, subscribe);
 
-  res.json({ following: true, subscribe });
-});
+    res.json({ following: true, subscribe });
+  },
+);
 
-router.put("/:id/unfollow", ensureLoggedIn, async (req, res) => {
-  const username = toValidUsername(res);
-  const user = await UserManager.getUser(username);
-  const orgId = toValidId(req.params.id);
+router.put(
+  "/:id/unfollow",
+  ensureLoggedIn,
+  async (req: Request<{ id: string }>, res) => {
+    const username = toValidUsername(res);
+    const user = await UserManager.getUser(username);
+    const orgId = toValidId(req.params.id);
 
-  await OrgManager.unfollow(orgId, user.id);
+    await OrgManager.unfollow(orgId, user.id);
 
-  res.json({ following: false });
-});
+    res.json({ following: false });
+  },
+);
 
 /** Newsletters */
 
 router.get(
   "/:id/newsletters",
   ensureMatchingOrganizerOrAdmin,
-  async (req, res) => {
+  async (req: Request<{ id: string }>, res) => {
     const orgId = toValidId(req.params.id);
 
     const manager = new NewsletterManager(orgId);
@@ -216,7 +227,7 @@ router.get(
   router.post(
     "/:id/newsletters",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string }>, res) => {
       const orgId = toValidId(req.params.id);
 
       const { subject, text } = req.body;
@@ -234,7 +245,7 @@ router.get(
   router.get(
     "/:id/newsletters/:newsletterId",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string; newsletterId: string }>, res) => {
       const orgId = toValidId(req.params.id);
       const newsletterId = toValidId(req.params.newsletterId);
 
@@ -248,7 +259,7 @@ router.get(
   router.put(
     "/:id/newsletters/:newsletterId",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string; newsletterId: string }>, res) => {
       const orgId = toValidId(req.params.id);
       const newsletterId = toValidId(req.params.newsletterId);
 
@@ -271,7 +282,7 @@ router.get(
   router.delete(
     "/:id/newsletters/:newsletterId",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string; newsletterId: string }>, res) => {
       const orgId = toValidId(req.params.id);
       const newsletterId = toValidId(req.params.newsletterId);
 
@@ -285,7 +296,7 @@ router.get(
   router.post(
     "/:id/newsletters/:newsletterId/test",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string; newsletterId: string }>, res) => {
       const orgId = toValidId(req.params.id);
       const newsletterId = toValidId(req.params.newsletterId);
       const { testEmails } = req.body;
@@ -302,7 +313,7 @@ router.get(
   router.post(
     "/:id/newsletters/:newsletterId/send",
     ensureMatchingOrganizerOrAdmin,
-    async (req, res) => {
+    async (req: Request<{ id: string; newsletterId: string }>, res) => {
       const orgId = toValidId(req.params.id);
       const newsletterId = toValidId(req.params.newsletterId);
 

@@ -8,7 +8,7 @@ import { Tag } from "../types";
 import { DateTime } from "luxon";
 
 type Props<T> = {
-  children: React.ReactNode;
+  children: React.ReactElement;
   larp: T;
   onSubmitCallback: (formData: T) => Promise<void>;
 };

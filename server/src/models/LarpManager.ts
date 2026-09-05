@@ -1,10 +1,16 @@
-import { prisma } from "../prismaSingleton";
-import { Larp, LarpForCreate, LarpForUpdate, LarpQuery } from "../types";
-import { BadRequestError, NotFoundError } from "../utils/expressError";
-import { Tag } from "../types";
-import ImageHandler from "../utils/imageHandler";
-import { Prisma, TicketStatus } from "@prisma/client";
-import { deleteMultiple } from "../api/s3";
+import { prisma } from "../prismaSingleton.ts";
+import type {
+  Larp,
+  LarpForCreate,
+  LarpForUpdate,
+  LarpQuery,
+  Tag,
+} from "../types/index.ts";
+import { BadRequestError, NotFoundError } from "../utils/expressError.ts";
+import ImageHandler from "../utils/imageHandler.ts";
+import type { Prisma } from "../generated/prisma/client.ts";
+import { TicketStatus } from "../generated/prisma/enums.ts";
+import { deleteMultiple } from "../api/s3.ts";
 
 const LARP_INCLUDE_OBJ = {
   tags: true,

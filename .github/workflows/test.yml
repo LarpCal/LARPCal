@@ -1,4 +1,4 @@
-name: Jest Tests
+name: Vitest Tests
 
 on:
   push:
@@ -10,15 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
+        uses: actions/setup-node@v7
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Prisma types
+        run: npm -w server run build
+
       - name: Run tests
         run: npm test
+
+env:
+  SECRET_KEY: secret
+  BREVO_ADMIN_LIST_ID: 1
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/larpcal

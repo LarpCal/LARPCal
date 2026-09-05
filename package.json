@@ -14,8 +14,8 @@
     "dev:server": "npm -w server run dev",
     "dev:client": "npm -w client run dev",
     "dev": "concurrently --names server,client -c auto npm:dev:server npm:dev:client",
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}\" \"*.json\"",
+    "lint": "oxlint",
+    "format": "oxfmt",
     "test": "npm -w server run test",
     "typecheck": "concurrently --raw npm:typecheck:server npm:typecheck:client",
     "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
@@ -28,26 +28,36 @@
     "client"
   ],
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@tanstack/eslint-plugin-query": "^5.91.2",
-    "concurrently": "^9.2.1",
-    "eslint": "^9.35.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.4.0",
+    "@tanstack/eslint-plugin-query": "^5.102.8",
+    "concurrently": "^10.0.5",
+    "globals": "^17.12.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0"
+    "lint-staged": "^17.5.0",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "typescript": "^7.0.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "deepmerge-ts": "^8.0.2",
+    "mysql2": "^3.24.3"
   },
   "lint-staged": {
-    "{server,client}/**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}": "prettier --write",
-    "**/*.{js,mjs,ts,tsx}": "eslint"
+    "{server,client}/**/*.{js,cjs,css,ts,tsx,scss,json,md,yml}": "oxfmt",
+    "**/*.{js,mjs,ts,tsx}": "oxlint"
   },
   "prettier": {
     "semi": true,
     "singleQuote": false
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "@prisma/client@5.22.0": true,
+    "@parcel/watcher": false,
+    "fsevents": false,
+    "@prisma/engines@7.10.0": true,
+    "prisma@7.10.0": true
   }
 }
