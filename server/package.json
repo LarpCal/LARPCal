@@ -34,23 +34,21 @@
     "sharp": "^0.35.4"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
     "@tsconfig/node-ts": "^23.6.4",
     "@tsconfig/node26": "^26.0.1",
-    "@types/bcrypt": "^5.0.2",
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/markdown-it": "^14.1.2",
-    "@types/multer": "^1.4.11",
-    "@types/node": "^20.14.2",
-    "@types/supertest": "^6.0.2",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.4.1",
+    "@types/supertest": "^7.2.1",
     "prettier": "^3.6.2",
     "prisma": "^5.22.0",
     "supertest": "^7.0.0",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11",
+    "vitest": "^5.0.0",
     "vitest-mock-extended": "^5.1.1"
   }
 }
