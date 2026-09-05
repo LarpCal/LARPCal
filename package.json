@@ -28,7 +28,6 @@
     "client"
   ],
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.102.6",
     "concurrently": "^9.2.1",
     "globals": "^16.4.0",
     "husky": "^9.1.7",

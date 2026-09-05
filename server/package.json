@@ -7,9 +7,8 @@
     "build": "prisma generate --no-hints && tsc",
     "start": "node dist/server.js",
     "dev": "tsc && nodemon",
-    "test": "NODE_ENV=test prisma migrate deploy && jest",
-    "buildtest": "NODE_ENV=test prisma migrate deploy && npm run build && jest",
-    "format": "prettier --write \"src/**/*.{ts,json}\" \"*.json\" \"prisma/*.js\""
+    "test": "NODE_ENV=test prisma migrate deploy && vitest",
+    "buildtest": "NODE_ENV=test prisma migrate deploy && npm run build && vitest"
   },
   "nodemonConfig": {
     "watch": [
@@ -22,13 +21,10 @@
     ],
     "exec": "npm run build && node dist/server.js"
   },
-  "jest": {
-    "clearMocks": true
-  },
   "author": "",
   "license": "ISC",
   "prisma": {
-    "seed": "tsx src/scripts/seed.ts"
+    "seed": "node src/scripts/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.621.0",
@@ -55,17 +51,16 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.14.2",
     "@types/supertest": "^6.0.2",
-    "jest": "^29.7.0",
-    "jest-mock-extended": "^3.0.7",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^5.21.0",
     "supertest": "^7.0.0",
     "tsx": "^4.20.6",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11",
+    "vitest-mock-extended": "^5.1.1"
   }
 }
