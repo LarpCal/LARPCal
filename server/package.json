@@ -14,13 +14,11 @@
   },
   "author": "",
   "license": "ISC",
-  "prisma": {
-    "seed": "node src/scripts/seed.ts"
-  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1127.0",
     "@getbrevo/brevo": "^3.0.1",
-    "@prisma/client": "^5.22.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "axios": "^1.20.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -45,7 +43,7 @@
     "@types/node": "^26.4.1",
     "@types/supertest": "^7.2.1",
     "prettier": "^3.6.2",
-    "prisma": "^5.22.0",
+    "prisma": "^7.10.0",
     "supertest": "^7.0.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.0",

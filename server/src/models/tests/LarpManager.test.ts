@@ -5,7 +5,7 @@ const mockPrisma = prisma as unknown as DeepMockProxy<PrismaClient>;
 import LarpManager from "../LarpManager";
 import { testLarp, testLarpForCreate } from "../../test/testLarpData";
 import { DeepMockProxy } from "vitest-mock-extended";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma/client.ts";
 
 describe("Test post events/", function () {
   test("Works", async function () {

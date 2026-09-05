@@ -8,7 +8,8 @@ import type {
 } from "../types/index.ts";
 import { BadRequestError, NotFoundError } from "../utils/expressError.ts";
 import ImageHandler from "../utils/imageHandler.ts";
-import { type Prisma, TicketStatus } from "@prisma/client";
+import type { Prisma } from "../generated/prisma/client.ts";
+import { TicketStatus } from "../generated/prisma/enums.ts";
 import { deleteMultiple } from "../api/s3.ts";
 
 const LARP_INCLUDE_OBJ = {

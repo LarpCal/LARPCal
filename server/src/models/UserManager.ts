@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../generated/prisma/client.ts";
 
 import { prisma } from "../prismaSingleton.ts";
 import { BCRYPT_WORK_FACTOR } from "../config.ts";

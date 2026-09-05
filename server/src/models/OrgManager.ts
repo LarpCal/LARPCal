@@ -7,7 +7,7 @@ import type {
 import { BadRequestError, NotFoundError } from "../utils/expressError.ts";
 import ImageHandler from "../utils/imageHandler.ts";
 import { deleteMultiple } from "../api/s3.ts";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../generated/prisma/client.ts";
 import { NewsletterManager } from "./NewsletterManager.ts";
 
 const ORG_INCLUDE_OBJ = {

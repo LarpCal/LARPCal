@@ -1,10 +1,12 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma/client.ts";
 import UserManager from "../models/UserManager.ts";
 import OrgManager from "../models/OrgManager.ts";
 import LarpManager from "../models/LarpManager.ts";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 const TEST_PASSWORD = "test123!";
 

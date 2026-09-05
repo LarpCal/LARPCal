@@ -1,5 +1,5 @@
 import * as Brevo from "@getbrevo/brevo";
-import type { Newsletter, User } from "@prisma/client";
+import type { Newsletter, User } from "../generated/prisma/client.ts";
 import { AxiosError } from "axios";
 import markdownit from "markdown-it";
 
