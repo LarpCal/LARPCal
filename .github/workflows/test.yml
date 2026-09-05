@@ -1,4 +1,4 @@
-name: Jest Tests
+name: Vitest Tests
 
 on:
   push:
@@ -23,3 +23,6 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+env:
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/larpcal
