@@ -25,7 +25,7 @@ jobs:
         run: npm run lint
 
       - name: Run format check
-        run: npm run format
+        run: npm run format -- --check
 
       - name: Run typecheck
         run: npm run typecheck
