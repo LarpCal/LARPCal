@@ -29,6 +29,7 @@ import NewsletterEditPage from "./views/NewsletterEditPage";
 import NewsletterPreviewPage from "./views/NewsletterPreview";
 import { useUser } from "./hooks/useUser";
 import { FC } from "react";
+import MyLarpsPage from "./views/MyLarpsPage";
 
 function RoutesList() {
   const { user } = useUser();
@@ -62,6 +63,7 @@ function RoutesList() {
       />
       <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
+      <Route path="/my-larps" element={<MyLarpsPage />} />
       <Route path="/following" element={<FollowedOrgs />} />
       <Route path="/auth/login" element={<RedirectToHome allowRedirect />} />
     </>
