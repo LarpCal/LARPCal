@@ -30,6 +30,7 @@ import NewsletterPreviewPage from "./views/NewsletterPreview";
 import { useUser } from "./hooks/useUser";
 import { FC } from "react";
 import MyLarpsPage from "./views/MyLarpsPage";
+import { ErrorPage } from "./views/ErrorPage";
 
 function RoutesList() {
   const { user } = useUser();
@@ -95,7 +96,7 @@ function RoutesList() {
         <Route path="/events/:id" element={<LarpDetailPage />} />
         <Route path="/newsletters/:id" element={<NewsletterPreviewPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="*" element={<HomePage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );
