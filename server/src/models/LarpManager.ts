@@ -282,7 +282,7 @@ class LarpManager {
    * @returns the updated larp
    */
   static async updateLarpImage(file: Express.Multer.File, id: number) {
-    const larp = await LarpManager.getLarpById(+id);
+    const larp = await LarpManager.getLarpById(id);
     const s3Path = `larpImage/larp-${id}`;
     const basePath = `https://${BUCKET_NAME}.s3.amazonaws.com/${s3Path}`;
     const uuid = crypto.randomUUID();

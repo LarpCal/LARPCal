@@ -7,8 +7,13 @@ import userUpdateSchema from "../schemas/userUpdate.json" with { type: "json" };
 
 import { BadRequestError } from "../utils/expressError.ts";
 import { createToken } from "../utils/tokens.ts";
-import { ensureAdmin, ensureCorrectUserOrAdmin } from "../middleware/auth.ts";
+import {
+  ensureAdmin,
+  ensureCorrectUserOrAdmin,
+  ensureLoggedIn,
+} from "../middleware/auth.ts";
 import UserManager from "../models/UserManager.ts";
+import LarpManager from "../models/LarpManager.ts";
 
 /** POST / { user }  => { user, token }
  *
@@ -68,6 +73,42 @@ router.get(
         ...user,
         following,
       },
+    });
+  },
+);
+
+router.get(
+  "/:username/larps",
+  ensureLoggedIn,
+  async (req: Request<{ username: string }>, res) => {
+    const larps = await LarpManager.getAllLarps();
+    const future = [];
+    const past = [];
+
+    const now = new Date();
+    for (const larp of larps) {
+      if (larp.end >= now) {
+        future.push(larp);
+      } else {
+        past.push(larp);
+      }
+    }
+
+    res.json({
+      future,
+      past,
+    });
+  },
+);
+
+router.put(
+  "/:username/larps",
+  ensureCorrectUserOrAdmin,
+  async (req: Request<{ username: string }>, res) => {
+    return res.json({
+      visible: true,
+      future: false,
+      past: true,
     });
   },
 );

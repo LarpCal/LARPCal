@@ -9,13 +9,18 @@ import {
 import readMultipart from "../middleware/multer.ts";
 const router = express.Router();
 
-import { BadRequestError, ExpressError } from "../utils/expressError.ts";
+import {
+  BadRequestError,
+  ExpressError,
+  ForbiddenError,
+} from "../utils/expressError.ts";
 
 import LarpManager from "../models/LarpManager.ts";
 
 import jsonschema from "jsonschema";
 import larpForCreateSchema from "../schemas/larpForCreate.json" with { type: "json" };
 import larpForUpdateSchema from "../schemas/larpForUpdate.json" with { type: "json" };
+import { toValidId } from "../utils/helpers.ts";
 
 /** POST /
  *  Creates and returns a new larp record
@@ -149,15 +154,46 @@ router.put(
   "/:id/image",
   ensureOwnerOrAdmin,
   readMultipart("image"),
-  async function (req, res) {
+  async function (req: Request<{ id: string }>, res: Response) {
     if (!req.file) {
       throw new BadRequestError("Please attach an image");
     }
+
+    const id = toValidId(req.params.id);
+
     try {
-      const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
+      const larp = await LarpManager.updateLarpImage(req.file, id);
       return res.json(larp);
     } catch {
       throw new ExpressError("Image upload failed");
+    }
+  },
+);
+
+router.put(
+  "/:id/attend",
+  ensureLoggedIn,
+  protectUnpublished,
+  async (req: Request<{ id: string }>, res: Response) => {
+    const id = toValidId(req.params.id);
+    const username = res.locals.user?.username;
+    if (!username) {
+      throw new ForbiddenError();
+    }
+
+    try {
+      const larp = await LarpManager.getLarpById(id);
+
+      return res.json({
+        id: larp.id,
+        attendance: "joined",
+        attendees: {
+          playing: 0,
+          waiting: 0,
+        },
+      });
+    } catch {
+      throw new ExpressError("Could not change attendance");
     }
   },
 );
