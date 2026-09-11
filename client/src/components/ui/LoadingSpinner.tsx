@@ -5,7 +5,12 @@ import "./LoadingSpinner.scss";
 
 function LoadingSpinner() {
   return (
-    <Box className="LoadingSpinner" justifyContent="center" alignItems="center">
+    <Box
+      className="LoadingSpinner"
+      justifyContent="center"
+      alignItems="center"
+      flexGrow={1}
+    >
       <CircularProgress size="6rem" />
     </Box>
   );

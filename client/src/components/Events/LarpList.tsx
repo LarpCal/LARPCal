@@ -54,6 +54,7 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
   return (
     <>
       {pagination}
+
       <Grid
         container
         flexWrap={"wrap"}
@@ -62,15 +63,12 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
         justifyContent="center"
         columnSpacing={2}
         rowSpacing={4}
-        // sx={{ padding: '1rem' }}
       >
-        {larps.slice(pageStart, pageEnd).map((larp) => {
-          return (
-            <Grid item key={larp.id} xs={12} sm={6} md={4} lg={4} xl={4}>
-              <LarpCard larp={larp} />
-            </Grid>
-          );
-        })}
+        {larps.slice(pageStart, pageEnd).map((larp) => (
+          <Grid item key={larp.id} xs={12} sm={6} md={4} lg={4} xl={4}>
+            <LarpCard larp={larp} />
+          </Grid>
+        ))}
       </Grid>
       {pagination}
     </>
