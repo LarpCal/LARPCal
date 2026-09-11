@@ -95,6 +95,7 @@ router.get(
     }
 
     res.json({
+      visible: true,
       future,
       past,
     });

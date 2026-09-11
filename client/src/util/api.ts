@@ -15,6 +15,7 @@ import {
   UserLoginData,
   Newsletter,
   NewsletterForCreate,
+  UserLarpVisibility,
 } from "../types";
 import { JsonToLarp } from "./typeConverters";
 
@@ -139,8 +140,13 @@ class LarpAPI {
   static async getUserLarps(username: string) {
     const response = await this.request(`users/${username}/larps`);
     return {
-      future: response.future as Larp[] | null,
-      past: response.past as Larp[] | null,
+      visible: !!response.visible,
+      future: Array.isArray(response.future)
+        ? (response.future as LarpAsJSON[]).map(JsonToLarp)
+        : null,
+      past: Array.isArray(response.past)
+        ? (response.past as LarpAsJSON[]).map(JsonToLarp)
+        : null,
     };
   }
 
@@ -161,6 +167,13 @@ class LarpAPI {
   static async updateUser(data: UserForUpdate, username: string) {
     const responseData = await this.request(`users/${username}`, data, "patch");
     return responseData.user;
+  }
+
+  static updateUserLarpVisibility(
+    data: UserLarpVisibility,
+    username: string,
+  ): Promise<UserLarpVisibility> {
+    return this.request(`users/${username}/larps`, data, "put");
   }
 
   /**  DELETE  */
