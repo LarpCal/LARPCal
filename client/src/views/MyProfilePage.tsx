@@ -110,7 +110,7 @@ export default function MyProfilePage() {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={isValid ? false : true}
+              disabled={!isValid}
             >
               Update Account
             </Button>

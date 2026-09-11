@@ -8,9 +8,10 @@ import { Larp } from "../../types";
 type LarpListProps = {
   larps: Larp[];
   recordsPerPage?: number;
+  noPagination?: boolean;
 };
 
-function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
+function LarpList({ larps, recordsPerPage = 24, noPagination }: LarpListProps) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const q = query.get("q");
@@ -20,7 +21,7 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
   const pageEnd = page * recordsPerPage;
   const pageCount = Math.ceil(larps.length / recordsPerPage);
 
-  const pagination = (
+  const pagination = !noPagination && (
     <Pagination
       count={pageCount}
       page={page}
@@ -57,10 +58,8 @@ function LarpList({ larps, recordsPerPage = 24 }: LarpListProps) {
 
       <Grid
         container
-        flexWrap={"wrap"}
+        flexWrap="wrap"
         spacing={2}
-        margin="auto"
-        justifyContent="center"
         columnSpacing={2}
         rowSpacing={4}
       >
