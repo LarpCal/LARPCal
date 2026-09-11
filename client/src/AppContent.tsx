@@ -5,17 +5,14 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import NavBar from "./components/NavBar";
 import RoutesList from "./RoutesList";
 import Footer from "./components/Footer";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 export default function AppContent() {
   const { loading, error } = useContext(userContext);
 
   if (loading) {
-    return (
-      <Box className="App-loading" width="100%">
-        <CircularProgress size="6rem" />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
