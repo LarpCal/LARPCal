@@ -136,6 +136,14 @@ class LarpAPI {
     return response.user;
   }
 
+  static async getUserLarps(username: string) {
+    const response = await this.request(`users/${username}/larps`);
+    return {
+      future: response.future as Larp[] | null,
+      past: response.past as Larp[] | null,
+    };
+  }
+
   //get all users
   static async getAllUsers(): Promise<PublicUser[]> {
     const response = await this.request("users/");
