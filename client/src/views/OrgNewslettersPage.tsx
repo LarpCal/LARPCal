@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   List,
   ListItem,
@@ -59,7 +58,7 @@ export default function OrgNewslettersPage() {
   }
 
   return (
-    <Box m="2rem">
+    <>
       {isError && (
         <ToastMessage
           title="Sorry, there was a problem fetching this record"
@@ -115,7 +114,7 @@ export default function OrgNewslettersPage() {
           ))}
         </List>
       )}
-    </Box>
+    </>
   );
 }
 
