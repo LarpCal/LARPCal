@@ -24,13 +24,15 @@ export const BodyText: FC<{ text?: string }> = ({ text }) => {
       ],
       components: {
         p: ({ children }) => <Typography paragraph>{children}</Typography>,
-        a: ({ children, href, ...props }) =>
+        a: ({ children, href, ref, ...props }) =>
           href ? (
             <TextLink {...props} to={href}>
               {children}
             </TextLink>
           ) : (
-            <a {...props}>{children}</a>
+            <a {...props} ref={ref}>
+              {children}
+            </a>
           ),
         h1: ({ children }) => <Typography variant="h4">{children}</Typography>,
         h2: ({ children }) => <Typography variant="h5">{children}</Typography>,

@@ -7,7 +7,7 @@ import {
 } from "../types";
 
 type Props<T> = {
-  children: React.ReactElement;
+  children: React.ReactNode;
   org: T;
   schema: unknown;
   onSubmitCallback: (formData: T) => Promise<void>;

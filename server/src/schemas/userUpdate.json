@@ -27,5 +27,6 @@
       "default": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "required": ["email"]
 }

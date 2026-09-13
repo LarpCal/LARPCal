@@ -7,8 +7,7 @@ type SelectInputProps = FieldProps & {
 };
 
 interface test
-  extends
-    FieldProps,
+  extends FieldProps,
     Omit<SelectInputProps, "name" | "value" | "onChange" | "onBlur"> {}
 
 function FormikSelectInput({ form, field, options, label, ...props }: test) {

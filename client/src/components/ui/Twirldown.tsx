@@ -1,10 +1,10 @@
-import { ReactElement, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
 type TwirldownProps = {
-  children: ReactElement;
+  children: ReactNode;
   title: string;
 };
 

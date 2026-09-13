@@ -1,7 +1,5 @@
-import { BrevoClient } from "@getbrevo/brevo";
-import type { CreateEmailCampaignRequest } from "@getbrevo/brevo/emailCampaigns";
-import type { UpdateContactRequest } from "@getbrevo/brevo/contacts";
-import type { Newsletter, User } from "../generated/prisma/client.ts";
+import * as Brevo from "@getbrevo/brevo";
+import { Newsletter, User } from "@prisma/client";
 import { AxiosError } from "axios";
 import markdownit from "markdown-it";
 
@@ -10,25 +8,21 @@ import {
   BREVO_API_KEY,
   BREVO_SENDER_EMAIL,
   CORS_URL,
-} from "../config.ts";
-import { prisma } from "../prismaSingleton.ts";
-import { omitKeys, toValidId } from "../utils/helpers.ts";
+} from "../config";
+import { prisma } from "../prismaSingleton";
+import { omitKeys, toValidId } from "../utils/helpers";
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
-} from "../utils/expressError.ts";
+} from "../utils/expressError";
 
 type AnyUserId = number | string | User;
 
 const md = markdownit();
 
 export class NewsletterManager {
-  private orgId: number | null;
-
-  public constructor(orgId: number | null = null) {
-    this.orgId = orgId;
-  }
+  public constructor(private orgId: number | null = null) {}
 
   public async getNewsletters() {
     const newsletters = await prisma.newsletter.findMany({
@@ -90,16 +84,14 @@ export class NewsletterManager {
 
     const params = await this.getCampaignParams(newsletter);
 
-    const instance = this.getBrevoClient();
+    const instance = new Brevo.EmailCampaignsApi();
+    instance.setApiKey(Brevo.EmailCampaignsApiApiKeys.apiKey, this.getApiKey());
 
     try {
-      const { id: campaignId } =
-        await instance.emailCampaigns.createEmailCampaign(params);
-      await instance.emailCampaigns.sendTestEmail({
-        campaignId,
-        body: { emailTo: testEmails },
-      });
-      await instance.emailCampaigns.deleteEmailCampaign({ campaignId });
+      const res = await instance.createEmailCampaign(params);
+      const campaignId = res.body.id;
+      await instance.sendTestEmail(campaignId, { emailTo: testEmails });
+      await instance.deleteEmailCampaign(campaignId);
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         console.error(
@@ -119,7 +111,8 @@ export class NewsletterManager {
       throw new BadRequestError("Organizations cannot force send newsletters");
     }
 
-    const instance = this.getBrevoClient();
+    const instance = new Brevo.EmailCampaignsApi();
+    instance.setApiKey(Brevo.EmailCampaignsApiApiKeys.apiKey, this.getApiKey());
 
     const sentAt = new Date(Date.now() + 60 * 1000); // 1 minutes from now for processing time.
 
@@ -127,8 +120,8 @@ export class NewsletterManager {
     params.scheduledAt = sentAt.toISOString();
 
     try {
-      const res = await instance.emailCampaigns.createEmailCampaign(params);
-      console.log("Sent Brevo campaign with ID:", res.id);
+      const res = await instance.createEmailCampaign(params);
+      console.log("Sent Brevo campaign with ID:", res.body.id);
 
       return prisma.newsletter.update({
         where: { id: newsletterId },
@@ -158,9 +151,10 @@ export class NewsletterManager {
       return;
     }
 
-    const instance = this.getBrevoClient();
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
-    await instance.contacts.deleteList({ listId: toValidId(org.listId) });
+    await instance.deleteList(toValidId(org.listId));
   }
 
   public async subscribeUser(userId: AnyUserId) {
@@ -203,13 +197,11 @@ export class NewsletterManager {
       return;
     }
 
-    const instance = this.getBrevoClient();
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
     try {
-      await instance.contacts.deleteContact({
-        identifier: user.newsletterRemoteId,
-        identifierType: "contact_id",
-      });
+      await instance.deleteContact(user.newsletterRemoteId);
       await prisma.user.update({
         where: { username },
         data: { newsletterRemoteId: null },
@@ -254,8 +246,8 @@ export class NewsletterManager {
 
   private async getCampaignParams(
     newsletter: Newsletter,
-  ): Promise<CreateEmailCampaignRequest> {
-    const params: CreateEmailCampaignRequest = {
+  ): Promise<Brevo.CreateEmailCampaign> {
+    const params: Brevo.CreateEmailCampaign = {
       sender: {
         name: "LARPCal",
         email: BREVO_SENDER_EMAIL ?? "noreply@larpcal.com",
@@ -318,18 +310,18 @@ export class NewsletterManager {
       return listId;
     }
 
-    const instance = this.getBrevoClient();
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
-    const { folders } = await instance.contacts.getFolders({
-      limit: 1,
-      offset: 0,
-    });
+    const {
+      body: { folders },
+    } = await instance.getFolders(1, 0);
     const folderId = folders?.at(0)?.id;
     if (!folderId) {
       throw new Error("No folder found in Brevo account");
     }
 
-    const list = await instance.contacts.createList({
+    const { body: list } = await instance.createList({
       name: `${org.orgName} Subscribers`,
       folderId,
     });
@@ -355,19 +347,17 @@ export class NewsletterManager {
     return user;
   }
 
-  private async createOrUpdateContact(
-    user: User,
-    data: Omit<UpdateContactRequest, "identifier">,
-  ) {
-    const instance = this.getBrevoClient();
+  private async createOrUpdateContact(user: User, data: Brevo.UpdateContact) {
+    const instance = new Brevo.ContactsApi();
+    instance.setApiKey(Brevo.ContactsApiApiKeys.apiKey, this.getApiKey());
 
     if (!user.newsletterRemoteId) {
-      const body = await instance.contacts.createContact({
+      const { body } = await instance.createContact({
         email: user.email,
-        ext_id: user.id.toString(),
+        extId: user.id.toString(),
         ...data,
       });
-      const remoteId = body?.id;
+      const remoteId = body.id;
       if (!remoteId) {
         throw new Error("Failed to create contact in Brevo");
       }
@@ -376,15 +366,7 @@ export class NewsletterManager {
         data: { newsletterRemoteId: remoteId.toString() },
       });
     } else {
-      await instance.contacts.updateContact({
-        identifier: user.newsletterRemoteId,
-        identifierType: "contact_id",
-        ...data,
-      });
+      await instance.updateContact(user.newsletterRemoteId, data);
     }
-  }
-
-  private getBrevoClient() {
-    return new BrevoClient({ apiKey: this.getApiKey() });
   }
 }

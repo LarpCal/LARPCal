@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config.ts";
-import type { PublicUser, UserToken } from "../types/index.ts";
+import { SECRET_KEY } from "../config";
+import { PublicUser, UserToken } from "../types";
 
 /** return signed JWT {username, isAdmin} from user data. */
 

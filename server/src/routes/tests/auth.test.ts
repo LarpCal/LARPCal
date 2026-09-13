@@ -1,14 +1,14 @@
+import { describe, test, jest, expect } from "@jest/globals";
 import "../../config"; //this loads the test database
 import request from "supertest";
 import app from "../../app";
 import UserManager from "../../models/UserManager";
 import { testUser } from "../../test/testUserData";
-import { vi } from "vitest";
 
 /************************************** POST /auth/token */
 
 describe("POST /auth/token", function () {
-  const mockAuthenticate = vi.spyOn(UserManager, "authenticate");
+  const mockAuthenticate = jest.spyOn(UserManager, "authenticate");
 
   test("works", async function () {
     mockAuthenticate.mockResolvedValueOnce(testUser);
@@ -57,10 +57,10 @@ describe("POST /auth/token", function () {
 // /************************************** POST /auth/register */
 
 describe("POST /auth/register", function () {
-  const mockRegister = vi.spyOn(UserManager, "register");
+  const mockRegister = jest.spyOn(UserManager, "register");
 
   test("works for anon", async function () {
-    mockRegister.mockResolvedValue(testUser);
+    mockRegister.mockResolvedValueOnce(testUser);
 
     const resp = await request(app).post("/auth/register").send({
       username: testUser.username,
@@ -79,6 +79,7 @@ describe("POST /auth/register", function () {
       lastName: "testUser-last",
       password: "testUser-password",
       email: "testUser@test.com",
+      isAdmin: false,
     });
   });
 

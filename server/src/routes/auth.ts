@@ -1,28 +1,28 @@
-import { type Request, type Response } from "express";
+import { Request, Response } from "express";
 import express from "express";
 const router = express.Router();
 
 import jsonschema from "jsonschema";
-import passwordResetSchema from "../schemas/passwordReset.json" with { type: "json" };
-import userAuthSchema from "../schemas/userAuth.json" with { type: "json" };
-import userRegisterSchema from "../schemas/userRegister.json" with { type: "json" };
+import passwordResetSchema from "../schemas/passwordReset.json";
+import userAuthSchema from "../schemas/userAuth.json";
+import userRegisterSchema from "../schemas/userRegister.json";
 
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
   InputValidationError,
-} from "../utils/expressError.ts";
-import { createToken } from "../utils/tokens.ts";
+} from "../utils/expressError";
+import { createToken } from "../utils/tokens";
 
-import UserManager from "../models/UserManager.ts";
-import type { PasswordResetRequest } from "../types/index.ts";
-import AuthManager from "../models/AuthManager.ts";
+import UserManager from "../models/UserManager";
+import { PasswordResetRequest } from "../types";
+import AuthManager from "../models/AuthManager";
 import * as jwt from "jsonwebtoken";
-import { CORS_URL, SECRET_KEY } from "../config.ts";
-import { sendPasswordResetEmail } from "../utils/emailHandler.ts";
-import { ensureLoggedIn } from "../middleware/auth.ts";
-import { toValidUsername } from "../utils/helpers.ts";
+import { CORS_URL, SECRET_KEY } from "../config";
+import { sendPasswordResetEmail } from "../utils/emailHandler";
+import { ensureLoggedIn } from "../middleware/auth";
+import { toValidUsername } from "../utils/helpers";
 
 router.post("/error", async () => {
   throw new BadRequestError("test error");
@@ -136,7 +136,7 @@ router.patch(
     try {
       jwt.verify(token as string, SECRET_KEY);
     } catch (err) {
-      if (err instanceof Error && err.message === "jwt expired") {
+      if (err.message === "jwt expired") {
         throw new BadRequestError("Sorry - this link has expired.");
       } else {
         throw err;

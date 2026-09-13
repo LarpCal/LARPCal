@@ -28,9 +28,6 @@
     },
     "isAdmin": {
       "type": "boolean"
-    },
-    "subscribed": {
-      "type": "boolean"
     }
   },
   "additionalProperties": false,

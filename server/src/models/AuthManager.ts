@@ -1,6 +1,6 @@
-import { prisma } from "../prismaSingleton.ts";
-import type { PasswordResetRequest } from "../types/index.ts";
-import { NotFoundError } from "../utils/expressError.ts";
+import { prisma } from "../prismaSingleton";
+import { PasswordResetRequest } from "../types";
+import { NotFoundError } from "../utils/expressError";
 
 class AuthManager {
   static async createPasswordResetRequest(
