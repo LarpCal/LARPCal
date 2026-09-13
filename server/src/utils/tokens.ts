@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config.ts";
 import type { PublicUser, UserToken } from "../types/index.ts";
 
