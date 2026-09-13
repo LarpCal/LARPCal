@@ -1,3 +1,4 @@
+import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../app";
 
@@ -9,18 +10,13 @@ import {
   userToken,
 } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
-import { vi } from "vitest";
-
-afterEach(() => {
-  vi.clearAllMocks();
-});
 
 /************************** GET ALL **********************/
 describe("GET users/", function () {
   test("OK", async function () {
     const publicTestUser = omitKeys(testUser, "password");
 
-    const mockedGetAllUsers = vi.spyOn(UserManager, "findAll");
+    const mockedGetAllUsers = jest.spyOn(UserManager, "findAll");
     mockedGetAllUsers.mockResolvedValueOnce([publicTestUser]);
 
     const resp = await request(app)
@@ -38,10 +34,8 @@ describe("GET users/", function () {
 /************************** GET BY ID **********************/
 describe("GET users/:username", function () {
   test("OK", async function () {
-    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);
-    const mockedGetUserFollows = vi.spyOn(UserManager, "getUserFollows");
-    mockedGetUserFollows.mockResolvedValueOnce([]);
 
     const resp = await request(app)
       .get(`/users/${testUser.username}`)
@@ -50,10 +44,7 @@ describe("GET users/:username", function () {
     expect(resp.statusCode).toEqual(200);
     expect(mockedGetUser).toHaveBeenCalledTimes(1);
     expect(resp.body).toEqual({
-      user: {
-        ...testUser,
-        following: [],
-      },
+      user: testUser,
     });
   });
 });
@@ -62,7 +53,7 @@ describe("GET users/:username", function () {
 describe("POST users/", function () {
   test("OK", async function () {
     //mock create
-    const mockedRegister = vi.spyOn(UserManager, "register");
+    const mockedRegister = jest.spyOn(UserManager, "register");
     mockedRegister.mockResolvedValueOnce(testAdminUser);
     const createData = omitKeys(testAdminUser, "id", "organization");
 
@@ -82,14 +73,14 @@ describe("POST users/", function () {
 describe("PATCH users/:username", function () {
   test("OK", async function () {
     //mock lookup for auth middleware
-    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);
 
     //mock update
     const updateData = {
       firstName: "testUser-updatedFirst",
     };
-    const mockedUpdateUser = vi.spyOn(UserManager, "updateUser");
+    const mockedUpdateUser = jest.spyOn(UserManager, "updateUser");
     mockedUpdateUser.mockResolvedValueOnce({
       ...testUser,
       firstName: "testUser-updatedFirst",
@@ -115,11 +106,11 @@ describe("PATCH users/:username", function () {
 describe("DELETE users/:username", function () {
   test("OK", async function () {
     //mock lookup for auth middleware
-    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    const mockedGetUser = jest.spyOn(UserManager, "getUser");
     mockedGetUser.mockResolvedValueOnce(testUser);
 
     //mock delete
-    const mockedDeleteUser = vi.spyOn(UserManager, "deleteUser");
+    const mockedDeleteUser = jest.spyOn(UserManager, "deleteUser");
     mockedDeleteUser.mockResolvedValueOnce(testUser.username);
 
     const resp = await request(app)

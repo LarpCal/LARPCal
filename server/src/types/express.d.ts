@@ -1,4 +1,4 @@
-import type { UserToken } from "./index.ts";
+import { UserToken } from ".";
 
 declare global {
   namespace Express {

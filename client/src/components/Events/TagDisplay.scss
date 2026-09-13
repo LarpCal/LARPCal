@@ -1,9 +1,9 @@
-@use "../../styles/colors";
+@import "../../styles/colors";
 
 .tagDisplay {
   padding: 0.5rem;
   border-radius: 5px;
-  background-color: colors.$pale-blue;
+  background-color: $pale-blue;
   margin: 2px;
   line-height: 0;
 }

@@ -1,4 +1,4 @@
-@use "../styles/colors";
+@import "../styles/colors";
 
 .NavBar {
   width: 100%;
@@ -74,7 +74,7 @@
     }
 
     input {
-      color: colors.$dark;
+      color: $dark;
     }
   }
 }
@@ -94,12 +94,12 @@
 
   .menuItem {
     // background-color: $dark;
-    color: colors.$secondary;
+    color: $secondary;
   }
 
   .menuItem:hover,
   .menuItem:focus {
-    background-color: colors.$secondary;
-    color: colors.$dark;
+    background-color: $secondary;
+    color: $dark;
   }
 }

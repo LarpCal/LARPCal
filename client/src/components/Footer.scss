@@ -1,19 +1,19 @@
-@use "../styles/colors";
+@import "../styles/colors";
 
 .Footer {
   width: 100%;
   min-height: 3rem;
-  background-color: colors.$dark;
-  color: colors.$pale-blue;
+  background-color: $dark;
+  color: $pale-blue;
 
   .copyright {
-    color: colors.$pale-blue;
+    color: $pale-blue;
     display: box;
     text-align: center;
     padding: 1rem;
 
     a {
-      color: colors.$pale-blue;
+      color: $pale-blue;
       text-decoration: underline;
     }
   }

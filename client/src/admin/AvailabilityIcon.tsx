@@ -1,5 +1,4 @@
 import { TicketStatus } from "../types";
-import type { ReactElement } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleCheck,
@@ -11,7 +10,7 @@ import { Icon, Tooltip } from "@mui/material";
 import { formatTicketStatus } from "../util/utilities";
 
 type RenderIcon = {
-  icon: ReactElement;
+  icon: JSX.Element;
   color: string;
 };
 

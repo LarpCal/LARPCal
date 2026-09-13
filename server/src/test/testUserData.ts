@@ -11,7 +11,6 @@ const testUser: User = {
   email: "testUser@test.com",
   organization: null,
   isAdmin: false,
-  subscribed: false,
 };
 const userToken = createToken(testUser);
 
@@ -24,7 +23,6 @@ const testOrganizerUser: User = {
   email: "testOrganizerUser@test.com",
   organization: testOrganization,
   isAdmin: false,
-  subscribed: false,
 };
 const organizerToken = createToken(testOrganizerUser);
 
@@ -37,7 +35,6 @@ const testAdminUser: User = {
   email: "testAdminUser@test.com",
   organization: null,
   isAdmin: true,
-  subscribed: false,
 };
 const adminToken = createToken(testAdminUser);
 

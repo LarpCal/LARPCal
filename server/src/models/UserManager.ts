@@ -1,21 +1,17 @@
 import bcrypt from "bcrypt";
-import { Prisma } from "../generated/prisma/client.ts";
+import { Prisma } from "@prisma/client";
 
-import { prisma } from "../prismaSingleton.ts";
-import { BCRYPT_WORK_FACTOR } from "../config.ts";
-import type {
-  PublicUser,
-  UserForCreate,
-  UserForUpdate,
-} from "../types/index.ts";
+import { prisma } from "../prismaSingleton";
+import { BCRYPT_WORK_FACTOR } from "../config";
+import { PublicUser, UserForCreate, UserForUpdate } from "../types";
 
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
-} from "../utils/expressError.ts";
-import { omitKeys } from "../utils/helpers.ts";
-import { NewsletterManager } from "./NewsletterManager.ts";
+} from "../utils/expressError";
+import { omitKeys } from "../utils/helpers";
+import { NewsletterManager } from "./NewsletterManager";
 
 const USER_INCLUDE_OBJ = {
   organization: {

@@ -5,8 +5,7 @@ import { DateTime } from "luxon";
 import { getNested } from "../../util/utilities";
 
 interface FormikDateTimePickerProps
-  extends
-    FieldProps,
+  extends FieldProps,
     Omit<
       DateTimePickerProps<DateTime>,
       "name" | "value" | "onChange" | "renderInput"
