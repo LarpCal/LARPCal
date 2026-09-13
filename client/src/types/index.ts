@@ -112,7 +112,6 @@ export type UserForUpdate = Omit<UserForCreate, "username" | "password"> & {
 };
 
 export interface UserLarpVisibility {
-  visible: boolean;
   future: boolean;
   past: boolean;
 }

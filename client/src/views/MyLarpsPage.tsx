@@ -34,6 +34,7 @@ export default function MyLarpsPage() {
       My LARPs
     </Typography>
   );
+
   if (isLoading || !data) {
     return (
       <>
@@ -43,7 +44,7 @@ export default function MyLarpsPage() {
     );
   }
 
-  const { future, past, visible } = data;
+  const { future, past } = data;
 
   return (
     <>
@@ -51,7 +52,6 @@ export default function MyLarpsPage() {
 
       <Formik
         initialValues={{
-          visible,
           future: future !== null,
           past: past !== null,
         }}
@@ -63,11 +63,6 @@ export default function MyLarpsPage() {
               My visibility settings
             </Typography>
             <Stack direction="column" maxWidth="20rem">
-              <FastField
-                component={FormikCheckbox}
-                name="visible"
-                label="Visible in player counts"
-              />
               <FastField
                 component={FormikCheckbox}
                 name="future"

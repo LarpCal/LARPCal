@@ -140,7 +140,6 @@ class LarpAPI {
   static async getUserLarps(username: string) {
     const response = await this.request(`users/${username}/larps`);
     return {
-      visible: !!response.visible,
       future: Array.isArray(response.future)
         ? (response.future as LarpAsJSON[]).map(JsonToLarp)
         : null,

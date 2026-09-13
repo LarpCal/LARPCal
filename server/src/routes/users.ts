@@ -95,7 +95,6 @@ router.get(
     }
 
     res.json({
-      visible: true,
       future,
       past,
     });
@@ -107,7 +106,6 @@ router.put(
   ensureCorrectUserOrAdmin,
   async (req: Request<{ username: string }>, res) => {
     return res.json({
-      visible: true,
       future: false,
       past: true,
     });
