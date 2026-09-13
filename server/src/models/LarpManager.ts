@@ -293,8 +293,8 @@ class LarpManager {
       return attendances
         .map(({ user, status }) => ({
           username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          firstName: user.firstName as string | undefined,
+          lastName: user.lastName as string | undefined,
           status: attendanceStatusToLabel(status),
         }))
         .filter(({ status }) => status !== "none");
