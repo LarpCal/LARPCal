@@ -4,11 +4,18 @@ const router = express.Router();
 import jsonschema from "jsonschema";
 import userForCreateSchema from "../schemas/userForCreate.json" with { type: "json" };
 import userUpdateSchema from "../schemas/userUpdate.json" with { type: "json" };
+import userUpdateVisibilitySchema from "../schemas/userUpdateVisibility.json" with { type: "json" };
 
 import { BadRequestError } from "../utils/expressError.ts";
 import { createToken } from "../utils/tokens.ts";
-import { ensureAdmin, ensureCorrectUserOrAdmin } from "../middleware/auth.ts";
+import {
+  ensureAdmin,
+  ensureCorrectUserOrAdmin,
+  ensureLoggedIn,
+} from "../middleware/auth.ts";
 import UserManager from "../models/UserManager.ts";
+import LarpManager from "../models/LarpManager.ts";
+import type { UserLarpVisibility } from "../types/index.ts";
 
 /** POST / { user }  => { user, token }
  *
@@ -69,6 +76,85 @@ router.get(
         following,
       },
     });
+  },
+);
+
+/**
+ * GET /[username]/larps
+ * Gets a user's LARP attendance
+ */
+router.get(
+  "/:username/larps",
+  ensureLoggedIn,
+  async (req: Request<{ username: string }>, res) => {
+    const { username } = req.params;
+    const user = await UserManager.getUser(req.params.username);
+    const { larpVisibility } = user;
+    if (!larpVisibility.past && !larpVisibility.future) {
+      return res.json({
+        past: null,
+        future: null,
+      });
+    }
+
+    const larps = await LarpManager.getLarpsByUsername({
+      username,
+      ...user.larpVisibility,
+    });
+
+    const future = [];
+    const past = [];
+
+    const now = new Date();
+    for (const larp of larps) {
+      if (larp.end >= now) {
+        future.push(larp);
+      } else {
+        past.push(larp);
+      }
+    }
+
+    res.json({
+      past: larpVisibility.past ? past : null,
+      future: larpVisibility.future ? future : null,
+    });
+  },
+);
+
+/**
+ * PUT /[username]/larps
+ * Updates a user's attendance visibility.
+ */
+router.put(
+  "/:username/larps",
+  ensureCorrectUserOrAdmin,
+  async (
+    req: Request<{ username: string }, UserLarpVisibility, UserLarpVisibility>,
+    res,
+  ) => {
+    const validator = jsonschema.validate(
+      req.body,
+      userUpdateVisibilitySchema,
+      {
+        required: true,
+      },
+    );
+    if (!validator.valid) {
+      const errs = validator.errors.map((e: Error) => e.stack);
+      console.log("validation failed", errs.join(", "));
+      throw new BadRequestError(errs.join(", "));
+    }
+
+    const {
+      params: { username },
+      body,
+    } = req;
+    const user = await UserManager.updateUserLarpVisibility({
+      username,
+      ...body,
+    });
+
+    return res.json(user.larpVisibility);
   },
 );
 

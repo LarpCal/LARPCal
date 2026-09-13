@@ -1,21 +1,18 @@
-import { useContext } from "react";
+import { Suspense, useContext } from "react";
 import { userContext } from "./context/userContext";
 import { BrowserRouter } from "react-router-dom";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import NavBar from "./components/NavBar";
 import RoutesList from "./RoutesList";
 import Footer from "./components/Footer";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 export default function AppContent() {
   const { loading, error } = useContext(userContext);
 
   if (loading) {
-    return (
-      <Box className="App-loading" width="100%">
-        <CircularProgress size="6rem" />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -23,7 +20,7 @@ export default function AppContent() {
       <Box className="App">
         <BrowserRouter>
           <NavBar />
-          <Box className="App-page">
+          <Box component="main" className="App-page" p="2rem">
             <Box className="App-errors">
               <Typography variant="h2">
                 Sorry, we had trouble loading the page
@@ -42,7 +39,11 @@ export default function AppContent() {
     <BrowserRouter>
       <ScrollToTop />
       <NavBar />
-      <RoutesList />
+      <Stack direction="column" component="main" flexGrow="1" p="2rem">
+        <Suspense fallback={<LoadingSpinner />}>
+          <RoutesList />
+        </Suspense>
+      </Stack>
       <Footer />
     </BrowserRouter>
   );

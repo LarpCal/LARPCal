@@ -67,6 +67,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
       >
         <Typography
           variant="h4"
+          component="p"
           className="filled-secondary"
           sx={{ padding: "0.5rem" }}
         >

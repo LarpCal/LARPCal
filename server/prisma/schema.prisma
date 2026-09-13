@@ -21,25 +21,26 @@ enum TicketStatus {
 }
 
 model Larp {
-  id           Int          @id @default(autoincrement())
-  title        String       @default("") @db.VarChar(500)
+  id           Int              @id @default(autoincrement())
+  title        String           @default("") @db.VarChar(500)
   ticketStatus TicketStatus
   start        DateTime
   end          DateTime
-  allDay       Boolean      @map("all_day")
-  city         String       @default("") @db.VarChar(100)
-  country      String       @default("") @db.VarChar(100)
-  language     String       @default("") @db.VarChar(100)
-  description  String       @default("")
-  eventUrl     String       @default("") @map("event_url") @db.VarChar(500)
+  allDay       Boolean          @map("all_day")
+  city         String           @default("") @db.VarChar(100)
+  country      String           @default("") @db.VarChar(100)
+  language     String           @default("") @db.VarChar(100)
+  description  String           @default("")
+  eventUrl     String           @default("") @map("event_url") @db.VarChar(500)
   tags         Tag[]
-  imgUrl       ImageSet     @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
-  imgSetId     Int          @unique @map("img_set_id")
-  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  imgUrl       ImageSet         @relation(fields: [imgSetId], references: [id], onDelete: Cascade)
+  imgSetId     Int              @unique @map("img_set_id")
+  organization Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
   orgId        Int
-  isFeatured   Boolean      @default(false)
-  isPublished  Boolean      @default(false)
-  createdTime  DateTime     @default(now())
+  isFeatured   Boolean          @default(false)
+  isPublished  Boolean          @default(false)
+  createdTime  DateTime         @default(now())
+  attendees    UserAttendance[]
 
   @@map("larps")
 }
@@ -64,6 +65,8 @@ model User {
   following            UserFollow[]
   newsletterSubscribed Boolean                @default(false)
   newsletterRemoteId   String?
+  attending            UserAttendance[]
+  eventVisibility      Int                    @default(0)
 
   @@map("users")
 }
@@ -113,6 +116,17 @@ model UserFollow {
   emails Boolean      @default(true)
 
   @@id([userId, orgId])
+}
+
+model UserAttendance {
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  larpId    Int
+  larp      Larp     @relation(fields: [larpId], references: [id], onDelete: Cascade)
+  status    Int
+  createdAt DateTime @default(now())
+
+  @@id([userId, larpId])
 }
 
 model Newsletter {

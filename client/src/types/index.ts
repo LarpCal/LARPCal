@@ -111,6 +111,11 @@ export type UserForUpdate = Omit<UserForCreate, "username" | "password"> & {
   password?: string;
 };
 
+export interface UserLarpVisibility {
+  future: boolean;
+  past: boolean;
+}
+
 /*************************** ORGANIZATIONS */
 
 export type OrganizationForCreate = {
