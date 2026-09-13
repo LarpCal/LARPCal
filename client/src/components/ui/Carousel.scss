@@ -1,4 +1,4 @@
-@import "../../styles/colors";
+@use "../../styles/colors";
 
 $carousel-image-height: 500px;
 $carousel-content-height: 300px;
@@ -36,7 +36,7 @@ $carousel-content-height: 300px;
       }
 
       .Carousel-featuredContents {
-        background-color: $pale-blue;
+        background-color: colors.$pale-blue;
         height: $carousel-content-height;
         width: 90%;
         position: absolute;
@@ -69,7 +69,7 @@ $carousel-content-height: 300px;
     .Carousel-navControl {
       z-index: 100;
       border-radius: 50%;
-      background-color: $secondary-light;
+      background-color: colors.$secondary-light;
 
       svg {
         color: white;
@@ -79,7 +79,7 @@ $carousel-content-height: 300px;
     }
 
     .Carousel-navDot {
-      background-color: $secondary-light;
+      background-color: colors.$secondary-light;
       // border: solid 1px $dark;
       opacity: 50%;
       height: 0.5rem;
@@ -89,7 +89,7 @@ $carousel-content-height: 300px;
     }
 
     .Carousel-navDot-selected {
-      background-color: $secondary;
+      background-color: colors.$secondary;
       height: 0.6rem;
     }
 

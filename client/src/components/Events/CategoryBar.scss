@@ -1,10 +1,10 @@
-@import "../../styles/colors";
+@use "../../styles/colors";
 
 .CategoryBar {
   padding: 1rem;
   margin: 1rem auto;
-  color: $dark;
-  background-color: $pale-blue;
+  color: colors.$dark;
+  background-color: colors.$pale-blue;
 
   .CategoryBar-itemContainer {
     margin: auto;

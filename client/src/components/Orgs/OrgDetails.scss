@@ -1,9 +1,9 @@
-@import "../../styles/colors";
+@use "../../styles/colors";
 
 .OrgDetails {
   width: 100%;
   margin: 0;
-  color: $dark;
+  color: colors.$dark;
 
   .banner {
     width: 100%;
@@ -47,7 +47,7 @@
   .title {
     a {
       text-decoration: none;
-      color: $dark;
+      color: colors.$dark;
     }
   }
 }

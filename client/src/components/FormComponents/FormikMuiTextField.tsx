@@ -6,7 +6,8 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { getNested } from "../../util/utilities";
 
 interface FormikMuiTextFieldProps
-  extends FieldProps,
+  extends
+    FieldProps,
     Omit<TextFieldProps, "name" | "value" | "onChange" | "onBlur"> {}
 
 const FormikMuiTextField: React.FC<FormikMuiTextFieldProps> = ({

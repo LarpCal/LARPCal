@@ -3,7 +3,7 @@
  */
 
 import multer from "multer";
-import { BadRequestError } from "../utils/expressError";
+import { BadRequestError } from "../utils/expressError.ts";
 
 const storage = multer.memoryStorage();
 const upload = multer({

@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import assert from "node:assert";
-import { toValidId } from "./utils/helpers";
+import { toValidId } from "./utils/helpers.ts";
 
 if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: ".env.test" });
