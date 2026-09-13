@@ -31,6 +31,7 @@ import { useUser } from "./hooks/useUser";
 import { FC } from "react";
 import MyLarpsPage from "./views/MyLarpsPage";
 import { ErrorPage } from "./views/ErrorPage";
+import PlayerLarpsPage from "./views/PlayerLarpsPage";
 
 function RoutesList() {
   const { user } = useUser();
@@ -62,6 +63,7 @@ function RoutesList() {
         path="/orgs/:id/newsletters/:newsletterId"
         element={<NewsletterEditPage />}
       />
+      <Route path="/players/:username/larps" element={<PlayerLarpsPage />} />
       <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/my-larps" element={<MyLarpsPage />} />

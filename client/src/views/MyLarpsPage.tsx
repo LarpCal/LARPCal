@@ -1,15 +1,16 @@
 import { Navigate } from "react-router-dom";
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { FastField, Form, Formik } from "formik";
 
 import { useUser } from "../hooks/useUser";
 import LarpList from "../components/Events/LarpList";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import { FastField, Form, Formik } from "formik";
-import { useMutation } from "@tanstack/react-query";
 import LarpAPI from "../util/api";
 import { UserLarpVisibility } from "../types";
 import FormikCheckbox from "../components/FormComponents/FormikCheckbox";
+import { TextLink } from "../components/ui/TextLink";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
@@ -49,6 +50,13 @@ export default function MyLarpsPage() {
   return (
     <>
       {header}
+
+      {(future !== null || past !== null) && (
+        <Box mb="1rem">
+          Share what LARPs you are going to{" "}
+          <TextLink to={`/players/${user.username}/larps`}>here</TextLink>.
+        </Box>
+      )}
 
       <Formik
         initialValues={{
