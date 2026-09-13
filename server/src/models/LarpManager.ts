@@ -5,18 +5,32 @@ import type {
   LarpForUpdate,
   LarpQuery,
   Tag,
+  UserLarpVisibility,
 } from "../types/index.ts";
-import { BadRequestError, NotFoundError } from "../utils/expressError.ts";
+import {
+  BadRequestError,
+  ExpressError,
+  NotFoundError,
+} from "../utils/expressError.ts";
 import ImageHandler from "../utils/imageHandler.ts";
 import type { Prisma } from "../generated/prisma/client.ts";
 import { TicketStatus } from "../generated/prisma/enums.ts";
 import { deleteMultiple } from "../api/s3.ts";
+import {
+  ATTENDANCE_STATUS_GOING,
+  ATTENDANCE_STATUS_NONE,
+  ATTENDANCE_STATUS_WANTING,
+  ATTENDANCE_STATUSES,
+  attendanceStatusToLabel,
+  type AttendanceStatus,
+  type AttendanceStatusLabels,
+} from "../utils/attendance.ts";
 
 const LARP_INCLUDE_OBJ = {
   tags: true,
   imgUrl: true,
   organization: { include: { imgUrl: true } },
-};
+} satisfies Prisma.LarpInclude;
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const DEFAULT_IMG_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/larpImage/default`;
@@ -186,9 +200,7 @@ class LarpManager {
   static async getLarpById(id: number): Promise<Larp> {
     try {
       const larp = await prisma.larp.findUniqueOrThrow({
-        where: {
-          id: id,
-        },
+        where: { id },
         include: LARP_INCLUDE_OBJ,
       });
       return larp;
@@ -253,11 +265,6 @@ class LarpManager {
   }
 
   static async deleteLarpById(id: number): Promise<Larp> {
-    // try { await this.deleteRecipeImage(id); }
-    //   catch(err) {
-    //   console.warn(`Image for recipeId ${id} could not be deleted`);
-    // }
-
     try {
       const larp = await prisma.larp.delete({
         where: {
@@ -269,6 +276,130 @@ class LarpManager {
     } catch {
       //use our custom error instead
       throw new NotFoundError("Record not found");
+    }
+  }
+
+  /* ATTENDANCE */
+
+  static async getLarpAttendance(larpId: number) {
+    try {
+      const attendances = await prisma.userAttendance.findMany({
+        where: { larpId },
+        include: {
+          user: true,
+        },
+      });
+
+      return attendances
+        .map(({ user, status }) => ({
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          status: attendanceStatusToLabel(status),
+        }))
+        .filter(({ status }) => status !== "none");
+    } catch {
+      throw new NotFoundError("Larp not found");
+    }
+  }
+
+  static async getLarpAttendanceCountsById(larpId: number) {
+    try {
+      const attendances = await prisma.userAttendance.findMany({
+        where: { larpId },
+      });
+
+      let wanting = 0;
+      let going = 0;
+
+      for (const attendance of attendances) {
+        if (attendance.status === ATTENDANCE_STATUS_WANTING) {
+          wanting++;
+        } else if (attendance.status === ATTENDANCE_STATUS_GOING) {
+          going++;
+        }
+      }
+
+      return { wanting, going };
+    } catch {
+      throw new NotFoundError("Larp not found");
+    }
+  }
+
+  static async getLarpsByUsername({
+    username,
+    past,
+    future,
+    status,
+  }: {
+    username: string;
+    status?: AttendanceStatus;
+  } & UserLarpVisibility) {
+    try {
+      const attendance = await prisma.userAttendance.findMany({
+        where: {
+          user: {
+            username,
+          },
+          status,
+        },
+      });
+
+      const larpIds = attendance.map(({ larpId }) => larpId);
+
+      const now = new Date();
+      let endFilter: Prisma.DateTimeFilter<"Larp"> | undefined;
+      if (!past && future) {
+        endFilter = { gte: now };
+      } else if (past && !future) {
+        endFilter = { lt: now };
+      }
+
+      const larps = await prisma.larp.findMany({
+        where: {
+          id: {
+            in: larpIds,
+          },
+          end: endFilter,
+        },
+      });
+      return larps;
+    } catch (err: unknown) {
+      console.error(`Got error getting larps by username ${username}:`, err);
+      throw new NotFoundError("User not found");
+    }
+  }
+
+  static async updateLarpAttendance({
+    userId,
+    larpId,
+    status: statusLabel,
+  }: {
+    userId: number;
+    larpId: number;
+    status: AttendanceStatusLabels;
+  }) {
+    const status = ATTENDANCE_STATUSES[statusLabel];
+    if (status === undefined) {
+      throw new BadRequestError(`Invalid status: ${statusLabel}`);
+    }
+
+    try {
+      if (status === ATTENDANCE_STATUS_NONE) {
+        await prisma.userAttendance.delete({
+          where: { userId_larpId: { userId, larpId } },
+        });
+      } else {
+        await prisma.userAttendance.upsert({
+          where: { userId_larpId: { userId, larpId } },
+          create: { userId, larpId, status },
+          update: { status },
+        });
+      }
+
+      return this.getLarpAttendanceCountsById(larpId);
+    } catch {
+      throw new ExpressError("Could not update attendance");
     }
   }
 

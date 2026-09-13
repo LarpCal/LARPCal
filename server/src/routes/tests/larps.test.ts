@@ -36,16 +36,30 @@ describe("GET events/:id", function () {
     const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
     mockedGetLarpById.mockResolvedValue(testLarp);
 
+    const mockedGetLarpAttendanceCountsById = vi.spyOn(
+      LarpManager,
+      "getLarpAttendanceCountsById",
+    );
+    mockedGetLarpAttendanceCountsById.mockResolvedValue({
+      wanting: 0,
+      going: 0,
+    });
+
     const resp = await request(app).get("/events/1");
 
     expect(resp.statusCode).toEqual(200);
     expect(mockedGetLarpById).toHaveBeenCalledTimes(2);
+    expect(mockedGetLarpAttendanceCountsById).toHaveBeenCalled();
     expect(resp.body).toEqual({
       larp: {
         ...testLarp,
         createdTime: testLarp.createdTime.toISOString(),
         start: testLarp.start.toISOString(),
         end: testLarp.end.toISOString(),
+      },
+      attendance: {
+        wanting: 0,
+        going: 0,
       },
     });
   });
