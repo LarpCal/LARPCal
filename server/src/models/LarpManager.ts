@@ -303,6 +303,17 @@ class LarpManager {
     }
   }
 
+  static async getLarpAttendanceStatusById(larpId: number, userId: number) {
+    try {
+      const attendance = await prisma.userAttendance.findUniqueOrThrow({
+        where: { userId_larpId: { userId, larpId } },
+      });
+      return attendance;
+    } catch {
+      throw new NotFoundError("Larp attendance not found");
+    }
+  }
+
   static async getLarpAttendanceCountsById(larpId: number) {
     try {
       const attendances = await prisma.userAttendance.findMany({

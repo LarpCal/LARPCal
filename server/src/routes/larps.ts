@@ -22,7 +22,10 @@ import larpForCreateSchema from "../schemas/larpForCreate.json" with { type: "js
 import larpForUpdateSchema from "../schemas/larpForUpdate.json" with { type: "json" };
 import { toValidId } from "../utils/helpers.ts";
 import UserManager from "../models/UserManager.ts";
-import { isValidAttendanceStatus } from "../utils/attendance.ts";
+import {
+  attendanceStatusToLabel,
+  isValidAttendanceStatus,
+} from "../utils/attendance.ts";
 
 /** POST /
  *  Creates and returns a new larp record
@@ -82,11 +85,33 @@ router.get(
   protectUnpublished,
   async function (req: Request<{ id: string }>, res: Response) {
     const id = toValidId(req.params.id);
-    const [larp, attendance] = await Promise.all([
-      LarpManager.getLarpById(id),
-      LarpManager.getLarpAttendanceCountsById(id),
-    ]);
-    return res.json({ larp, attendance });
+    const larp = await LarpManager.getLarpById(id);
+    return res.json({ larp });
+  },
+);
+
+router.get(
+  "/:id/attendance",
+  protectUnpublished,
+  async (req: Request<{ id: string }>, res: Response) => {
+    const id = toValidId(req.params.id);
+    const attendees = await LarpManager.getLarpAttendanceCountsById(id);
+    const username = res.locals.user?.username;
+    let attendance = null;
+    if (username) {
+      try {
+        const user = await UserManager.getUser(username);
+        const userAttendance = await LarpManager.getLarpAttendanceStatusById(
+          id,
+          user.id,
+        );
+        attendance = attendanceStatusToLabel(userAttendance.status);
+      } catch {
+        // Nothing
+      }
+    }
+
+    return res.json({ id, attendees, attendance });
   },
 );
 

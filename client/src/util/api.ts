@@ -16,6 +16,8 @@ import {
   Newsletter,
   NewsletterForCreate,
   UserLarpVisibility,
+  LarpAttendance,
+  LarpAttendanceStatus,
 } from "../types";
 import { JsonToLarp } from "./typeConverters";
 
@@ -204,6 +206,11 @@ class LarpAPI {
     return JsonToLarp(response.larp);
   }
 
+  static async getLarpAttendanceById(id: number): Promise<LarpAttendance> {
+    const response = await this.request(`events/${id}/attendance`);
+    return response;
+  }
+
   static async getAllLarps(query: string | null): Promise<Larp[]> {
     const response = query
       ? await this.request(`events?q=${query}`)
@@ -237,6 +244,18 @@ class LarpAPI {
   static async DeleteLarp(id: number): Promise<Larp> {
     const response = await this.request(`events/${id}`, undefined, "delete");
     return response.larp;
+  }
+
+  static async attendLarp(
+    id: number,
+    status: LarpAttendanceStatus,
+  ): Promise<LarpAttendance> {
+    const response = await this.request(
+      `events/${id}/attend`,
+      { status },
+      "put",
+    );
+    return response;
   }
 
   /************************ ORGANIZATION ********************************/

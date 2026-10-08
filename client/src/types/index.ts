@@ -57,6 +57,17 @@ export type LarpAsJSON = LarpForCreate & {
   isPublished: boolean;
 };
 
+export type LarpAttendanceStatus = "none" | "going" | "wanting";
+
+export interface LarpAttendance {
+  id: number;
+  attendance: LarpAttendanceStatus;
+  attendees: {
+    wanting: number;
+    going: number;
+  };
+}
+
 /*************************** LARP QUERY */
 export type LarpQuery = {
   term?: string;

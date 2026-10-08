@@ -6,7 +6,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useContext } from "react";
 
 import { Larp } from "../../types";
@@ -21,6 +21,7 @@ import TagCard from "./TagDisplay";
 
 import "./LarpDetails.scss";
 import { formatTicketStatus } from "../../util/utilities";
+import { useLarpAttendance } from "../../hooks/useFetchLarp";
 
 type LarpDetailsProps = {
   larp: Larp;
@@ -29,6 +30,8 @@ type LarpDetailsProps = {
 function LarpDetails({ larp }: LarpDetailsProps) {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
+
+  const { attendance, update } = useLarpAttendance(larp.id);
 
   return (
     <Box className="LarpDetails">
@@ -102,12 +105,35 @@ function LarpDetails({ larp }: LarpDetailsProps) {
               {larp.organization.orgName}
             </TextLink>
           </Typography>
-          <Typography
-            // color={ticketColor}
-            variant={"details2"}
-          >
+          <Typography variant="details2" component="p">
             Tickets: {formatTicketStatus(larp.ticketStatus)}
           </Typography>
+          <Typography variant="details2" component="p">
+            {attendance?.attendees.wanting ?? 0} want to go,{" "}
+            {attendance?.attendees.going ?? 0} going
+          </Typography>
+
+          <Stack direction="row" spacing={1} mt={1}>
+            <Button
+              variant="contained"
+              disabled={!username}
+              onClick={() => update("wanting")}
+            >
+              {attendance?.attendance === "wanting"
+                ? "No longer want to go"
+                : "I want to go"}
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              disabled={!username}
+              onClick={() => update("going")}
+            >
+              {attendance?.attendance === "going"
+                ? "No longer going"
+                : "I am going"}
+            </Button>
+          </Stack>
         </Box>
 
         <section id="About">
