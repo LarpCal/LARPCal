@@ -92,9 +92,17 @@ router.get(
 
 router.get(
   "/:id/attendance",
-  protectUnpublished,
   async (req: Request<{ id: string }>, res: Response) => {
     const id = toValidId(req.params.id);
+    const larp = await LarpManager.getLarpById(id);
+    if (!larp.isPublished) {
+      return res.json({
+        id,
+        attendees: { wanting: 0, going: 0 },
+        attendance: null,
+      });
+    }
+
     const attendees = await LarpManager.getLarpAttendanceCountsById(id);
     const username = res.locals.user?.username;
     let attendance = null;
