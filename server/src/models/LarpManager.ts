@@ -373,6 +373,7 @@ class LarpManager {
           },
           end: endFilter,
         },
+        include: LARP_INCLUDE_OBJ,
       });
       return larps;
     } catch (err: unknown) {
