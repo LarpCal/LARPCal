@@ -22,7 +22,7 @@ export default function FollowedOrgs() {
   }
 
   return (
-    <Stack spacing={2} alignContent="center" m="2rem">
+    <Stack spacing={2} alignContent="center">
       <Typography variant="h2">Followed organizations</Typography>
       <List sx={{ maxWidth: 500, width: "100%", alignSelf: "center" }}>
         <ListItem secondaryAction={<LARPCalNewsActions />}>

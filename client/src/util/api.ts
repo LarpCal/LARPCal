@@ -15,6 +15,9 @@ import {
   UserLoginData,
   Newsletter,
   NewsletterForCreate,
+  UserLarpVisibility,
+  LarpAttendance,
+  LarpAttendanceStatus,
 } from "../types";
 import { JsonToLarp } from "./typeConverters";
 
@@ -136,6 +139,18 @@ class LarpAPI {
     return response.user;
   }
 
+  static async getUserLarps(username: string) {
+    const response = await this.request(`users/${username}/larps`);
+    return {
+      future: Array.isArray(response.future)
+        ? (response.future as LarpAsJSON[]).map(JsonToLarp)
+        : null,
+      past: Array.isArray(response.past)
+        ? (response.past as LarpAsJSON[]).map(JsonToLarp)
+        : null,
+    };
+  }
+
   //get all users
   static async getAllUsers(): Promise<PublicUser[]> {
     const response = await this.request("users/");
@@ -153,6 +168,13 @@ class LarpAPI {
   static async updateUser(data: UserForUpdate, username: string) {
     const responseData = await this.request(`users/${username}`, data, "patch");
     return responseData.user;
+  }
+
+  static updateUserLarpVisibility(
+    data: UserLarpVisibility,
+    username: string,
+  ): Promise<UserLarpVisibility> {
+    return this.request(`users/${username}/larps`, data, "put");
   }
 
   /**  DELETE  */
@@ -182,6 +204,11 @@ class LarpAPI {
   static async getLarpById(id: number): Promise<Larp> {
     const response = await this.request(`events/${id}`);
     return JsonToLarp(response.larp);
+  }
+
+  static async getLarpAttendanceById(id: number): Promise<LarpAttendance> {
+    const response = await this.request(`events/${id}/attendance`);
+    return response;
   }
 
   static async getAllLarps(query: string | null): Promise<Larp[]> {
@@ -217,6 +244,18 @@ class LarpAPI {
   static async DeleteLarp(id: number): Promise<Larp> {
     const response = await this.request(`events/${id}`, undefined, "delete");
     return response.larp;
+  }
+
+  static async attendLarp(
+    id: number,
+    status: LarpAttendanceStatus,
+  ): Promise<LarpAttendance> {
+    const response = await this.request(
+      `events/${id}/attend`,
+      { status },
+      "put",
+    );
+    return response;
   }
 
   /************************ ORGANIZATION ********************************/

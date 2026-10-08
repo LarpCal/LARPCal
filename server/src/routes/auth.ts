@@ -18,7 +18,7 @@ import { createToken } from "../utils/tokens.ts";
 import UserManager from "../models/UserManager.ts";
 import type { PasswordResetRequest } from "../types/index.ts";
 import AuthManager from "../models/AuthManager.ts";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { CORS_URL, SECRET_KEY } from "../config.ts";
 import { sendPasswordResetEmail } from "../utils/emailHandler.ts";
 import { ensureLoggedIn } from "../middleware/auth.ts";

@@ -9,13 +9,23 @@ import {
 import readMultipart from "../middleware/multer.ts";
 const router = express.Router();
 
-import { BadRequestError, ExpressError } from "../utils/expressError.ts";
+import {
+  BadRequestError,
+  ExpressError,
+  ForbiddenError,
+} from "../utils/expressError.ts";
 
 import LarpManager from "../models/LarpManager.ts";
 
 import jsonschema from "jsonschema";
 import larpForCreateSchema from "../schemas/larpForCreate.json" with { type: "json" };
 import larpForUpdateSchema from "../schemas/larpForUpdate.json" with { type: "json" };
+import { toValidId } from "../utils/helpers.ts";
+import UserManager from "../models/UserManager.ts";
+import {
+  attendanceStatusToLabel,
+  isValidAttendanceStatus,
+} from "../utils/attendance.ts";
 
 /** POST /
  *  Creates and returns a new larp record
@@ -73,10 +83,58 @@ router.post(
 router.get(
   "/:id",
   protectUnpublished,
-
-  async function (req: Request, res: Response) {
-    const larp = await LarpManager.getLarpById(+req.params.id);
+  async function (req: Request<{ id: string }>, res: Response) {
+    const id = toValidId(req.params.id);
+    const larp = await LarpManager.getLarpById(id);
     return res.json({ larp });
+  },
+);
+
+router.get(
+  "/:id/attendance",
+  async (req: Request<{ id: string }>, res: Response) => {
+    const id = toValidId(req.params.id);
+    const larp = await LarpManager.getLarpById(id);
+    if (!larp.isPublished) {
+      return res.json({
+        id,
+        attendees: { wanting: 0, going: 0 },
+        attendance: null,
+      });
+    }
+
+    const attendees = await LarpManager.getLarpAttendanceCountsById(id);
+    const username = res.locals.user?.username;
+    let attendance = null;
+    if (username) {
+      try {
+        const user = await UserManager.getUser(username);
+        const userAttendance = await LarpManager.getLarpAttendanceStatusById(
+          id,
+          user.id,
+        );
+        attendance = attendanceStatusToLabel(userAttendance.status);
+      } catch {
+        // Nothing
+      }
+    }
+
+    return res.json({ id, attendees, attendance });
+  },
+);
+
+/**
+ * GET /[id]/attendees
+ * Returns a list of attendees for a LARP.
+ */
+router.get(
+  "/:id/attendees",
+  ensureOwnerOrAdmin,
+  async (req: Request<{ id: string }>, res: Response) => {
+    const id = toValidId(req.params.id);
+    const attendees = await LarpManager.getLarpAttendance(id);
+
+    return res.json({ attendees });
   },
 );
 
@@ -109,8 +167,9 @@ router.get("/", async function (req: Request, res: Response) {
 router.delete(
   "/:id",
   ensureOwnerOrAdmin,
-  async function (req: Request, res: Response) {
-    const deleted = await LarpManager.deleteLarpById(+req.params.id);
+  async function (req: Request<{ id: string }>, res: Response) {
+    const id = toValidId(req.params.id);
+    const deleted = await LarpManager.deleteLarpById(id);
     return res.json({ deleted });
   },
 );
@@ -149,15 +208,92 @@ router.put(
   "/:id/image",
   ensureOwnerOrAdmin,
   readMultipart("image"),
-  async function (req, res) {
+  async function (req: Request<{ id: string }>, res: Response) {
     if (!req.file) {
       throw new BadRequestError("Please attach an image");
     }
+
+    const id = toValidId(req.params.id);
+
     try {
-      const larp = await LarpManager.updateLarpImage(req.file, +req.params.id);
+      const larp = await LarpManager.updateLarpImage(req.file, id);
       return res.json(larp);
     } catch {
       throw new ExpressError("Image upload failed");
+    }
+  },
+);
+
+/**
+ * PUT /[id]/attend
+ * Updates attendance for a LARP for the current user.
+ */
+router.put(
+  "/:id/attend",
+  ensureLoggedIn,
+  protectUnpublished,
+  async (req: Request<{ id: string }>, res: Response) => {
+    const id = toValidId(req.params.id);
+    const username = res.locals.user?.username;
+    if (!username) {
+      throw new ForbiddenError();
+    }
+
+    const status = req.body.status;
+    if (!isValidAttendanceStatus(status)) {
+      throw new BadRequestError("Invalid status provided");
+    }
+
+    try {
+      const user = await UserManager.getUser(username);
+      const attendees = await LarpManager.updateLarpAttendance({
+        userId: user.id,
+        larpId: id,
+        status,
+      });
+
+      return res.json({
+        id,
+        attendance: status,
+        attendees,
+      });
+    } catch {
+      throw new ExpressError("Could not change attendance");
+    }
+  },
+);
+
+/**
+ * PUT /[id]/attend/[username]
+ * Allows LARP organizers to modify user attendance.
+ */
+router.put(
+  "/:id/attend/:username",
+  ensureOwnerOrAdmin,
+  async (req: Request<{ username: string; id: string }>, res: Response) => {
+    const larpId = toValidId(req.params.id);
+    const username = req.params.username;
+
+    const status = req.body.status;
+    if (!isValidAttendanceStatus(status)) {
+      throw new BadRequestError("Invalid attendance status");
+    }
+
+    try {
+      const user = await UserManager.getUser(username);
+      const attendees = await LarpManager.updateLarpAttendance({
+        userId: user.id,
+        larpId,
+        status,
+      });
+
+      return res.json({
+        id: larpId,
+        attendance: status,
+        attendees,
+      });
+    } catch {
+      throw new ExpressError("Could not change attendance");
     }
   },
 );

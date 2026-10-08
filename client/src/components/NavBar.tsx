@@ -111,6 +111,9 @@ function NavBar() {
             >
               My Profile
             </MenuItem>
+            <MenuItem component={RouterLink} to="/my-larps">
+              My LARPs
+            </MenuItem>
             <MenuItem
               component={RouterLink}
               to="/following"
@@ -291,7 +294,7 @@ function NavBar() {
 
   return (
     <>
-      <Box className="NavBar">
+      <Box component="nav" className="NavBar">
         <Stack
           direction="row"
           justifyContent="space-between"

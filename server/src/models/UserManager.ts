@@ -16,6 +16,12 @@ import {
 } from "../utils/expressError.ts";
 import { omitKeys } from "../utils/helpers.ts";
 import { NewsletterManager } from "./NewsletterManager.ts";
+import {
+  ATTENDANCE_VISIBILITY_FUTURE,
+  ATTENDANCE_VISIBILITY_NONE,
+  ATTENDANCE_VISIBILITY_PAST,
+  userVisibility,
+} from "../utils/attendance.ts";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -214,6 +220,32 @@ class UserManager {
     }
   }
 
+  static async updateUserLarpVisibility({
+    username,
+    past,
+    future,
+  }: {
+    username: string;
+    past: boolean;
+    future: boolean;
+  }) {
+    let eventVisibility = ATTENDANCE_VISIBILITY_NONE;
+    if (past) {
+      eventVisibility |= ATTENDANCE_VISIBILITY_PAST;
+    }
+    if (future) {
+      eventVisibility |= ATTENDANCE_VISIBILITY_FUTURE;
+    }
+
+    const user = await prisma.user.update({
+      where: { username },
+      data: { eventVisibility },
+      include: USER_INCLUDE_OBJ,
+    });
+
+    return userToPublicUser(user);
+  }
+
   /** Delete given user from database */
   static async deleteUser(username: string) {
     try {
@@ -239,8 +271,15 @@ function userToPublicUser(
   }>,
 ): PublicUser {
   return {
-    ...omitKeys(user, "password", "newsletterRemoteId", "newsletterSubscribed"),
+    ...omitKeys(
+      user,
+      "password",
+      "newsletterRemoteId",
+      "newsletterSubscribed",
+      "eventVisibility",
+    ),
     subscribed: user.newsletterSubscribed,
+    larpVisibility: userVisibility(user.eventVisibility),
   };
 }
 

@@ -4,7 +4,7 @@ import { useIdParam } from "../hooks/useIdParam";
 import LarpAPI from "../util/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import ToastMessage from "../components/ui/ToastMessage";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { NewsletterForm } from "../components/Forms/NewsletterForm";
 import { Formik } from "formik";
 import { NewsletterForCreate } from "../types";
@@ -61,7 +61,7 @@ export default function NewsletterEditPage() {
   }
 
   return (
-    <Box m="2rem">
+    <>
       <Typography variant="h1" mb="1rem">
         {newsletter ? "Edit Newsletter" : "Create Newsletter"}
       </Typography>
@@ -84,7 +84,7 @@ export default function NewsletterEditPage() {
           disabled={!!newsletter?.sentAt}
         />
       </Formik>
-    </Box>
+    </>
   );
 }
 

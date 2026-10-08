@@ -10,6 +10,9 @@ import {
 } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
 import { vi } from "vitest";
+import LarpManager from "../../models/LarpManager";
+import { testLarp } from "../../test/testLarpData";
+import { UserLarpVisibility } from "../../types";
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -64,7 +67,12 @@ describe("POST users/", function () {
     //mock create
     const mockedRegister = vi.spyOn(UserManager, "register");
     mockedRegister.mockResolvedValueOnce(testAdminUser);
-    const createData = omitKeys(testAdminUser, "id", "organization");
+    const createData = omitKeys(
+      testAdminUser,
+      "id",
+      "organization",
+      "larpVisibility",
+    );
 
     const resp = await request(app)
       .post(`/users/`)
@@ -130,6 +138,66 @@ describe("DELETE users/:username", function () {
     expect(mockedDeleteUser).toHaveBeenCalledTimes(1);
     expect(resp.body).toEqual({
       deleted: testUser.username,
+    });
+  });
+});
+
+describe("GET users/:username/larps", () => {
+  test("OK", async () => {
+    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    mockedGetUser.mockResolvedValueOnce(testUser);
+
+    const mockedGetLarpsByUsername = vi.spyOn(
+      LarpManager,
+      "getLarpsByUsername",
+    );
+    mockedGetLarpsByUsername.mockResolvedValue([testLarp]);
+
+    const resp = await request(app)
+      .get(`/users/${testUser.username}/larps`)
+      .set("authorization", `Bearer ${userToken}`);
+
+    expect(resp.statusCode).toEqual(200);
+    expect(mockedGetLarpsByUsername).toHaveBeenCalled();
+    expect(resp.body).toEqual({
+      past: null,
+      future: [
+        {
+          ...testLarp,
+          createdTime: testLarp.createdTime.toISOString(),
+          start: testLarp.start.toISOString(),
+          end: testLarp.end.toISOString(),
+        },
+      ],
+    });
+  });
+});
+
+describe("PUT users/:username/larps", () => {
+  test("OK", async () => {
+    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    mockedGetUser.mockResolvedValueOnce(testUser);
+
+    const mockedUpdateUserLarpVisibility = vi.spyOn(
+      UserManager,
+      "updateUserLarpVisibility",
+    );
+    mockedUpdateUserLarpVisibility.mockResolvedValue(testUser);
+
+    const resp = await request(app)
+      .put(`/users/${testUser.username}/larps`)
+      .send({ past: true, future: false } satisfies UserLarpVisibility)
+      .set("authorization", `Bearer ${userToken}`);
+
+    expect(resp.status).toBe(200);
+    expect(mockedUpdateUserLarpVisibility).toHaveBeenCalledWith({
+      username: testUser.username,
+      past: true,
+      future: false,
+    });
+    expect(resp.body).toEqual({
+      past: false,
+      future: true,
     });
   });
 });

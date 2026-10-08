@@ -8,7 +8,7 @@ import { useMemo } from "react";
 /**
  * Manages fetching and stores state for a Larp list.
  */
-function useFetchLarps(query: LarpQuery = {}, active = false) {
+export function useFetchLarps(query: LarpQuery = {}, active = false) {
   const now = useMemo(() => DateTime.now().toISO(), []);
   // Flag to query only "Active" records (published events that haven't ended)
   if (active) {
@@ -38,4 +38,16 @@ function useFetchLarps(query: LarpQuery = {}, active = false) {
   };
 }
 
-export { useFetchLarps };
+export function useFetchUserLarps(username?: string) {
+  return useQuery({
+    queryKey: ["users", username, "larps"],
+    queryFn() {
+      if (!username) {
+        throw new Error("No username provided");
+      }
+
+      return LarpAPI.getUserLarps(username);
+    },
+    enabled: !!username,
+  });
+}

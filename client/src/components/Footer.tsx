@@ -4,7 +4,7 @@ import { TextLink } from "./ui/TextLink";
 
 function Footer() {
   return (
-    <Box component="section" className="Footer">
+    <Box component="footer" className="Footer">
       <Typography component="p" variant="caption" className="copyright">
         ©LarpCal 2024. The calendar was funded by Jacob Møller jensen and
         developed by{" "}

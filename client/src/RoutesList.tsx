@@ -29,6 +29,9 @@ import NewsletterEditPage from "./views/NewsletterEditPage";
 import NewsletterPreviewPage from "./views/NewsletterPreview";
 import { useUser } from "./hooks/useUser";
 import { FC } from "react";
+import MyLarpsPage from "./views/MyLarpsPage";
+import { ErrorPage } from "./views/ErrorPage";
+import PlayerLarpsPage from "./views/PlayerLarpsPage";
 
 function RoutesList() {
   const { user } = useUser();
@@ -60,8 +63,10 @@ function RoutesList() {
         path="/orgs/:id/newsletters/:newsletterId"
         element={<NewsletterEditPage />}
       />
+      <Route path="/players/:username/larps" element={<PlayerLarpsPage />} />
       <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
+      <Route path="/my-larps" element={<MyLarpsPage />} />
       <Route path="/following" element={<FollowedOrgs />} />
       <Route path="/auth/login" element={<RedirectToHome allowRedirect />} />
     </>
@@ -93,7 +98,7 @@ function RoutesList() {
         <Route path="/events/:id" element={<LarpDetailPage />} />
         <Route path="/newsletters/:id" element={<NewsletterPreviewPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="*" element={<HomePage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );

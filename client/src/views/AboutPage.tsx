@@ -7,7 +7,7 @@ import { TextLink } from "../components/ui/TextLink";
 function AboutPage() {
   return (
     <>
-      <Stack direction="column" spacing={2} alignContent="center" m="2rem">
+      <Stack direction="column" spacing={2} alignContent="center">
         <Box
           className="filled-light"
           sx={{

@@ -1,4 +1,4 @@
-import { Box, Divider, Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import ErrorDisplay from "../components/FormComponents/ErrorDisplay";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useIdParam } from "../hooks/useIdParam";
@@ -23,7 +23,7 @@ export default function NewsletterPreviewPage() {
     );
 
   return (
-    <Box m="2rem">
+    <>
       {error && <ErrorDisplay message={error.message} />}
 
       {!newsletter?.sentAt && (
@@ -41,6 +41,6 @@ export default function NewsletterPreviewPage() {
       )}
       <Divider sx={{ my: "1rem" }} />
       <BodyText text={newsletter?.text} />
-    </Box>
+    </>
   );
 }

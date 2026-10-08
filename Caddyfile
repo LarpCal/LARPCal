@@ -1,0 +1,11 @@
+larpcal.localhost {
+	reverse_proxy localhost:5173
+}
+
+api.larpcal.localhost {
+	reverse_proxy localhost:3001
+}
+
+mail.larpcal.localhost {
+	reverse_proxy localhost:5111
+}

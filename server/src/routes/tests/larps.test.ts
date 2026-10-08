@@ -3,9 +3,19 @@ import app from "../../app";
 
 import LarpManager from "../../models/LarpManager";
 import { testLarp, testLarpForCreate } from "../../test/testLarpData";
-import { organizerToken } from "../../test/testUserData";
+import {
+  organizerToken,
+  testOrganizerUser,
+  testUser,
+  userToken,
+} from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
 import { vi } from "vitest";
+import UserManager from "../../models/UserManager";
+import {
+  ATTENDANCE_STATUS_GOING,
+  AttendanceStatusLabels,
+} from "../../utils/attendance";
 
 /************************** GET ALL **********************/
 describe("GET events/", function () {
@@ -139,6 +149,157 @@ describe("DELETE events/:id", function () {
         createdTime: testLarp.createdTime.toISOString(),
         start: testLarp.start.toISOString(),
         end: testLarp.end.toISOString(),
+      },
+    });
+  });
+});
+
+describe("GET events/:id/attendance", () => {
+  const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
+  mockedGetLarpById.mockResolvedValue(testLarp);
+
+  const mockedGetLarpAttendance = vi.spyOn(
+    LarpManager,
+    "getLarpAttendanceCountsById",
+  );
+  mockedGetLarpAttendance.mockResolvedValue({ wanting: 0, going: 0 });
+
+  const mockedGetUser = vi.spyOn(UserManager, "getUser");
+  mockedGetUser.mockResolvedValue(testOrganizerUser);
+
+  const mockedGetLarpAttendanceStatusById = vi.spyOn(
+    LarpManager,
+    "getLarpAttendanceStatusById",
+  );
+  mockedGetLarpAttendanceStatusById.mockResolvedValue({
+    userId: 1,
+    larpId: 1,
+    status: ATTENDANCE_STATUS_GOING,
+    createdAt: new Date(),
+  });
+
+  test("not logged in", async () => {
+    const resp = await request(app).get("/events/1/attendance");
+
+    expect(resp.status).toEqual(200);
+    expect(mockedGetLarpById).toHaveBeenCalled();
+    expect(mockedGetLarpAttendance).toHaveBeenCalled();
+    expect(mockedGetLarpAttendanceStatusById).not.toHaveBeenCalled();
+
+    expect(resp.body).toEqual({
+      id: testLarp.id,
+      attendees: { wanting: 0, going: 0 },
+      attendance: null,
+    });
+  });
+
+  test("logged in", async () => {
+    const resp = await request(app)
+      .get("/events/1/attendance")
+      .set("authorization", `Bearer ${organizerToken}`);
+
+    expect(resp.status).toEqual(200);
+    expect(mockedGetLarpById).toHaveBeenCalled();
+    expect(mockedGetLarpAttendance).toHaveBeenCalled();
+    expect(mockedGetUser).toHaveBeenCalled();
+    expect(mockedGetLarpAttendanceStatusById).toHaveBeenCalled();
+
+    expect(resp.body).toEqual({
+      id: testLarp.id,
+      attendees: { wanting: 0, going: 0 },
+      attendance: "going",
+    });
+  });
+});
+
+describe("GET events/:id/attendees", () => {
+  test("OK", async () => {
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
+    mockedGetLarpById.mockResolvedValue(testLarp);
+
+    const attendees = [
+      {
+        username: testUser.username,
+        firstName: testUser.firstName,
+        lastName: testUser.lastName,
+        status: "going" as AttendanceStatusLabels,
+      },
+    ];
+
+    const mockedGetLarpAttendance = vi.spyOn(LarpManager, "getLarpAttendance");
+    mockedGetLarpAttendance.mockResolvedValue(attendees);
+
+    const resp = await request(app)
+      .get("/events/1/attendees")
+      .set("authorization", `Bearer ${organizerToken}`);
+
+    expect(resp.status).toEqual(200);
+    expect(mockedGetLarpAttendance).toHaveBeenCalled();
+    expect(resp.body).toEqual({ attendees });
+  });
+});
+
+describe("PUT events/:id/attend", () => {
+  test("OK", async () => {
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
+    mockedGetLarpById.mockResolvedValue(testLarp);
+
+    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    mockedGetUser.mockResolvedValue(testUser);
+
+    const mockedUpdateLarpAttendance = vi.spyOn(
+      LarpManager,
+      "updateLarpAttendance",
+    );
+    mockedUpdateLarpAttendance.mockResolvedValue({ wanting: 0, going: 1 });
+
+    const resp = await request(app)
+      .put("/events/1/attend")
+      .send({ status: "going" })
+      .set("authorization", `Bearer ${userToken}`);
+
+    expect(resp.statusCode).toEqual(200);
+    expect(mockedGetUser).toHaveBeenCalled();
+    expect(mockedUpdateLarpAttendance).toHaveBeenCalled();
+    expect(resp.body).toEqual({
+      id: testLarp.id,
+      attendance: "going",
+      attendees: {
+        going: 1,
+        wanting: 0,
+      },
+    });
+  });
+});
+
+describe("PUT events/:id/attend/:username", () => {
+  test("OK", async () => {
+    const mockedGetLarpById = vi.spyOn(LarpManager, "getLarpById");
+    mockedGetLarpById.mockResolvedValue(testLarp);
+
+    const mockedGetUser = vi.spyOn(UserManager, "getUser");
+    mockedGetUser.mockResolvedValue(testUser);
+
+    const mockedUpdateLarpAttendance = vi.spyOn(
+      LarpManager,
+      "updateLarpAttendance",
+    );
+    mockedUpdateLarpAttendance.mockResolvedValue({ wanting: 0, going: 1 });
+
+    const resp = await request(app)
+      .put(`/events/1/attend/${testUser.username}`)
+      .send({ status: "going" })
+      .set("authorization", `Bearer ${organizerToken}`);
+
+    expect(resp.statusCode).toEqual(200);
+    expect(mockedGetUser).toHaveBeenCalled();
+    expect(mockedUpdateLarpAttendance).toHaveBeenCalled();
+    expect(resp.body).toEqual({
+      id: testLarp.id,
+      attendance: "going",
+      attendees: {
+        going: 1,
+        wanting: 0,
       },
     });
   });
