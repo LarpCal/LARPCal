@@ -113,27 +113,27 @@ function LarpDetails({ larp }: LarpDetailsProps) {
             {attendance?.attendees.going ?? 0} going
           </Typography>
 
-          <Stack direction="row" spacing={1} mt={1}>
-            <Button
-              variant="contained"
-              disabled={!username}
-              onClick={() => update("wanting")}
-            >
-              {attendance?.attendance === "wanting"
-                ? "No longer want to go"
-                : "I want to go"}
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              disabled={!username}
-              onClick={() => update("going")}
-            >
-              {attendance?.attendance === "going"
-                ? "No longer going"
-                : "I am going"}
-            </Button>
-          </Stack>
+          {!!username && (
+            <Stack direction="row" spacing={1} mt={1}>
+              <Button variant="contained" onClick={() => update("wanting")}>
+                {attendance?.attendance === "wanting"
+                  ? "No longer interested"
+                  : "I am interested"}
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => update("going")}
+              >
+                {attendance?.attendance === "going"
+                  ? "No longer going"
+                  : "I am going"}
+              </Button>
+            </Stack>
+          )}
+          {!username && (
+            <Typography>Log in to mark yourself as going</Typography>
+          )}
         </Box>
 
         <section id="About">
