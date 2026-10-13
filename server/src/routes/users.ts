@@ -16,6 +16,7 @@ import {
 import UserManager from "../models/UserManager.ts";
 import LarpManager from "../models/LarpManager.ts";
 import type { UserLarpVisibility } from "../types/index.ts";
+import { ATTENDANCE_STATUS_GOING } from "../utils/attendance.ts";
 
 /** POST / { user }  => { user, token }
  *
@@ -88,6 +89,7 @@ router.get(
   ensureLoggedIn,
   async (req: Request<{ username: string }>, res) => {
     const { username } = req.params;
+    const { return_interested } = req.query;
     const user = await UserManager.getUser(req.params.username);
     const { larpVisibility } = user;
     if (!larpVisibility.past && !larpVisibility.future) {
@@ -100,6 +102,7 @@ router.get(
     const larps = await LarpManager.getLarpsByUsername({
       username,
       ...user.larpVisibility,
+      status: !return_interested ? ATTENDANCE_STATUS_GOING : undefined,
     });
 
     const future = [];

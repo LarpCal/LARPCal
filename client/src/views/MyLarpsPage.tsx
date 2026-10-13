@@ -14,7 +14,10 @@ import { TextLink } from "../components/ui/TextLink";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
-  const { data, isLoading } = useFetchUserLarps(user.username ?? undefined);
+  const { data, isLoading } = useFetchUserLarps({
+    username: user.username ?? undefined,
+    withInterested: true,
+  });
 
   const { mutate } = useMutation({
     mutationKey: ["user", user.username, "larp"],

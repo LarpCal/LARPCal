@@ -139,8 +139,10 @@ class LarpAPI {
     return response.user;
   }
 
-  static async getUserLarps(username: string) {
-    const response = await this.request(`users/${username}/larps`);
+  static async getUserLarps(username: string, withInterested = false) {
+    const response = await this.request(
+      `users/${username}/larps${withInterested ? "?return_interested=1" : ""}`,
+    );
     return {
       future: Array.isArray(response.future)
         ? (response.future as LarpAsJSON[]).map(JsonToLarp)

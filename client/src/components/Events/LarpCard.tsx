@@ -49,7 +49,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
-        ></Box>
+        />
       </TextLink>
       {(larp.organization.username === username || isAdmin === true) && (
         <LarpActions

@@ -8,7 +8,7 @@ import LarpList from "../components/Events/LarpList";
 export default function PlayerLarpsPage() {
   const { user } = useUser();
   const { username } = useParams<"username">();
-  const { data, isLoading } = useFetchUserLarps(username);
+  const { data, isLoading } = useFetchUserLarps({ username });
 
   if (user.username === null) {
     return <Navigate to="/auth/login" />;
