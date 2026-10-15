@@ -17,6 +17,7 @@ import { useContext } from "react";
 import LarpActions from "./LarpActions";
 import { TextLink } from "../ui/TextLink";
 import { formatTicketStatus } from "../../util/utilities";
+import { useLarpAttendance } from "../../hooks/useFetchLarp";
 
 type LarpCardProps = {
   larp: Larp;
@@ -24,11 +25,14 @@ type LarpCardProps = {
 
 export default function LarpCard({ larp }: LarpCardProps) {
   const { user } = useContext(userContext);
+  const { attendance } = useLarpAttendance(larp.id);
   const { username, isAdmin } = user;
 
   let ticketColor = "success.main";
   if (larp.ticketStatus === "LIMITED") ticketColor = "warning.main";
   if (larp.ticketStatus === "SOLD_OUT") ticketColor = "error.main";
+  const showAttendance =
+    attendance?.attendance === "going" || attendance?.attendance === "wanting";
 
   return (
     <Stack
@@ -65,9 +69,23 @@ export default function LarpCard({ larp }: LarpCardProps) {
         spacing={0.5}
         flexBasis={1}
       >
-        <Typography color={ticketColor} variant={"details2"}>
-          Tickets: {formatTicketStatus(larp.ticketStatus)}
-        </Typography>
+        {showAttendance ? (
+          <Typography
+            variant="details1"
+            color={
+              attendance.attendance === "going"
+                ? "success.main"
+                : "warning.main"
+            }
+          >
+            You are{" "}
+            {attendance.attendance === "wanting" ? "interested" : "going"}
+          </Typography>
+        ) : (
+          <Typography color={ticketColor} variant="details2">
+            Tickets: {formatTicketStatus(larp.ticketStatus)}
+          </Typography>
+        )}
         <TextLink
           to={`/events/${larp.id}`}
           sx={{ textDecoration: "none", color: "inherit" }}
