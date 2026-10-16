@@ -1,31 +1,35 @@
 import { Navigate } from "react-router-dom";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { FastField, Form, Formik } from "formik";
+import { Checkbox, Stack, Typography } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useUser } from "../hooks/useUser";
 import LarpList from "../components/Events/LarpList";
-import { useFetchUserLarps } from "../hooks/useFetchLarps";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpAPI from "../util/api";
 import { UserLarpVisibility } from "../types";
-import FormikCheckbox from "../components/FormComponents/FormikCheckbox";
 import { TextLink } from "../components/ui/TextLink";
+import { useFetchUserLarps } from "../hooks/useFetchLarps";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
   const { data, isLoading } = useFetchUserLarps({
-    username: user.username ?? undefined,
-    withInterested: true,
+    username: user.username,
+    showAll: true,
   });
 
-  const { mutate } = useMutation({
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
     mutationKey: ["user", user.username, "larp"],
     mutationFn(args: UserLarpVisibility) {
       if (!user.username) {
         throw new Error("Not logged in");
       }
       return LarpAPI.updateUserLarpVisibility(args, user.username);
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["users", user.username, "larps", { showAll: true }],
+      });
     },
   });
 
@@ -48,56 +52,46 @@ export default function MyLarpsPage() {
     );
   }
 
-  const { future, past } = data;
+  const { visibility, future, past } = data;
 
   return (
     <>
       {header}
 
-      {(future !== null || past !== null) && (
-        <Box mb="1rem">
+      <Stack mb={2} p={2} gap={1} className="filled-light">
+        <Typography component="h2" variant="h4">
+          My visibility settings
+        </Typography>
+
+        <Typography>
           Share what LARPs you are going to{" "}
           <TextLink to={`/players/${user.username}/larps`}>here</TextLink>.
-        </Box>
-      )}
+        </Typography>
 
-      <Formik
-        initialValues={{
-          future: future !== null,
-          past: past !== null,
-        }}
-        onSubmit={(args) => mutate(args)}
-      >
-        {({ isValid }) => (
-          <Form>
-            <Typography component="h2" variant="h4">
-              My visibility settings
-            </Typography>
-            <Stack direction="column" maxWidth="20rem">
-              <FastField
-                component={FormikCheckbox}
-                name="future"
-                label="Show future events"
-              />
-              <FastField
-                component={FormikCheckbox}
-                name="past"
-                label="Show past events"
-              />
+        <Typography component="label" display="block">
+          <Checkbox
+            checked={visibility.future}
+            onChange={() =>
+              mutate({ past: visibility.past, future: !visibility.future })
+            }
+            disabled={isPending}
+            style={{ paddingBlock: 0 }}
+          />
+          Show future events
+        </Typography>
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={!isValid}
-                sx={{ mt: "1rem" }}
-              >
-                Save
-              </Button>
-            </Stack>
-          </Form>
-        )}
-      </Formik>
+        <Typography component="label" display="block">
+          <Checkbox
+            checked={visibility.past}
+            onChange={() =>
+              mutate({ past: !visibility.past, future: visibility.future })
+            }
+            disabled={isPending}
+            style={{ paddingBlock: 0 }}
+          />
+          Show past events
+        </Typography>
+      </Stack>
 
       <Typography variant="h2">Upcoming</Typography>
 

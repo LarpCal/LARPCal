@@ -1,4 +1,4 @@
-import type { UserLarpVisibility } from "../types/index.ts";
+import type { Larp, UserLarpVisibility } from "../types/index.ts";
 
 export const ATTENDANCE_STATUS_NONE = 0;
 export const ATTENDANCE_STATUS_WANTING = 1;
@@ -42,4 +42,20 @@ export function userVisibility(visibilityBits: number): UserLarpVisibility {
     past: !!(visibilityBits & ATTENDANCE_VISIBILITY_PAST),
     future: !!(visibilityBits & ATTENDANCE_VISIBILITY_FUTURE),
   };
+}
+
+export function larpsToPastOrFuture(larps: Larp[]) {
+  const future = [];
+  const past = [];
+
+  const now = new Date();
+  for (const larp of larps) {
+    if (larp.end >= now) {
+      future.push(larp);
+    } else {
+      past.push(larp);
+    }
+  }
+
+  return { future, past };
 }

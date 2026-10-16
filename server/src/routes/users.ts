@@ -15,8 +15,11 @@ import {
 } from "../middleware/auth.ts";
 import UserManager from "../models/UserManager.ts";
 import LarpManager from "../models/LarpManager.ts";
-import type { UserLarpVisibility } from "../types/index.ts";
-import { ATTENDANCE_STATUS_GOING } from "../utils/attendance.ts";
+import type { Larp, UserLarpVisibility } from "../types/index.ts";
+import {
+  ATTENDANCE_STATUS_GOING,
+  larpsToPastOrFuture,
+} from "../utils/attendance.ts";
 
 /** POST / { user }  => { user, token }
  *
@@ -87,39 +90,53 @@ router.get(
 router.get(
   "/:username/larps",
   ensureLoggedIn,
-  async (req: Request<{ username: string }>, res) => {
+  async (
+    req: Request<
+      { username: string },
+      {
+        visibility: UserLarpVisibility;
+        past: Larp[] | null;
+        future: Larp[] | null;
+      },
+      never,
+      { showAll?: boolean }
+    >,
+    res,
+  ) => {
     const { username } = req.params;
-    const { return_interested } = req.query;
+    const { showAll = false } = req.query;
+    const includeAll = username === res.locals.user?.username && showAll;
     const user = await UserManager.getUser(req.params.username);
     const { larpVisibility } = user;
-    if (!larpVisibility.past && !larpVisibility.future) {
+
+    if (!includeAll && !larpVisibility.past && !larpVisibility.future) {
       return res.json({
+        visibility: larpVisibility,
         past: null,
         future: null,
       });
     }
 
-    const larps = await LarpManager.getLarpsByUsername({
-      username,
-      ...user.larpVisibility,
-      status: !return_interested ? ATTENDANCE_STATUS_GOING : undefined,
-    });
+    const larps = await LarpManager.getLarpsByUsername(
+      includeAll
+        ? {
+            username,
+            past: true,
+            future: true,
+          }
+        : {
+            username,
+            ...larpVisibility,
+            status: ATTENDANCE_STATUS_GOING,
+          },
+    );
 
-    const future = [];
-    const past = [];
-
-    const now = new Date();
-    for (const larp of larps) {
-      if (larp.end >= now) {
-        future.push(larp);
-      } else {
-        past.push(larp);
-      }
-    }
+    const { past, future } = larpsToPastOrFuture(larps);
 
     res.json({
-      past: larpVisibility.past ? past : null,
-      future: larpVisibility.future ? future : null,
+      visibility: larpVisibility,
+      past: larpVisibility.past || includeAll ? past : null,
+      future: larpVisibility.future || includeAll ? future : null,
     });
   },
 );
@@ -133,7 +150,7 @@ router.put(
   ensureCorrectUserOrAdmin,
   async (
     req: Request<{ username: string }, UserLarpVisibility, UserLarpVisibility>,
-    res,
+    res: Response,
   ) => {
     const validator = jsonschema.validate(
       req.body,

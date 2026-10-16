@@ -139,11 +139,12 @@ class LarpAPI {
     return response.user;
   }
 
-  static async getUserLarps(username: string, withInterested = false) {
+  static async getUserLarps(username: string, showAll = false) {
     const response = await this.request(
-      `users/${username}/larps${withInterested ? "?return_interested=1" : ""}`,
+      `users/${username}/larps${showAll ? "?showAll=1" : ""}`,
     );
     return {
+      visibility: response.visibility as UserLarpVisibility,
       future: Array.isArray(response.future)
         ? (response.future as LarpAsJSON[]).map(JsonToLarp)
         : null,

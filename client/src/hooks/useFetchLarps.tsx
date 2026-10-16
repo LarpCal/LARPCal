@@ -40,16 +40,16 @@ export function useFetchLarps(query: LarpQuery = {}, active = false) {
 
 export function useFetchUserLarps({
   username,
-  withInterested = false,
-}: { username?: string; withInterested?: boolean } = {}) {
+  showAll = false,
+}: { username?: string | null; showAll?: boolean } = {}) {
   return useQuery({
-    queryKey: ["users", username, "larps", { withInterested }],
+    queryKey: ["users", username, "larps", { showAll }],
     queryFn() {
       if (!username) {
         throw new Error("No username provided");
       }
 
-      return LarpAPI.getUserLarps(username, withInterested);
+      return LarpAPI.getUserLarps(username, showAll);
     },
     enabled: !!username,
   });

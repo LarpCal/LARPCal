@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpList from "../components/Events/LarpList";
+import { TextLink } from "../components/ui/TextLink";
 
 export default function PlayerLarpsPage() {
   const { user } = useUser();
@@ -30,13 +31,19 @@ export default function PlayerLarpsPage() {
     );
   }
 
-  const { future, past } = data;
+  const { visibility, future, past } = data;
 
-  if (future === null && past === null) {
+  if (!visibility.future && !visibility.past) {
     return (
       <>
         {header}
         <Typography>{username} has not made their games public</Typography>
+
+        {username === user.username && (
+          <Typography mt={2}>
+            <TextLink to="/my-larps">Edit your settings here</TextLink>
+          </Typography>
+        )}
       </>
     );
   }
@@ -45,13 +52,19 @@ export default function PlayerLarpsPage() {
     <>
       {header}
 
+      {username === user.username && (
+        <Typography mt={2}>
+          <TextLink to="/my-larps">Edit your settings here</TextLink>
+        </Typography>
+      )}
+
       <Typography variant="h2">Upcoming</Typography>
 
-      <LarpList larps={future ?? []} noPagination />
+      <LarpList larps={visibility.future ? (future ?? []) : []} noPagination />
 
       <Typography variant="h2">Past</Typography>
 
-      <LarpList larps={past ?? []} noPagination />
+      <LarpList larps={visibility.past ? (past ?? []) : []} noPagination />
     </>
   );
 }
