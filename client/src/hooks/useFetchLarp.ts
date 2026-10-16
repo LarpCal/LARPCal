@@ -1,37 +1,42 @@
-import { useEffect, useState } from "react";
-import { Larp } from "../types";
+import { LarpAttendanceStatus } from "../types";
 import LarpAPI from "../util/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-type FetchLarpsResult = {
-  larp: Larp | null;
-  setLarp: React.Dispatch<React.SetStateAction<Larp | null>>;
-  loading: boolean;
-  error: string[];
-};
-
-function useFetchLarp(id: number): FetchLarpsResult {
-  const [larp, setLarp] = useState<Larp | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string[]>([]);
-
-  useEffect(() => {
-    async function fetchLarp() {
-      try {
-        const response = await LarpAPI.getLarpById(id);
-        setLarp(response);
-        setLoading(false);
-      } catch (err: unknown) {
-        if (Array.isArray(err)) {
-          setError(err);
-        }
-        setLoading(false);
-      }
-    }
-
-    fetchLarp();
-  }, [setLarp, id]);
-
-  return { larp, setLarp, loading, error };
+export function useFetchLarp(id: number) {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["larps", id],
+    queryFn: () => LarpAPI.getLarpById(id),
+  });
+  return {
+    larp: data ?? null,
+    loading: isLoading,
+    error: error ? [error.message] : [],
+  };
 }
 
-export { useFetchLarp };
+export function useLarpAttendance(id: number) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["larps", id, "attendance"],
+    queryFn: () => LarpAPI.getLarpAttendanceById(id),
+  });
+
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn(status: LarpAttendanceStatus) {
+      if (status === data?.attendance) {
+        status = "none";
+      }
+      return LarpAPI.attendLarp(id, status);
+    },
+    onSuccess(data) {
+      queryClient.setQueryData(["larps", id, "attendance"], data);
+    },
+  });
+
+  return {
+    attendance: data,
+    update: mutate,
+    isLoading,
+    isPending,
+  };
+}

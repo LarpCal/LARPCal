@@ -89,6 +89,12 @@ export type User = UserForCreate & {
   id: number;
   organization: Organization | null;
   subscribed: boolean;
+  larpVisibility: UserLarpVisibility;
+};
+
+export type UserLarpVisibility = {
+  past: boolean;
+  future: boolean;
 };
 
 export type PublicUser = Omit<User, "password">;

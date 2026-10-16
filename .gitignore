@@ -1,13 +1,6 @@
 # Common
 node_modules
 
-# Server
-/server/.env
-/server/.env.test
-/server/dist
-/server/coverage
-
-
 # IDE
 .vscode
 *.code-workspace

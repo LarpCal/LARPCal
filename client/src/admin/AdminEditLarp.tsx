@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Box, Modal } from "@mui/material";
@@ -10,6 +9,7 @@ import { LarpForUpdate } from "../types";
 import { LarpFormProvider } from "../context/LarpFormProvider";
 import { useFetchLarp } from "../hooks/useFetchLarp";
 import ToastMessage from "../components/ui/ToastMessage";
+import { useMutation } from "@tanstack/react-query";
 
 function AdminEditLarp() {
   const { id } = useParams();
@@ -17,10 +17,8 @@ function AdminEditLarp() {
     throw new Error("Id is required to edit a larp");
   }
 
-  const [saving, setSaving] = useState(false);
-  const [saveErrs, setSaveErrs] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { larp, setLarp, loading, error } = useFetchLarp(parseInt(id));
+  const { larp, loading, error } = useFetchLarp(parseInt(id));
 
   /** Type conversion. Schema prevents a simple cast from working. */
   function larpToLarpForUpdate(): LarpForUpdate | null {
@@ -39,21 +37,12 @@ function AdminEditLarp() {
   /** Sends an API request to store a larp based on the current form values
    * Navigates to the larpDetail view upon success.
    */
-  async function saveLarp(formData: LarpForUpdate) {
-    try {
-      setSaving(true);
+  const { isPending, mutateAsync } = useMutation({
+    async mutationFn(formData: LarpForUpdate) {
       const savedLarp = await LarpAPI.UpdateLarp(formData);
-      setLarp(savedLarp);
-      setSaving(false);
       navigate(`/admin/events/${savedLarp.id}`);
-    } catch (e: unknown) {
-      setSaving(false);
-      console.error(e);
-      if (Array.isArray(e)) {
-        setSaveErrs(e);
-      }
-    }
-  }
+    },
+  });
 
   return loading ? (
     <LoadingSpinner />
@@ -65,9 +54,9 @@ function AdminEditLarp() {
       />
       <ToastMessage
         title="Sorry, there was a problem submitting the form"
-        messages={saveErrs}
+        messages={error}
       />
-      {saving && (
+      {isPending && (
         <Modal open={true}>
           <Box className="LoadingSpinnerContainer">
             <LoadingSpinner />
@@ -75,7 +64,7 @@ function AdminEditLarp() {
         </Modal>
       )}
       <LarpFormProvider<LarpForUpdate>
-        onSubmitCallback={saveLarp}
+        onSubmitCallback={mutateAsync}
         larp={larpForUpdate!}
       >
         <EventForm />

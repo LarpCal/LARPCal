@@ -16,6 +16,13 @@ import {
 } from "../utils/expressError.ts";
 import { omitKeys } from "../utils/helpers.ts";
 import { NewsletterManager } from "./NewsletterManager.ts";
+import {
+  ATTENDANCE_VISIBILITY_FUTURE,
+  ATTENDANCE_VISIBILITY_NONE,
+  ATTENDANCE_VISIBILITY_PAST,
+  userVisibility,
+} from "../utils/attendance.ts";
+import { randomUUID } from "node:crypto";
 
 const USER_INCLUDE_OBJ = {
   organization: {
@@ -111,6 +118,18 @@ class UserManager {
         include: USER_INCLUDE_OBJ,
       });
       return userToPublicUser(user);
+    } catch {
+      throw new NotFoundError("User not found");
+    }
+  }
+
+  static async getUserCalendarKey(username: string) {
+    try {
+      const user = await prisma.user.findUniqueOrThrow({
+        where: { username },
+        include: USER_INCLUDE_OBJ,
+      });
+      return user.calendarKey;
     } catch {
       throw new NotFoundError("User not found");
     }
@@ -214,6 +233,55 @@ class UserManager {
     }
   }
 
+  static async updateUserLarpVisibility({
+    username,
+    past,
+    future,
+  }: {
+    username: string;
+    past: boolean;
+    future: boolean;
+  }) {
+    let eventVisibility = ATTENDANCE_VISIBILITY_NONE;
+    if (past) {
+      eventVisibility |= ATTENDANCE_VISIBILITY_PAST;
+    }
+    if (future) {
+      eventVisibility |= ATTENDANCE_VISIBILITY_FUTURE;
+    }
+
+    const user = await prisma.user.update({
+      where: { username },
+      data: { eventVisibility },
+      include: USER_INCLUDE_OBJ,
+    });
+
+    return userToPublicUser(user);
+  }
+
+  static async generateUserCalendarKey(username: string) {
+    try {
+      const calendarKey = randomUUID();
+      await prisma.user.update({ where: { username }, data: { calendarKey } });
+      return calendarKey;
+    } catch (err) {
+      console.log(err);
+      throw new NotFoundError("User not found");
+    }
+  }
+
+  static async deleteUserCalendarKey(username: string) {
+    try {
+      await prisma.user.update({
+        where: { username },
+        data: { calendarKey: null },
+      });
+    } catch (err) {
+      console.log(err);
+      throw new NotFoundError("User not found");
+    }
+  }
+
   /** Delete given user from database */
   static async deleteUser(username: string) {
     try {
@@ -239,8 +307,15 @@ function userToPublicUser(
   }>,
 ): PublicUser {
   return {
-    ...omitKeys(user, "password", "newsletterRemoteId", "newsletterSubscribed"),
+    ...omitKeys(
+      user,
+      "password",
+      "newsletterRemoteId",
+      "newsletterSubscribed",
+      "eventVisibility",
+    ),
     subscribed: user.newsletterSubscribed,
+    larpVisibility: userVisibility(user.eventVisibility),
   };
 }
 

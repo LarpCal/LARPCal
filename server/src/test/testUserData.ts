@@ -2,7 +2,7 @@ import { User } from "../types";
 import { createToken } from "../utils/tokens";
 import { testOrganization } from "./testOrgData";
 
-const testUser: User = {
+export const testUser: User = {
   id: 1,
   username: "testUser-username",
   password: "testUser-password",
@@ -12,10 +12,15 @@ const testUser: User = {
   organization: null,
   isAdmin: false,
   subscribed: false,
+  larpVisibility: {
+    past: false,
+    future: true,
+  },
 };
-const userToken = createToken(testUser);
+export const userToken = createToken(testUser);
 
-const testOrganizerUser: User = {
+export const testOrganizerUser: User = {
+  ...testUser,
   id: 2,
   username: "testOrganizerUser-username",
   password: "testOrganizerUser-password",
@@ -23,30 +28,17 @@ const testOrganizerUser: User = {
   lastName: "testOrganizerUser-last",
   email: "testOrganizerUser@test.com",
   organization: testOrganization,
-  isAdmin: false,
-  subscribed: false,
 };
-const organizerToken = createToken(testOrganizerUser);
+export const organizerToken = createToken(testOrganizerUser);
 
-const testAdminUser: User = {
+export const testAdminUser: User = {
+  ...testUser,
   id: 3,
   username: "testAdminUser-username",
   password: "testAdminUser-password",
   firstName: "testAdminUser-first",
   lastName: "testAdminUser-last",
   email: "testAdminUser@test.com",
-  organization: null,
   isAdmin: true,
-  subscribed: false,
 };
-const adminToken = createToken(testAdminUser);
-
-export {
-  testOrganization,
-  testUser,
-  userToken,
-  testOrganizerUser,
-  organizerToken,
-  testAdminUser,
-  adminToken,
-};
+export const adminToken = createToken(testAdminUser);

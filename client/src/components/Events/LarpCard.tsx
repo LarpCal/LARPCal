@@ -1,5 +1,5 @@
 import "./LarpCard.scss";
-import { Larp } from "../../types";
+import { Larp, LarpAttendanceStatus } from "../../types";
 
 import { Box, Stack, Typography } from "@mui/material";
 
@@ -20,15 +20,17 @@ import { formatTicketStatus } from "../../util/utilities";
 
 type LarpCardProps = {
   larp: Larp;
+  attendance?: LarpAttendanceStatus;
 };
 
-export default function LarpCard({ larp }: LarpCardProps) {
+export default function LarpCard({ larp, attendance }: LarpCardProps) {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
 
   let ticketColor = "success.main";
   if (larp.ticketStatus === "LIMITED") ticketColor = "warning.main";
   if (larp.ticketStatus === "SOLD_OUT") ticketColor = "error.main";
+  const showAttendance = attendance === "going" || attendance === "wanting";
 
   return (
     <Stack
@@ -49,7 +51,7 @@ export default function LarpCard({ larp }: LarpCardProps) {
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
-        ></Box>
+        />
       </TextLink>
       {(larp.organization.username === username || isAdmin === true) && (
         <LarpActions
@@ -65,9 +67,18 @@ export default function LarpCard({ larp }: LarpCardProps) {
         spacing={0.5}
         flexBasis={1}
       >
-        <Typography color={ticketColor} variant={"details2"}>
-          Tickets: {formatTicketStatus(larp.ticketStatus)}
-        </Typography>
+        {showAttendance ? (
+          <Typography
+            variant="details1"
+            color={attendance === "going" ? "success.main" : "warning.main"}
+          >
+            You are {attendance === "wanting" ? "interested" : "going"}
+          </Typography>
+        ) : (
+          <Typography color={ticketColor} variant="details2">
+            Tickets: {formatTicketStatus(larp.ticketStatus)}
+          </Typography>
+        )}
         <TextLink
           to={`/events/${larp.id}`}
           sx={{ textDecoration: "none", color: "inherit" }}
