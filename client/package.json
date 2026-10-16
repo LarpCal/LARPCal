@@ -28,7 +28,7 @@
     "jwt-decode": "^4.0.0",
     "luxon": "^3.4.4",
     "react": "^19.2.8",
-    "react-big-calendar": "^1.11.6",
+    "react-big-calendar": "^1.20.0",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.3",
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/react": "^19.2.18",
-    "@types/react-big-calendar": "^1.8.9",
+    "@types/react-big-calendar": "^1.16.3",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "sass": "^1.104.0",
