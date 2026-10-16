@@ -1,4 +1,4 @@
-import express, { type ErrorRequestHandler } from "express";
+import express, { type Request, type ErrorRequestHandler } from "express";
 import cors from "cors";
 import { InputValidationError, NotFoundError } from "./utils/expressError.ts";
 
@@ -11,23 +11,35 @@ import newslettersRoutes from "./routes/newsletters.ts";
 
 const app = express();
 
-const corsOptions = {
-  origin(origin, callback) {
+const corsCallback: cors.CorsOptionsDelegate<Request> = (req, callback) => {
+  try {
+    const url = new URL(`${req.protocol}://${req.get("HOST")}${req.url}`);
+    const { origin, pathname } = url;
+    const corsOptions = {
+      origin: process.env.CORS_URL,
+      optionsSuccessStatus: 200,
+    } satisfies cors.CorsOptions;
+
     if (
-      origin === process.env.CORS_URL ||
-      (origin?.endsWith("larpcal.netlify.app") &&
-        process.env.CONTEXT === "deploy-preview") ||
+      pathname.endsWith("/calendar/share") ||
       process.env.NODE_ENV === "test"
     ) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+      corsOptions.origin = "*";
+    } else if (
+      origin?.endsWith("larpcal.netlify.app") &&
+      process.env.CONTEXT === "deploy-preview"
+    ) {
+      corsOptions.origin = origin;
     }
-  },
-  optionsSuccessStatus: 200,
-} satisfies cors.CorsOptions;
 
-app.use(cors(corsOptions));
+    callback(null, corsOptions);
+  } catch (err) {
+    console.error(`CORS error with ${req.url}:`, err, req.get("host"));
+    callback(new Error("Not allowed by CORS"));
+  }
+};
+
+app.use(cors(corsCallback));
 app.use(express.json());
 app.use(authenticateJWT);
 

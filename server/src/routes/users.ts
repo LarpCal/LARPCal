@@ -21,6 +21,7 @@ import {
   keyToCalendarUrl,
   larpsToPastOrFuture,
 } from "../utils/attendance.ts";
+import { larpIdToUrl } from "../utils/larps.ts";
 
 const router = express.Router();
 
@@ -250,10 +251,14 @@ router.get(
         start: larp.start,
         end: larp.end,
         description: larp.description,
-        organizer: larp.organization.orgName,
+        organizer: {
+          email: larp.organization.email,
+          name: larp.organization.orgName,
+        },
         location: `${larp.city}, ${larp.country}`,
-        url: larp.eventUrl,
+        url: larpIdToUrl(larp.id),
       })),
+      prodId: "-//larpcal.com//larp-feed//EN",
     });
 
     res.writeHead(200, {
