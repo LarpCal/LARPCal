@@ -146,10 +146,14 @@ class LarpAPI {
     return {
       visibility: response.visibility as UserLarpVisibility,
       future: Array.isArray(response.future)
-        ? (response.future as LarpAsJSON[]).map(JsonToLarp)
+        ? ((response.future as LarpAsJSON[]).map(JsonToLarp) as (Larp & {
+            attendance: LarpAttendanceStatus;
+          })[])
         : null,
       past: Array.isArray(response.past)
-        ? (response.past as LarpAsJSON[]).map(JsonToLarp)
+        ? ((response.past as LarpAsJSON[]).map(JsonToLarp) as (Larp & {
+            attendance: LarpAttendanceStatus;
+          })[])
         : null,
     };
   }

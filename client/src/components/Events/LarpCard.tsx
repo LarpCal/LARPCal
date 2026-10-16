@@ -1,5 +1,5 @@
 import "./LarpCard.scss";
-import { Larp } from "../../types";
+import { Larp, LarpAttendanceStatus } from "../../types";
 
 import { Box, Stack, Typography } from "@mui/material";
 
@@ -17,22 +17,20 @@ import { useContext } from "react";
 import LarpActions from "./LarpActions";
 import { TextLink } from "../ui/TextLink";
 import { formatTicketStatus } from "../../util/utilities";
-import { useLarpAttendance } from "../../hooks/useFetchLarp";
 
 type LarpCardProps = {
   larp: Larp;
+  attendance?: LarpAttendanceStatus;
 };
 
-export default function LarpCard({ larp }: LarpCardProps) {
+export default function LarpCard({ larp, attendance }: LarpCardProps) {
   const { user } = useContext(userContext);
-  const { attendance } = useLarpAttendance(larp.id);
   const { username, isAdmin } = user;
 
   let ticketColor = "success.main";
   if (larp.ticketStatus === "LIMITED") ticketColor = "warning.main";
   if (larp.ticketStatus === "SOLD_OUT") ticketColor = "error.main";
-  const showAttendance =
-    attendance?.attendance === "going" || attendance?.attendance === "wanting";
+  const showAttendance = attendance === "going" || attendance === "wanting";
 
   return (
     <Stack
@@ -72,14 +70,9 @@ export default function LarpCard({ larp }: LarpCardProps) {
         {showAttendance ? (
           <Typography
             variant="details1"
-            color={
-              attendance.attendance === "going"
-                ? "success.main"
-                : "warning.main"
-            }
+            color={attendance === "going" ? "success.main" : "warning.main"}
           >
-            You are{" "}
-            {attendance.attendance === "wanting" ? "interested" : "going"}
+            You are {attendance === "wanting" ? "interested" : "going"}
           </Typography>
         ) : (
           <Typography color={ticketColor} variant="details2">

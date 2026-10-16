@@ -15,11 +15,7 @@ export default function PlayerLarpsPage() {
     return <Navigate to="/auth/login" />;
   }
 
-  const header = (
-    <Typography variant="h1" mb="2rem">
-      {username}&rsquo;s Games
-    </Typography>
-  );
+  const header = <Typography variant="h1">{username}&rsquo;s Games</Typography>;
 
   if (isLoading || !data) {
     return (

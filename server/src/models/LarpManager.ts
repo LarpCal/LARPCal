@@ -345,7 +345,9 @@ class LarpManager {
   }: {
     username: string;
     status?: AttendanceStatus;
-  } & UserLarpVisibility): Promise<Larp[]> {
+  } & UserLarpVisibility): Promise<
+    (Larp & { attendance?: AttendanceStatusLabels })[]
+  > {
     try {
       const attendance = await prisma.userAttendance.findMany({
         where: {
@@ -366,6 +368,13 @@ class LarpManager {
         endFilter = { lt: now };
       }
 
+      const attendanceMap = new Map(
+        attendance.map(({ larpId, status }) => [
+          larpId,
+          attendanceStatusToLabel(status),
+        ]),
+      );
+
       const larps = await prisma.larp.findMany({
         where: {
           id: {
@@ -375,7 +384,10 @@ class LarpManager {
         },
         include: LARP_INCLUDE_OBJ,
       });
-      return larps;
+      return larps.map((larp) => ({
+        attendance: attendanceMap.get(larp.id),
+        ...larp,
+      }));
     } catch (err: unknown) {
       console.error(`Got error getting larps by username ${username}:`, err);
       throw new NotFoundError("User not found");

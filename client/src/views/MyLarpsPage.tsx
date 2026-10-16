@@ -1,13 +1,14 @@
 import { Navigate } from "react-router-dom";
-import { Button, Checkbox, Link, Stack, Typography } from "@mui/material";
+import { Button, Checkbox, Grid, Link, Stack, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useUser } from "../hooks/useUser";
-import LarpList from "../components/Events/LarpList";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpAPI from "../util/api";
 import { TextLink } from "../components/ui/TextLink";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
+import { Larp, LarpAttendanceStatus } from "../types";
+import LarpCard from "../components/Events/LarpCard";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
@@ -136,11 +137,41 @@ export default function MyLarpsPage() {
 
       <Typography variant="h2">Upcoming</Typography>
 
-      <LarpList larps={future ?? []} noPagination />
+      <MyLarpList larps={future ?? []} />
 
       <Typography variant="h2">Past</Typography>
 
-      <LarpList larps={past ?? []} noPagination />
+      <MyLarpList larps={past ?? []} />
     </>
+  );
+}
+
+function MyLarpList({
+  larps,
+}: {
+  larps: (Larp & { attendance: LarpAttendanceStatus })[];
+}) {
+  if (!larps.length) {
+    return (
+      <Typography variant="body1" color="charcoal">
+        No larps
+      </Typography>
+    );
+  }
+
+  return (
+    <Grid
+      container
+      flexWrap="wrap"
+      spacing={2}
+      columnSpacing={2}
+      rowSpacing={4}
+    >
+      {larps.map((larp) => (
+        <Grid item key={larp.id} xs={12} sm={6} md={4} lg={4} xl={4}>
+          <LarpCard larp={larp} attendance={larp.attendance} />
+        </Grid>
+      ))}
+    </Grid>
   );
 }
