@@ -10,7 +10,7 @@ import {
   userToken,
 } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
-import { vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import UserManager from "../../models/UserManager";
 import {
   ATTENDANCE_STATUS_GOING,

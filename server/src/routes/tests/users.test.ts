@@ -9,7 +9,7 @@ import {
   userToken,
 } from "../../test/testUserData";
 import { omitKeys } from "../../utils/helpers";
-import { vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 import LarpManager from "../../models/LarpManager";
 import { testLarp } from "../../test/testLarpData";
 import { UserLarpVisibility } from "../../types";
@@ -169,6 +169,10 @@ describe("GET users/:username/larps", () => {
           end: testLarp.end.toISOString(),
         },
       ],
+      visibility: {
+        future: true,
+        past: false,
+      },
     });
   });
 });

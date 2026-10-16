@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../../app";
 import UserManager from "../../models/UserManager";
 import { testUser } from "../../test/testUserData";
-import { vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 /************************************** POST /auth/token */
 

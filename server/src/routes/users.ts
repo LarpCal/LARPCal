@@ -251,10 +251,12 @@ router.get(
         start: larp.start,
         end: larp.end,
         description: larp.description,
-        organizer: {
-          email: larp.organization.email,
-          name: larp.organization.orgName,
-        },
+        organizer: larp.organization
+          ? {
+              email: larp.organization.email,
+              name: larp.organization.orgName,
+            }
+          : null,
         location: `${larp.city}, ${larp.country}`,
         url: larpIdToUrl(larp.id),
       })),

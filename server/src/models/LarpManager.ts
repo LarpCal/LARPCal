@@ -345,7 +345,7 @@ class LarpManager {
   }: {
     username: string;
     status?: AttendanceStatus;
-  } & UserLarpVisibility) {
+  } & UserLarpVisibility): Promise<Larp[]> {
     try {
       const attendance = await prisma.userAttendance.findMany({
         where: {
