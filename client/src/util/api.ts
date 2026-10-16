@@ -154,6 +154,17 @@ class LarpAPI {
     };
   }
 
+  static async getUserCalendar(username: string) {
+    const response = await this.request(`users/${username}/calendar`);
+    const url = response.url;
+    if (typeof url === "string") {
+      return { url: new URL(url, BASE_URL).toString() };
+    }
+    return {
+      url: null,
+    };
+  }
+
   //get all users
   static async getAllUsers(): Promise<PublicUser[]> {
     const response = await this.request("users/");
@@ -178,6 +189,14 @@ class LarpAPI {
     username: string,
   ): Promise<UserLarpVisibility> {
     return this.request(`users/${username}/larps`, data, "put");
+  }
+
+  static updateUserCalendar(username: string, enable: boolean) {
+    return this.request(
+      `users/${username}/calendar`,
+      undefined,
+      enable ? "post" : "delete",
+    );
   }
 
   /**  DELETE  */

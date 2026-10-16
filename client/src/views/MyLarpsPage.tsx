@@ -1,39 +1,54 @@
 import { Navigate } from "react-router-dom";
-import { Checkbox, Stack, Typography } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button, Checkbox, Link, Stack, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useUser } from "../hooks/useUser";
 import LarpList from "../components/Events/LarpList";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LarpAPI from "../util/api";
-import { UserLarpVisibility } from "../types";
 import { TextLink } from "../components/ui/TextLink";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
-  const { data, isLoading } = useFetchUserLarps({
-    username: user.username,
+  const { username } = user;
+  const { data, isLoading, update, isUpdating } = useFetchUserLarps({
+    username,
     showAll: true,
   });
 
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["user", user.username, "larp"],
-    mutationFn(args: UserLarpVisibility) {
-      if (!user.username) {
+  const { data: calendarUrl } = useQuery({
+    queryKey: ["users", username, "calendar"],
+    async queryFn() {
+      if (!username) {
         throw new Error("Not logged in");
       }
-      return LarpAPI.updateUserLarpVisibility(args, user.username);
+      const { url } = await LarpAPI.getUserCalendar(username);
+      return url;
     },
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ["users", user.username, "larps", { showAll: true }],
-      });
-    },
+    enabled: !!username,
   });
 
-  if (user.username === null) {
+  const queryClient = useQueryClient();
+  const { mutate: toggleCalendar, isPending: isTogglingCalendar } = useMutation(
+    {
+      mutationKey: ["users", username, "calendar"],
+      mutationFn() {
+        if (!username) {
+          throw new Error("Not logged in");
+        }
+
+        return LarpAPI.updateUserCalendar(username, !calendarUrl);
+      },
+      onSuccess() {
+        queryClient.invalidateQueries({
+          queryKey: ["users", username, "calendar"],
+        });
+      },
+    },
+  );
+
+  if (username === null) {
     return <Navigate to="/auth/login" />;
   }
 
@@ -72,9 +87,9 @@ export default function MyLarpsPage() {
           <Checkbox
             checked={visibility.future}
             onChange={() =>
-              mutate({ past: visibility.past, future: !visibility.future })
+              update({ past: visibility.past, future: !visibility.future })
             }
-            disabled={isPending}
+            disabled={isUpdating}
             style={{ paddingBlock: 0 }}
           />
           Show future events
@@ -84,12 +99,38 @@ export default function MyLarpsPage() {
           <Checkbox
             checked={visibility.past}
             onChange={() =>
-              mutate({ past: !visibility.past, future: visibility.future })
+              update({ past: !visibility.past, future: visibility.future })
             }
-            disabled={isPending}
+            disabled={isUpdating}
             style={{ paddingBlock: 0 }}
           />
           Show past events
+        </Typography>
+
+        <Typography>
+          {calendarUrl ? (
+            <>
+              Access your private calendar feed{" "}
+              <Link href={calendarUrl} target="_blank">
+                here
+              </Link>
+              .
+              <Button
+                onClick={() => toggleCalendar()}
+                disabled={isTogglingCalendar}
+                sx={{ display: "block" }}
+              >
+                Disable calendar feed
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => toggleCalendar()}
+              disabled={isTogglingCalendar}
+            >
+              Enable calendar feed
+            </Button>
+          )}
         </Typography>
       </Stack>
 

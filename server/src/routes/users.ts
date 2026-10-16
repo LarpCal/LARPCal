@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from "express";
-const router = express.Router();
-
 import jsonschema from "jsonschema";
+import ical from "ical-generator";
+
 import userForCreateSchema from "../schemas/userForCreate.json" with { type: "json" };
 import userUpdateSchema from "../schemas/userUpdate.json" with { type: "json" };
 import userUpdateVisibilitySchema from "../schemas/userUpdateVisibility.json" with { type: "json" };
@@ -18,8 +18,11 @@ import LarpManager from "../models/LarpManager.ts";
 import type { Larp, UserLarpVisibility } from "../types/index.ts";
 import {
   ATTENDANCE_STATUS_GOING,
+  keyToCalendarUrl,
   larpsToPastOrFuture,
 } from "../utils/attendance.ts";
+
+const router = express.Router();
 
 /** POST / { user }  => { user, token }
  *
@@ -175,6 +178,90 @@ router.put(
     });
 
     return res.json(user.larpVisibility);
+  },
+);
+
+router.get(
+  "/:username/calendar",
+  ensureCorrectUserOrAdmin,
+  async (req: Request<{ username: string }>, res: Response) => {
+    const { username } = req.params;
+
+    const userKey = await UserManager.getUserCalendarKey(username);
+    if (!userKey) {
+      return res.json({ url: null });
+    }
+
+    res.json({ url: keyToCalendarUrl(username, userKey) });
+  },
+);
+
+router.post(
+  "/:username/calendar",
+  ensureCorrectUserOrAdmin,
+  async (req: Request<{ username: string }>, res: Response) => {
+    const { username } = req.params;
+
+    const userKey = await UserManager.generateUserCalendarKey(username);
+    res.json({ url: keyToCalendarUrl(username, userKey) });
+  },
+);
+
+router.delete(
+  "/:username/calendar",
+  ensureCorrectUserOrAdmin,
+  async (req: Request<{ username: string }>, res: Response) => {
+    const { username } = req.params;
+
+    await UserManager.deleteUserCalendarKey(username);
+
+    res.sendStatus(200);
+  },
+);
+
+router.get(
+  "/:username/calendar/share",
+  async (
+    req: Request<{ username: string }, unknown, never, { key: string }>,
+    res: Response,
+  ) => {
+    const { key } = req.query;
+    const { username } = req.params;
+    if (!username || !key) {
+      throw new BadRequestError("Missing username or key");
+    }
+
+    const userKey = await UserManager.getUserCalendarKey(username);
+    if (userKey !== key) {
+      throw new BadRequestError("Invalid key provided");
+    }
+
+    const larps = await LarpManager.getLarpsByUsername({
+      username,
+      past: true,
+      future: true,
+      status: ATTENDANCE_STATUS_GOING,
+    });
+
+    const calendar = ical({
+      events: larps.map((larp) => ({
+        id: larp.id,
+        summary: larp.title,
+        start: larp.start,
+        end: larp.end,
+        description: larp.description,
+        organizer: larp.organization.orgName,
+        location: `${larp.city}, ${larp.country}`,
+        url: larp.eventUrl,
+      })),
+    });
+
+    res.writeHead(200, {
+      "Content-Disposition": 'attachment; filename="calendar.ics"',
+      "Content-Type": "text/calendar; charset=utf-8",
+    });
+
+    res.end(calendar.toString());
   },
 );
 

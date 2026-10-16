@@ -1,8 +1,8 @@
-import { LarpQuery } from "../types";
+import { LarpQuery, UserLarpVisibility } from "../types";
 import LarpAPI from "../util/api";
 import { base64Encode } from "../util/utilities";
 import { DateTime } from "luxon";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 /**
@@ -42,7 +42,7 @@ export function useFetchUserLarps({
   username,
   showAll = false,
 }: { username?: string | null; showAll?: boolean } = {}) {
-  return useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["users", username, "larps", { showAll }],
     queryFn() {
       if (!username) {
@@ -53,4 +53,22 @@ export function useFetchUserLarps({
     },
     enabled: !!username,
   });
+
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["users", username, "larp"],
+    mutationFn(args: UserLarpVisibility) {
+      if (!username) {
+        throw new Error("Not logged in");
+      }
+      return LarpAPI.updateUserLarpVisibility(args, username);
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["users", username, "larps", { showAll }],
+      });
+    },
+  });
+
+  return { isLoading, data, isUpdating: isPending, update: mutate };
 }

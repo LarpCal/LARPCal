@@ -59,3 +59,7 @@ export function larpsToPastOrFuture(larps: Larp[]) {
 
   return { future, past };
 }
+
+export function keyToCalendarUrl(username: string, key: string) {
+  return `/users/${username}/calendar/share?key=${key}`;
+}

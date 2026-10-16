@@ -67,6 +67,7 @@ model User {
   newsletterRemoteId   String?
   attending            UserAttendance[]
   eventVisibility      Int                    @default(0)
+  calendarKey          String?
 
   @@map("users")
 }
