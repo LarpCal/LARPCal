@@ -112,30 +112,29 @@ class LarpManager {
         gte: query.createdAfter ? new Date(query.createdAfter) : undefined,
         lte: query.createdBefore ? new Date(query.createdBefore) : undefined,
       },
-      city: {
-        contains: query.city,
-        mode: "insensitive",
-      },
-      country: {
-        contains: query.country,
-        mode: "insensitive",
-      },
-      language: {
-        contains: query.language,
-        mode: "insensitive",
-      },
-      organization: {
-        orgName: {
-          contains: query.org,
-          mode: "insensitive",
-        },
-        id: {
-          equals: query.orgId,
-        },
-      },
-      isFeatured: {
-        equals: query.isFeatured,
-      },
+      city: query.city
+        ? { contains: query.city, mode: "insensitive" }
+        : undefined,
+      country: query.country
+        ? { contains: query.country, mode: "insensitive" }
+        : undefined,
+      language: query.language
+        ? { contains: query.language, mode: "insensitive" }
+        : undefined,
+      organization:
+        query.org || query.orgId !== undefined
+          ? {
+              orgName: query.org
+                ? { contains: query.org, mode: "insensitive" }
+                : undefined,
+              id:
+                query.orgId !== undefined ? { equals: query.orgId } : undefined,
+            }
+          : undefined,
+      isFeatured:
+        query.isFeatured !== undefined
+          ? { equals: query.isFeatured }
+          : undefined,
       isPublished: {
         equals: query.isPublished ?? true,
       },
@@ -152,48 +151,33 @@ class LarpManager {
     };
 
     // Query contains search term and filters
-    const term = query.term
-      ? query.term
-          .split(" ")
-          .map((s) => s.trim())
-          .join(" & ")
-      : null;
-    if (term) {
-      const termFilter = {
-        search: term,
-        mode: "insensitive",
-      } satisfies Prisma.StringFilter;
-
+    const words = (query.term ?? "").split(/\s+/).filter(Boolean);
+    if (words.length > 0) {
       queryFilters = {
-        AND: {
-          OR: [
-            { title: termFilter },
-            { description: termFilter },
-            { city: termFilter },
-            { country: termFilter },
-            { language: termFilter },
-            { tags: { some: { name: termFilter } } },
-            { organization: { orgName: termFilter } },
-          ],
-          ...queryFilters,
-        },
+        AND: [
+          queryFilters,
+          ...words.map((word): Prisma.LarpWhereInput => {
+            const f = { contains: word, mode: "insensitive" } as const;
+            return {
+              OR: [
+                { title: f },
+                { description: f },
+                { city: f },
+                { country: f },
+                { language: f },
+                { tags: { some: { name: f } } },
+                { organization: { orgName: f } },
+              ],
+            };
+          }),
+        ],
       };
     }
-
-    const orderBy: Prisma.LarpOrderByWithRelationInput = term
-      ? ({
-          _relevance: {
-            fields: ["title", "description", "country", "city", "language"],
-            search: term,
-            sort: "asc",
-          },
-        } satisfies Prisma.LarpOrderByWithRelationInput)
-      : { start: "asc" };
 
     return prisma.larp.findMany({
       where: queryFilters,
       include: LARP_INCLUDE_OBJ,
-      orderBy,
+      orderBy: { start: "desc" },
     });
   }
 
