@@ -32,6 +32,7 @@ import { FC } from "react";
 import MyLarpsPage from "./views/MyLarpsPage";
 import { ErrorPage } from "./views/ErrorPage";
 import PlayerLarpsPage from "./views/PlayerLarpsPage";
+import PlayerListPage from "./views/PlayerListPage";
 
 function RoutesList() {
   const { user } = useUser();
@@ -63,6 +64,7 @@ function RoutesList() {
         path="/orgs/:id/newsletters/:newsletterId"
         element={<NewsletterEditPage />}
       />
+      <Route path="/players" element={<PlayerListPage />} />
       <Route path="/players/:username/larps" element={<PlayerLarpsPage />} />
       <Route path="/auth/logout" element={<LogOutPage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />

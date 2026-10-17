@@ -112,18 +112,26 @@ class UserManager {
   static async findForListingPage(
     page = 0,
     maxPerPage = 50,
-  ): Promise<PublicUser[]> {
-    const listedUsers = await prisma.$queryRaw<{ id: number }[]>`
-      SELECT "id"
-      FROM "users"
-      WHERE ("eventVisibility" & ${ATTENDANCE_VISIBILITY_LISTED}) <> 0
-      ORDER BY "id" ASC
-      LIMIT ${maxPerPage}
-      OFFSET ${page * maxPerPage}
-    `;
+  ): Promise<{ users: PublicUser[]; total: number }> {
+    const [listedUsers, countRows] = await Promise.all([
+      prisma.$queryRaw<{ id: number }[]>`
+        SELECT "id"
+        FROM "users"
+        WHERE ("eventVisibility" & ${ATTENDANCE_VISIBILITY_LISTED}) <> 0
+        ORDER BY "id" ASC
+        LIMIT ${maxPerPage}
+        OFFSET ${page * maxPerPage}
+      `,
+      prisma.$queryRaw<{ total: bigint }[]>`
+        SELECT COUNT(*) AS "total"
+        FROM "users"
+        WHERE ("eventVisibility" & ${ATTENDANCE_VISIBILITY_LISTED}) <> 0
+      `,
+    ]);
+    const total = Number(countRows[0].total);
 
     if (!listedUsers.length) {
-      return [];
+      return { users: [], total };
     }
 
     const users = await prisma.user.findMany({
@@ -131,7 +139,7 @@ class UserManager {
       include: USER_INCLUDE_OBJ,
       orderBy: { id: "asc" },
     });
-    return users.map(userToPublicUser);
+    return { users: users.map(userToPublicUser), total };
   }
 
   /** Fetches a User by username.

@@ -69,13 +69,18 @@ router.get(
   "/larps",
   ensureLoggedIn,
   async (
-    req: Request<never, { users: PublicUser[] }, never, { page?: string }>,
+    req: Request<
+      never,
+      { users: PublicUser[]; pages: number },
+      never,
+      { page?: string }
+    >,
     res: Response,
   ) => {
     const { page: pageRaw } = req.query;
     const page = toInt(pageRaw);
-    const users = await UserManager.findForListingPage(page);
-    res.json({ users });
+    const { users, total } = await UserManager.findForListingPage(page, 50);
+    res.json({ users, pages: Math.ceil(total / 50) });
   },
 );
 
