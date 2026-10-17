@@ -1,4 +1,4 @@
-import { TicketStatus } from "../types";
+import { LarpQuery, TicketStatus } from "../types";
 
 //Checks if a string is a valid url
 export function isURL(string?: string) {
@@ -64,24 +64,40 @@ export function formatTicketStatus(status: TicketStatus) {
   }
 }
 
-//Encode a string to base64
-export function base64Encode(input: string) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(input);
-  let binary = "";
-  data.forEach((byte) => {
-    binary += String.fromCharCode(byte);
+const LARP_QUERY_BOOLEAN_KEYS = ["isFeatured", "isPublished"];
+
+export function larpQueryToSearchParams(query: LarpQuery) {
+  const params = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, String(v)));
+    } else {
+      params.append(key, String(value));
+    }
   });
-  return btoa(binary);
+  return params;
 }
 
-//Decode base64 to get a string
-export function base64Decode(encoded: string) {
-  const binary = atob(encoded);
-  const data = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    data[i] = binary.charCodeAt(i);
+export function searchParamsToLarpQuery(params: URLSearchParams): LarpQuery {
+  const query: Record<string, unknown> = {};
+  for (const key of new Set(params.keys())) {
+    if (key === "page") {
+      continue;
+    }
+    const values = params.getAll(key);
+    if (LARP_QUERY_BOOLEAN_KEYS.includes(key)) {
+      query[key] = values[0] === "true";
+    } else if (key === "orgId") {
+      const orgId = Number.parseInt(values[0]);
+      if (!isNaN(orgId)) {
+        query[key] = orgId;
+      }
+    } else {
+      query[key] = values.length > 1 ? values : values[0];
+    }
   }
-  const decoder = new TextDecoder();
-  return decoder.decode(data);
+  return query as LarpQuery;
 }

@@ -14,12 +14,17 @@ type LarpListProps = {
 function LarpList({ larps, recordsPerPage = 24, noPagination }: LarpListProps) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const q = query.get("q");
 
   const page = parseInt(query.get("page") || "1", 10);
   const pageStart = (page - 1) * recordsPerPage;
   const pageEnd = page * recordsPerPage;
   const pageCount = Math.ceil(larps.length / recordsPerPage);
+
+  const pageParams = (target: number | null) => {
+    const params = new URLSearchParams(location.search);
+    params.set("page", String(target));
+    return params.toString();
+  };
 
   const pagination = !noPagination && (
     <Pagination
@@ -35,7 +40,7 @@ function LarpList({ larps, recordsPerPage = 24, noPagination }: LarpListProps) {
         <PaginationItem
           className="EventList-pagelink"
           component={Link}
-          to={`${location.pathname}${`?page=${item.page}`}${q ? `&q=${q}` : ""}`}
+          to={`${location.pathname}?${pageParams(item.page)}`}
           {...item}
         />
       )}

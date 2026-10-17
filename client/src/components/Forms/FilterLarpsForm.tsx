@@ -1,9 +1,10 @@
 import { Formik } from "formik";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LarpQuery } from "../../types";
 import FilterLarpSchema from "./FilterLarpSchema";
 import FilterLarpsFormFields from "./FilterLarpsFormFields";
-import { base64Decode, base64Encode } from "../../util/utilities";
+import { larpQueryToSearchParams } from "../../util/utilities";
+import { useSearchQuery } from "../../hooks/useSearchQuery";
 import { useCallback, useMemo } from "react";
 
 type FilterLarpsFormProps = {
@@ -11,8 +12,7 @@ type FilterLarpsFormProps = {
 };
 
 function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
-  const [searchParams] = useSearchParams();
-  const queryParam = searchParams.get("q") || null;
+  const queryObj = useSearchQuery();
   const navigate = useNavigate();
 
   const setFilters = useCallback(
@@ -43,17 +43,12 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
         }
       });
 
-      //encode values for query
-      const query = base64Encode(JSON.stringify(reducedFormData));
-      navigate(`/events/?q=${query}`);
+      navigate(`/events/?${larpQueryToSearchParams(reducedFormData)}`);
     },
     [navigate],
   );
 
   const initialFormValues: LarpQuery = useMemo(() => {
-    const queryObj: LarpQuery = queryParam
-      ? JSON.parse(base64Decode(queryParam))
-      : {};
     return {
       term: queryObj.term || "",
       title: queryObj.title || "",
@@ -68,7 +63,7 @@ function FilterLarpsForm({ onSubmitCallback }: FilterLarpsFormProps) {
       language: queryObj.language || "",
       org: queryObj.org || "",
     };
-  }, [queryParam]);
+  }, [queryObj]);
 
   return (
     <>

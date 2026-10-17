@@ -5,10 +5,12 @@ import TextField from "@mui/material/TextField";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { base64Encode } from "../../util/utilities";
+import { larpQueryToSearchParams } from "../../util/utilities";
+import { useSearchQuery } from "../../hooks/useSearchQuery";
 
 function SearchBar() {
-  const [query, setQuery] = useState("");
+  const queryParams = useSearchQuery();
+  const [query, setQuery] = useState(queryParams.term ?? "");
   const navigate = useNavigate();
 
   function handleChange(
@@ -20,8 +22,7 @@ function SearchBar() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement | SVGSVGElement>) {
     e.preventDefault();
-    const encodedQuery = base64Encode(JSON.stringify({ term: query }));
-    navigate(`/events?q=${encodedQuery}`);
+    navigate(`/events?${larpQueryToSearchParams({ term: query })}`);
   }
 
   return (

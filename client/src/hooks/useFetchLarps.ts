@@ -1,19 +1,15 @@
 import { LarpQuery, UserLarpVisibility } from "../types";
 import LarpAPI from "../util/api";
-import { base64Encode } from "../util/utilities";
-import { DateTime } from "luxon";
+import { larpQueryToSearchParams } from "../util/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 
 /**
  * Manages fetching and stores state for a Larp list.
  */
 export function useFetchLarps(query: LarpQuery = {}, active = false) {
-  const now = useMemo(() => DateTime.now().toISO(), []);
   // Flag to query only "Active" records (published events that haven't ended)
   if (active) {
     query.isPublished = true;
-    query.endAfter = query.endAfter || now;
   }
 
   const {
@@ -24,7 +20,7 @@ export function useFetchLarps(query: LarpQuery = {}, active = false) {
   } = useQuery({
     queryKey: ["larps", query],
     queryFn: async () => {
-      const queryString = base64Encode(JSON.stringify(query));
+      const queryString = larpQueryToSearchParams(query).toString();
       const response = await LarpAPI.getAllLarps(queryString);
       return response;
     },

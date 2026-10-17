@@ -246,7 +246,7 @@ class LarpAPI {
 
   static async getAllLarps(query: string | null): Promise<Larp[]> {
     const response = query
-      ? await this.request(`events?q=${query}`)
+      ? await this.request(`events?${query}`)
       : await this.request(`events`);
     return response.larps.map((larp: LarpAsJSON) => JsonToLarp(larp));
   }
