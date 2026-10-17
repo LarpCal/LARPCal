@@ -345,7 +345,7 @@ class LarpManager {
   }: {
     username: string;
     status?: AttendanceStatus;
-  } & UserLarpVisibility): Promise<
+  } & Omit<UserLarpVisibility, "listing">): Promise<
     (Larp & { attendance?: AttendanceStatusLabels })[]
   > {
     try {

@@ -8,6 +8,9 @@
     },
     "future": {
       "type": "boolean"
+    },
+    "listing": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

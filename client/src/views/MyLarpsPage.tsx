@@ -92,9 +92,21 @@ export default function MyLarpsPage() {
 
         <Typography component="label" display="block">
           <Checkbox
+            checked={visibility.listing}
+            onChange={() =>
+              update({ ...visibility, listing: !visibility.listing })
+            }
+            disabled={isUpdating}
+            style={{ paddingBlock: 0 }}
+          />
+          Show in user listing
+        </Typography>
+
+        <Typography component="label" display="block">
+          <Checkbox
             checked={visibility.future}
             onChange={() =>
-              update({ past: visibility.past, future: !visibility.future })
+              update({ ...visibility, future: !visibility.future })
             }
             disabled={isUpdating}
             style={{ paddingBlock: 0 }}
@@ -105,9 +117,7 @@ export default function MyLarpsPage() {
         <Typography component="label" display="block">
           <Checkbox
             checked={visibility.past}
-            onChange={() =>
-              update({ past: !visibility.past, future: visibility.future })
-            }
+            onChange={() => update({ ...visibility, past: !visibility.past })}
             disabled={isUpdating}
             style={{ paddingBlock: 0 }}
           />

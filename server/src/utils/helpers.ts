@@ -12,6 +12,25 @@ export function omitKeys<T extends object, K extends keyof T>(
   return result;
 }
 
+export function toInt(int: string | number | undefined) {
+  if (!int) {
+    return 0;
+  }
+
+  if (typeof int === "number") {
+    return Math.floor(int);
+  }
+
+  if (typeof int === "string") {
+    const num = Number.parseInt(int);
+    if (!isNaN(num)) {
+      return num;
+    }
+  }
+
+  return 0;
+}
+
 export function toValidId(id: string | undefined) {
   if (!id) {
     throw new BadRequestError("ID is undefined");

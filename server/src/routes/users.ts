@@ -15,13 +15,14 @@ import {
 } from "../middleware/auth.ts";
 import UserManager from "../models/UserManager.ts";
 import LarpManager from "../models/LarpManager.ts";
-import type { Larp, UserLarpVisibility } from "../types/index.ts";
+import type { Larp, PublicUser, UserLarpVisibility } from "../types/index.ts";
 import {
   ATTENDANCE_STATUS_GOING,
   keyToCalendarUrl,
   larpsToPastOrFuture,
 } from "../utils/attendance.ts";
 import { larpIdToUrl } from "../utils/larps.ts";
+import { toInt } from "../utils/helpers.ts";
 
 const router = express.Router();
 
@@ -59,10 +60,24 @@ router.post("/", ensureAdmin, async function (req: Request, res: Response) {
  * Authorization required: admin
  **/
 
-router.get("/", ensureAdmin, async function (req: Request, res: Response) {
+router.get("/", ensureAdmin, async (_req: Request, res: Response) => {
   const users = await UserManager.findAll();
   return res.json({ users });
 });
+
+router.get(
+  "/larps",
+  ensureLoggedIn,
+  async (
+    req: Request<never, { users: PublicUser[] }, never, { page?: string }>,
+    res: Response,
+  ) => {
+    const { page: pageRaw } = req.query;
+    const page = toInt(pageRaw);
+    const users = await UserManager.findForListingPage(page);
+    res.json({ users });
+  },
+);
 
 /** GET /[username] => { user }
  *
@@ -110,8 +125,7 @@ router.get(
     const { username } = req.params;
     const { showAll = false } = req.query;
     const includeAll = username === res.locals.user?.username && showAll;
-    const user = await UserManager.getUser(req.params.username);
-    const { larpVisibility } = user;
+    const larpVisibility = await UserManager.getUserLarpVisibility(username);
 
     if (!includeAll && !larpVisibility.past && !larpVisibility.future) {
       return res.json({
@@ -165,7 +179,6 @@ router.put(
     );
     if (!validator.valid) {
       const errs = validator.errors.map((e: Error) => e.stack);
-      console.log("validation failed", errs.join(", "));
       throw new BadRequestError(errs.join(", "));
     }
 
@@ -173,12 +186,12 @@ router.put(
       params: { username },
       body,
     } = req;
-    const user = await UserManager.updateUserLarpVisibility({
+    const larpVisibility = await UserManager.updateUserLarpVisibility({
       username,
       ...body,
     });
 
-    return res.json(user.larpVisibility);
+    return res.json(larpVisibility);
   },
 );
 
