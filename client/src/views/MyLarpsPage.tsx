@@ -76,7 +76,7 @@ export default function MyLarpsPage() {
 
       <Stack mb={2} p={2} gap={1} className="filled-light">
         <Typography component="h2" variant="h4">
-          My visibility settings
+          Visibility settings
         </Typography>
 
         <Typography>

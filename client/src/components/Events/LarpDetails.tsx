@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 import { Larp } from "../../types";
 import { JSDateToLuxon } from "../../util/typeConverters";
@@ -32,6 +32,7 @@ function LarpDetails({ larp }: LarpDetailsProps) {
   const { username, isAdmin } = user;
 
   const { attendance, update } = useLarpAttendance(larp.id);
+  const isPast = useMemo(() => larp.end < new Date(), [larp.end]);
 
   return (
     <Box className="LarpDetails">
@@ -108,12 +109,18 @@ function LarpDetails({ larp }: LarpDetailsProps) {
           <Typography variant="details2" component="p">
             Tickets: {formatTicketStatus(larp.ticketStatus)}
           </Typography>
-          <Typography variant="details2" component="p">
-            {attendance?.attendees.wanting ?? 0} want to go,{" "}
-            {attendance?.attendees.going ?? 0} going
+          <Typography variant="details2" component="p" className="attendance">
+            {!!attendance?.attendees.wanting && !isPast && (
+              <span>{attendance.attendees.wanting} want to go</span>
+            )}
+            {!!attendance?.attendees.going && (
+              <span>
+                {attendance.attendees.going} {isPast ? "went" : "going"}
+              </span>
+            )}
           </Typography>
 
-          {!!username && (
+          {!!username && !isPast && (
             <Stack direction="row" spacing={1} mt={1}>
               <Button variant="contained" onClick={() => update("wanting")}>
                 {attendance?.attendance === "wanting"

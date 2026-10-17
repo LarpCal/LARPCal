@@ -36,4 +36,12 @@
       color: colors.$dark;
     }
   }
+
+  .attendance {
+    > span:has(+ span) {
+      &::after {
+        content: ", ";
+      }
+    }
+  }
 }

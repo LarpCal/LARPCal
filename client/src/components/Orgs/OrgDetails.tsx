@@ -13,6 +13,7 @@ import {
 import { LinkIconButton } from "../FormComponents/LinkIconButton";
 import { useUser } from "../../hooks/useUser";
 import { TextLink } from "../ui/TextLink";
+import ToastMessage from "../ui/ToastMessage";
 
 type OrgDetailsProps = {
   org: Organization;
@@ -23,7 +24,7 @@ function OrgDetails({ org }: OrgDetailsProps) {
   const { username, isAdmin } = user;
 
   const queryClient = useQueryClient();
-  const { mutate: followMutate } = useMutation({
+  const { mutate: followMutate, error } = useMutation({
     async mutationFn() {
       if (org.isFollowedByUser) {
         await LarpAPI.unfollowOrg(org.id);
@@ -39,6 +40,9 @@ function OrgDetails({ org }: OrgDetailsProps) {
 
   return (
     <Box className="OrgDetails">
+      {!!error && (
+        <ToastMessage messages={["Could not follow organizer"]} title="Error" />
+      )}
       <Box
         className="banner"
         sx={{
@@ -85,8 +89,8 @@ function OrgDetails({ org }: OrgDetailsProps) {
         </Typography>
 
         <section id="About">
-          <Typography component="h3" variant="h2" className="Date & Time">
-            About this Organizer:
+          <Typography component="h3" variant="h4">
+            About this organizer
           </Typography>
           <Typography>
             <TextLink to={org.orgUrl}>{org.orgUrl}</TextLink>
