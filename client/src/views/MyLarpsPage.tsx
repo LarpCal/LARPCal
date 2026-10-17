@@ -9,6 +9,7 @@ import { TextLink } from "../components/ui/TextLink";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
 import { Larp, LarpAttendanceStatus } from "../types";
 import LarpCard from "../components/Events/LarpCard";
+import { useMemo } from "react";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
@@ -17,6 +18,11 @@ export default function MyLarpsPage() {
     username,
     showAll: true,
   });
+  const past = useMemo(
+    () =>
+      data?.past?.filter(({ attendance }) => attendance === "going") ?? null,
+    [data],
+  );
 
   const { data: calendarUrl } = useQuery({
     queryKey: ["users", username, "calendar"],
@@ -68,7 +74,7 @@ export default function MyLarpsPage() {
     );
   }
 
-  const { visibility, future, past } = data;
+  const { visibility, future } = data;
 
   return (
     <>
