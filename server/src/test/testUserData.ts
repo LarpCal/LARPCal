@@ -12,10 +12,6 @@ export const testUser: User = {
   organization: null,
   isAdmin: false,
   subscribed: false,
-  larpVisibility: {
-    past: false,
-    future: true,
-  },
 };
 export const userToken = createToken(testUser);
 
