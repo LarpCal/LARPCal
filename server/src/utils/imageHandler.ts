@@ -7,9 +7,9 @@ type ResizedImages = {
   lg: Buffer;
 };
 
-const RESOLUTION_SM = [350, 150];
-const RESOLUTION_MD = [817, 350];
-const RESOLUTION_LG = [1280, 550];
+export const RESOLUTION_SM = [350, 150];
+export const RESOLUTION_MD = [817, 350];
+export const RESOLUTION_LG = [1280, 550];
 
 class ImageHandler {
   /** Accepts an image buffer and a string basePath
