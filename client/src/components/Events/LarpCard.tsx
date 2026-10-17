@@ -13,7 +13,7 @@ import {
 import TagCard from "./TagDisplay";
 import { JSDateToLuxon } from "../../util/typeConverters";
 import { userContext } from "../../context/userContext";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import LarpActions from "./LarpActions";
 import { TextLink } from "../ui/TextLink";
 import { formatTicketStatus } from "../../util/utilities";
@@ -26,6 +26,8 @@ type LarpCardProps = {
 export default function LarpCard({ larp, attendance }: LarpCardProps) {
   const { user } = useContext(userContext);
   const { username, isAdmin } = user;
+
+  const isPast = useMemo(() => larp.end < new Date(), [larp.end]);
 
   let ticketColor = "success.main";
   if (larp.ticketStatus === "LIMITED") ticketColor = "warning.main";
@@ -72,7 +74,9 @@ export default function LarpCard({ larp, attendance }: LarpCardProps) {
             variant="details1"
             color={attendance === "going" ? "success.main" : "warning.main"}
           >
-            You are {attendance === "wanting" ? "interested" : "going"}
+            {!isPast
+              ? `You are ${attendance === "wanting" ? "interested" : "going"}`
+              : `You ${attendance === "going" ? "attended" : "had interested"}`}
           </Typography>
         ) : (
           <Typography color={ticketColor} variant="details2">

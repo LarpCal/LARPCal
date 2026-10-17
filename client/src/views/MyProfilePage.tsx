@@ -1,16 +1,29 @@
 import { FastField, Form, Formik } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import FormikMuiTextField from "../components/FormComponents/FormikMuiTextField";
 import { PublicUser, UserForUpdate } from "../types";
 import userUpdateSchema from "../components/Forms/userUpdateSchema";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useUser } from "../hooks/useUser";
 import FormikCheckbox from "../components/FormComponents/FormikCheckbox";
+import { useMemo } from "react";
 
 export default function MyProfilePage() {
   const { user: maybeNullUser, update, loading, error } = useUser();
   const navigate = useNavigate();
+
+  const mailtoLink = useMemo(() => {
+    if (!maybeNullUser.username) {
+      return "";
+    }
+
+    const to = "jacob@larpcal.com";
+    const subject = "Requesting account closure";
+    const body = `I would like to close my account. My username is ${maybeNullUser.username}. Thank you.`;
+    return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }, []);
+
   if (maybeNullUser.username === null) {
     return <Navigate to="/auth/login" />;
   }
@@ -114,6 +127,14 @@ export default function MyProfilePage() {
             >
               Update Account
             </Button>
+
+            <Typography variant="body2">
+              To request account deletion, please{" "}
+              <Link href={mailtoLink} target="_blank">
+                email us
+              </Link>
+              .
+            </Typography>
           </Stack>
         </Form>
       )}

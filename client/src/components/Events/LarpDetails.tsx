@@ -138,6 +138,19 @@ function LarpDetails({ larp }: LarpDetailsProps) {
               </Button>
             </Stack>
           )}
+          {!!username && isPast && (
+            <Box mt={1}>
+              <Button
+                variant="contained"
+                onClick={() => update("going")}
+                color={
+                  attendance?.attendance === "going" ? "primary" : "success"
+                }
+              >
+                {attendance?.attendance === "going" ? "I did not go" : "I went"}
+              </Button>
+            </Box>
+          )}
           {!username && (
             <Typography>Log in to mark yourself as going</Typography>
           )}

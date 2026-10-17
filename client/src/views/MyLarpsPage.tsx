@@ -9,6 +9,7 @@ import { TextLink } from "../components/ui/TextLink";
 import { useFetchUserLarps } from "../hooks/useFetchLarps";
 import { Larp, LarpAttendanceStatus } from "../types";
 import LarpCard from "../components/Events/LarpCard";
+import { useMemo } from "react";
 
 export default function MyLarpsPage() {
   const { user } = useUser();
@@ -17,6 +18,11 @@ export default function MyLarpsPage() {
     username,
     showAll: true,
   });
+  const past = useMemo(
+    () =>
+      data?.past?.filter(({ attendance }) => attendance === "going") ?? null,
+    [data],
+  );
 
   const { data: calendarUrl } = useQuery({
     queryKey: ["users", username, "calendar"],
@@ -68,7 +74,7 @@ export default function MyLarpsPage() {
     );
   }
 
-  const { visibility, future, past } = data;
+  const { visibility, future } = data;
 
   return (
     <>
@@ -86,9 +92,21 @@ export default function MyLarpsPage() {
 
         <Typography component="label" display="block">
           <Checkbox
+            checked={visibility.listing}
+            onChange={() =>
+              update({ ...visibility, listing: !visibility.listing })
+            }
+            disabled={isUpdating}
+            style={{ paddingBlock: 0 }}
+          />
+          Show in user listing
+        </Typography>
+
+        <Typography component="label" display="block">
+          <Checkbox
             checked={visibility.future}
             onChange={() =>
-              update({ past: visibility.past, future: !visibility.future })
+              update({ ...visibility, future: !visibility.future })
             }
             disabled={isUpdating}
             style={{ paddingBlock: 0 }}
@@ -99,9 +117,7 @@ export default function MyLarpsPage() {
         <Typography component="label" display="block">
           <Checkbox
             checked={visibility.past}
-            onChange={() =>
-              update({ past: !visibility.past, future: visibility.future })
-            }
+            onChange={() => update({ ...visibility, past: !visibility.past })}
             disabled={isUpdating}
             style={{ paddingBlock: 0 }}
           />

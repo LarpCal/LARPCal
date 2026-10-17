@@ -33,12 +33,14 @@ export function attendanceStatusToLabel(
   }
 }
 
-export const ATTENDANCE_VISIBILITY_NONE = 0x00;
-export const ATTENDANCE_VISIBILITY_PAST = 0x01;
-export const ATTENDANCE_VISIBILITY_FUTURE = 0x10;
+export const ATTENDANCE_VISIBILITY_NONE = 0b000;
+export const ATTENDANCE_VISIBILITY_PAST = 0b001;
+export const ATTENDANCE_VISIBILITY_FUTURE = 0b010;
+export const ATTENDANCE_VISIBILITY_LISTED = 0b100;
 
 export function userVisibility(visibilityBits: number): UserLarpVisibility {
   return {
+    listing: !!(visibilityBits & ATTENDANCE_VISIBILITY_LISTED),
     past: !!(visibilityBits & ATTENDANCE_VISIBILITY_PAST),
     future: !!(visibilityBits & ATTENDANCE_VISIBILITY_FUTURE),
   };

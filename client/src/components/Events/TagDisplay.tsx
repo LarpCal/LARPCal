@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { Tag } from "../../types";
-import { base64Encode } from "../../util/utilities";
+import { larpQueryToSearchParams } from "../../util/utilities";
 import { TextLink } from "../ui/TextLink";
 import "./TagDisplay.scss";
 
@@ -10,12 +10,12 @@ type TagDisplayProps = {
 };
 
 function TagDisplay({ tag, fontSize = 10 }: TagDisplayProps) {
-  const query = base64Encode(JSON.stringify({ tags: tag.name }));
+  const query = larpQueryToSearchParams({ tags: tag.name }).toString();
 
   return (
     <Stack direction="column" justifyContent="center">
       <Box className="tagDisplay">
-        <TextLink to={`/events/?q=${query}`}>
+        <TextLink to={`/events/?${query}`}>
           <Typography
             // className="tagDisplay"
             key={tag.name}

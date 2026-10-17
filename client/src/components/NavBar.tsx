@@ -386,7 +386,7 @@ function NavBar() {
         </Stack>
         <Hidden mdUp>
           <Box className="SearchBar" mb=".5rem">
-            <SearchBar></SearchBar>
+            <SearchBar />
             {!showAdvancedSearch && (
               <Typography
                 component={Link}

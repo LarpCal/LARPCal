@@ -21,6 +21,7 @@ import jsonschema from "jsonschema";
 import larpForCreateSchema from "../schemas/larpForCreate.json" with { type: "json" };
 import larpForUpdateSchema from "../schemas/larpForUpdate.json" with { type: "json" };
 import { toValidId } from "../utils/helpers.ts";
+import { parseLarpQuery } from "../utils/larpQuery.ts";
 import UserManager from "../models/UserManager.ts";
 import {
   attendanceStatusToLabel,
@@ -140,15 +141,13 @@ router.get(
 
 /** GET /
  *  Returns a list of all larps without submodel data
- * @query a LarpQuery object encoded in Base64
+ * @query LarpQuery fields as plain params (e.g. ?term=x&city=y&ticketStatus=AVAILABLE)
  * @returns larps: [Larp,...]
  */
 
 router.get("/", async function (req: Request, res: Response) {
-  if (req.query && req.query.q) {
-    const q = req.query.q as string;
-    const decodedQuery = atob(q);
-    const query = JSON.parse(decodedQuery);
+  const query = parseLarpQuery(req.query);
+  if (query) {
     const larps = await LarpManager.getAllLarps(query);
     res.json({ larps, query });
   } else {

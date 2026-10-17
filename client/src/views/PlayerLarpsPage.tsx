@@ -16,11 +16,18 @@ export default function PlayerLarpsPage() {
   }
 
   const header = <Typography variant="h1">{username}&rsquo;s Games</Typography>;
+  const backLink = (
+    <Typography>
+      <TextLink to="/players">Back to players list</TextLink>
+    </Typography>
+  );
 
   if (isLoading || !data) {
     return (
       <>
         {header}
+
+        {backLink}
 
         <LoadingSpinner />
       </>
@@ -40,6 +47,8 @@ export default function PlayerLarpsPage() {
             <TextLink to="/my-larps">Edit your settings here</TextLink>
           </Typography>
         )}
+
+        {backLink}
       </>
     );
   }
@@ -53,6 +62,8 @@ export default function PlayerLarpsPage() {
           <TextLink to="/my-larps">Edit your settings here</TextLink>
         </Typography>
       )}
+
+      {backLink}
 
       <Typography variant="h2">Upcoming</Typography>
 

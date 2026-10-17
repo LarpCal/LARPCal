@@ -54,6 +54,7 @@ function FilterLarpsFormFields() {
             flex: "0 0 auto",
           }}
           options={[
+            { label: "All", value: "" },
             { label: "Available", value: "AVAILABLE" },
             { label: "Limited", value: "LIMITED" },
             { label: "Sold Out", value: "SOLD_OUT" },
@@ -214,7 +215,7 @@ function FilterLarpsFormFields() {
         }}
         disabled={isValid ? false : true}
       >
-        <Typography variant="h3">Search</Typography>
+        Search
       </Button>
     </Box>
   );

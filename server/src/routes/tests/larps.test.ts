@@ -40,6 +40,42 @@ describe("GET events/", function () {
   });
 });
 
+describe("GET events/ with query params", function () {
+  test("parses plain query params", async function () {
+    const mockedGetAllLarps = vi.spyOn(LarpManager, "getAllLarps");
+    mockedGetAllLarps.mockResolvedValueOnce([testLarp]);
+
+    const resp = await request(app).get(
+      "/events?term=castle&city=Berlin&orgId=3&isFeatured=true&ticketStatus=AVAILABLE&ticketStatus=SOON",
+    );
+
+    expect(resp.statusCode).toEqual(200);
+    expect(mockedGetAllLarps).toHaveBeenCalledWith({
+      term: "castle",
+      city: "Berlin",
+      orgId: 3,
+      isFeatured: true,
+      ticketStatus: ["AVAILABLE", "SOON"],
+    });
+  });
+
+  test("still accepts legacy base64 q param", async function () {
+    const mockedGetAllLarps = vi.spyOn(LarpManager, "getAllLarps");
+    mockedGetAllLarps.mockResolvedValueOnce([testLarp]);
+
+    const q = btoa(JSON.stringify({ term: "castle" }));
+    const resp = await request(app).get(`/events?q=${q}`);
+
+    expect(resp.statusCode).toEqual(200);
+    expect(mockedGetAllLarps).toHaveBeenCalledWith({ term: "castle" });
+  });
+
+  test("rejects invalid ticketStatus", async function () {
+    const resp = await request(app).get("/events?ticketStatus=NOPE");
+    expect(resp.statusCode).toEqual(400);
+  });
+});
+
 /************************** GET BY ID **********************/
 describe("GET events/:id", function () {
   test("OK", async function () {

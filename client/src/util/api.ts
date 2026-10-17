@@ -169,6 +169,13 @@ class LarpAPI {
     };
   }
 
+  static async getListedUsers(
+    page = 0,
+  ): Promise<{ users: PublicUser[]; pages: number }> {
+    const response = await this.request(`users/larps?page=${page}`);
+    return { users: response.users, pages: response.pages };
+  }
+
   //get all users
   static async getAllUsers(): Promise<PublicUser[]> {
     const response = await this.request("users/");
@@ -239,7 +246,7 @@ class LarpAPI {
 
   static async getAllLarps(query: string | null): Promise<Larp[]> {
     const response = query
-      ? await this.request(`events?q=${query}`)
+      ? await this.request(`events?${query}`)
       : await this.request(`events`);
     return response.larps.map((larp: LarpAsJSON) => JsonToLarp(larp));
   }
