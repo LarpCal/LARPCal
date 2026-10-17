@@ -67,12 +67,7 @@ describe("POST users/", function () {
     //mock create
     const mockedRegister = vi.spyOn(UserManager, "register");
     mockedRegister.mockResolvedValueOnce(testAdminUser);
-    const createData = omitKeys(
-      testAdminUser,
-      "id",
-      "organization",
-      "larpVisibility",
-    );
+    const createData = omitKeys(testAdminUser, "id", "organization");
 
     const resp = await request(app)
       .post(`/users/`)
@@ -144,8 +139,15 @@ describe("DELETE users/:username", function () {
 
 describe("GET users/:username/larps", () => {
   test("OK", async () => {
-    const mockedGetUser = vi.spyOn(UserManager, "getUser");
-    mockedGetUser.mockResolvedValueOnce(testUser);
+    const mockedGetUserLarpVisibility = vi.spyOn(
+      UserManager,
+      "getUserLarpVisibility",
+    );
+    mockedGetUserLarpVisibility.mockResolvedValueOnce({
+      listing: false,
+      past: false,
+      future: true,
+    });
 
     const mockedGetLarpsByUsername = vi.spyOn(
       LarpManager,
@@ -170,6 +172,7 @@ describe("GET users/:username/larps", () => {
         },
       ],
       visibility: {
+        listing: false,
         future: true,
         past: false,
       },
@@ -186,22 +189,32 @@ describe("PUT users/:username/larps", () => {
       UserManager,
       "updateUserLarpVisibility",
     );
-    mockedUpdateUserLarpVisibility.mockResolvedValue(testUser);
+    mockedUpdateUserLarpVisibility.mockResolvedValue({
+      listing: false,
+      past: true,
+      future: false,
+    });
 
     const resp = await request(app)
       .put(`/users/${testUser.username}/larps`)
-      .send({ past: true, future: false } satisfies UserLarpVisibility)
+      .send({
+        listing: false,
+        past: true,
+        future: false,
+      } satisfies UserLarpVisibility)
       .set("authorization", `Bearer ${userToken}`);
 
     expect(resp.status).toBe(200);
     expect(mockedUpdateUserLarpVisibility).toHaveBeenCalledWith({
       username: testUser.username,
+      listing: false,
       past: true,
       future: false,
     });
     expect(resp.body).toEqual({
-      past: false,
-      future: true,
+      listing: false,
+      past: true,
+      future: false,
     });
   });
 });
