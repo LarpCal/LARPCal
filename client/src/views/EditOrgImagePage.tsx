@@ -32,9 +32,6 @@ function EditOrgImagePage() {
 
   //TODO: move auth checks to custom hook
   if (!loading && username !== org?.username && !isAdmin) {
-    console.log(org);
-    console.log(username, org?.username);
-    console.error("You are not authorized to edit this record");
     return <Navigate to={`/orgs/${id}`} />;
   }
 

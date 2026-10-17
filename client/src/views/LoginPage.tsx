@@ -16,7 +16,7 @@ export default function LoginPage() {
       if (redirect?.startsWith("/") && !redirect.includes("..")) {
         navigate(redirect);
       } else {
-        navigate(`/users/${credentials.username}`);
+        navigate("/");
       }
     },
     [login, redirect, navigate],
